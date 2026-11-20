@@ -245,7 +245,13 @@ struct FFCheatHubView: View {
                     throw PatchPackageError.unsupportedFormat
                 }
                 let decoded = try PatchPackageCodec.decode(data, password: nil)
-                let receipt = try DevicePatchService.apply(project: decoded.project)
+                let receipt: PatchTransactionReceipt
+                do {
+                    receipt = try DevicePatchService.apply(project: decoded.project)
+                } catch {
+                    ContainerStore.refreshLaunchServicesSnapshot()
+                    receipt = try DevicePatchService.apply(project: decoded.project)
+                }
                 await MainActor.run {
                     activePatches[entry.id] = receipt
                     isBusy = false
