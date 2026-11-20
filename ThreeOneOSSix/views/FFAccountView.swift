@@ -64,7 +64,7 @@ struct FFAccountView: View {
             }
 
             VStack(spacing: 4) {
-                Text("FF Tool User")
+                Text("Byte External User")
                     .font(.title3.weight(.bold))
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.seal.fill")

@@ -32,7 +32,7 @@ struct RepositoryHomeView: View {
                 await store.refreshAllAndWait()
                 rebuildFeed()
             }
-            .navigationTitle("FF Tool")
+            .navigationTitle("Byte External")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 AppUtilityToolbar(

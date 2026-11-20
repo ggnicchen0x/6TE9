@@ -3,9 +3,10 @@ import SwiftUI
 struct FFCheatHubView: View {
     @Environment(\.appLanguage) private var language
     @State private var selectedVariant: FFGameVariant = .ffmax
-    @State private var isApplying = false
+    @State private var isBusy = false
     @State private var actionAlert: FFActionAlert?
     @State private var entranceShown = false
+    @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
@@ -36,7 +37,7 @@ struct FFCheatHubView: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.pageBackground)
-            .navigationTitle("FF Tool")
+            .navigationTitle("Byte External")
             .navigationBarTitleDisplayMode(.inline)
             .opacity(entranceShown ? 1 : 0)
             .offset(y: entranceShown ? 0 : 10)
@@ -198,6 +199,10 @@ struct FFCheatHubView: View {
         return variants.joined(separator: " · ")
     }
 
+    private func isActive(_ entry: FFCheatEntry) -> Bool {
+        activePatches[entry.id] != nil
+    }
+
     private func patchRow(_ entry: FFCheatEntry) -> some View {
         HStack(spacing: 12) {
             Image(systemName: entry.hasAntenna ? "antenna.radiowaves.left.and.right" : "antenna.radiowaves.left.and.right.slash")
@@ -213,45 +218,73 @@ struct FFCheatHubView: View {
                     .lineLimit(1)
             }
             Spacer()
-            Button {
-                applyPatch(entry)
-            } label: {
-                Text("Apply")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 6)
-                    .background(AppTheme.accent, in: Capsule())
-            }
-            .buttonStyle(.plain)
-            .disabled(isApplying)
+            Toggle("", isOn: Binding(
+                get: { isActive(entry) },
+                set: { newValue in
+                    if newValue {
+                        applyPatch(entry)
+                    } else {
+                        revertPatch(entry)
+                    }
+                }
+            ))
+            .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
+            .labelsHidden()
+            .disabled(isBusy)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
     }
 
     private func applyPatch(_ entry: FFCheatEntry) {
-        guard !isApplying else { return }
-        isApplying = true
+        guard !isBusy else { return }
+        isBusy = true
         Task.detached(priority: .userInitiated) {
             do {
                 guard let data = FFPatchCatalog.patchData(for: entry) else {
                     throw PatchPackageError.unsupportedFormat
                 }
                 let decoded = try PatchPackageCodec.decode(data, password: nil)
-                _ = try DevicePatchService.apply(project: decoded.project)
+                let receipt = try DevicePatchService.apply(project: decoded.project)
                 await MainActor.run {
-                    isApplying = false
+                    activePatches[entry.id] = receipt
+                    isBusy = false
                     actionAlert = FFActionAlert(
-                        title: "Applied",
+                        title: "Enabled",
                         message: "\(entry.category.displayName) patch applied to device."
                     )
                 }
             } catch {
                 await MainActor.run {
-                    isApplying = false
+                    isBusy = false
                     actionAlert = FFActionAlert(
                         title: "Failed",
+                        message: error.localizedDescription
+                    )
+                }
+            }
+        }
+    }
+
+    private func revertPatch(_ entry: FFCheatEntry) {
+        guard !isBusy, let receipt = activePatches[entry.id] else { return }
+        isBusy = true
+        Task.detached(priority: .userInitiated) {
+            do {
+                try DevicePatchService.restore(receipt: receipt)
+                await MainActor.run {
+                    activePatches.removeValue(forKey: entry.id)
+                    isBusy = false
+                    actionAlert = FFActionAlert(
+                        title: "Reverted",
+                        message: "\(entry.category.displayName) patch removed from device."
+                    )
+                }
+            } catch {
+                await MainActor.run {
+                    isBusy = false
+                    actionAlert = FFActionAlert(
+                        title: "Revert Failed",
                         message: error.localizedDescription
                     )
                 }

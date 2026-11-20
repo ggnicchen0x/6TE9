@@ -20,7 +20,7 @@ struct SettingsView: View {
                         AppLogo()
 
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("FF Tool").font(.headline)
+                            Text("Byte External").font(.headline)
                             Text("v\(appVersion)")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)

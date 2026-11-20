@@ -148,7 +148,7 @@ struct ContentView: View {
                     )
                 }
             }
-            .navigationTitle("FF Tool")
+            .navigationTitle("Byte External")
             .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
         } detail: {
             sectionContent(selectedVisibleSection)
