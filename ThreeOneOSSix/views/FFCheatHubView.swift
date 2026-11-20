@@ -42,6 +42,7 @@ struct FFCheatHubView: View {
             .opacity(entranceShown ? 1 : 0)
             .offset(y: entranceShown ? 0 : 10)
             .onAppear {
+                refreshActiveState()
                 guard !entranceShown, !reduceMotion else {
                     entranceShown = true
                     return
@@ -236,6 +237,22 @@ struct FFCheatHubView: View {
         .padding(.vertical, 10)
     }
 
+    private func recoverReceipt(for entry: FFCheatEntry) -> PatchTransactionReceipt? {
+        guard let data = FFPatchCatalog.patchData(for: entry),
+              let decoded = try? PatchPackageCodec.decode(data, password: nil) else { return nil }
+        return DevicePatchService.latestReceipt(projectID: decoded.project.id)
+    }
+
+    private func refreshActiveState() {
+        for entry in FFPatchCatalog.allEntries() {
+            if let receipt = recoverReceipt(for: entry) {
+                activePatches[entry.id] = receipt
+            } else {
+                activePatches.removeValue(forKey: entry.id)
+            }
+        }
+    }
+
     private func applyPatch(_ entry: FFCheatEntry) {
         guard !isBusy else { return }
         isBusy = true
@@ -247,6 +264,11 @@ struct FFCheatHubView: View {
                 let decoded = try PatchPackageCodec.decode(data, password: nil)
                 let receipt: PatchTransactionReceipt
                 do {
+                    receipt = try DevicePatchService.apply(project: decoded.project)
+                } catch PatchPackageError.projectAlreadyApplied {
+                    if let existing = DevicePatchService.latestReceipt(projectID: decoded.project.id) {
+                        try DevicePatchService.restore(receipt: existing)
+                    }
                     receipt = try DevicePatchService.apply(project: decoded.project)
                 } catch {
                     ContainerStore.refreshLaunchServicesSnapshot()
@@ -273,7 +295,9 @@ struct FFCheatHubView: View {
     }
 
     private func revertPatch(_ entry: FFCheatEntry) {
-        guard !isBusy, let receipt = activePatches[entry.id] else { return }
+        guard !isBusy else { return }
+        let receipt = activePatches[entry.id] ?? recoverReceipt(for: entry)
+        guard let receipt else { return }
         isBusy = true
         Task.detached(priority: .userInitiated) {
             do {
