@@ -4,7 +4,7 @@ struct PulsingDot: View {
     @State private var isPulsing = false
 
     var color: Color
-    var size: CGFloat = 8
+    var size: CGFloat = 7
 
     var body: some View {
         ZStack {
@@ -29,6 +29,8 @@ struct PulsingDot: View {
     }
 }
 
+private let cardFill = Color(white: 0.11)
+
 struct CompassHomeView: View {
     @EnvironmentObject private var appState: AppState
     let onOpenSettings: () -> Void
@@ -37,25 +39,24 @@ struct CompassHomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: 14) {
                     appCard
                     deviceStatusSection
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 12)
+                .padding(.top, 10)
                 .padding(.bottom, 24)
             }
             .background(
                 ZStack {
-                    AppTheme.pageBackground
+                    Color.black
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.06),
-                            Color.white.opacity(0.02),
+                            Color.white.opacity(0.03),
                             Color.clear
                         ],
                         startPoint: .top,
-                        endPoint: .center
+                        endPoint: UnitPoint(x: 0.5, y: 0.35)
                     )
                     .ignoresSafeArea()
                 }
@@ -80,119 +81,122 @@ struct CompassHomeView: View {
     }
 
     private var appCard: some View {
-        HStack(spacing: 12) {
-            AppLogo(size: 48)
+        HStack(spacing: 10) {
+            AppLogo(size: 42)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text("Compass")
-                    .font(.body.weight(.semibold))
+                    .font(.footnote.weight(.semibold))
                 Text("Your iPhone, ready.")
-                    .font(.caption)
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 4) {
-                HStack(spacing: 4) {
+            VStack(alignment: .trailing, spacing: 3) {
+                HStack(spacing: 3) {
                     Image(systemName: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .font(.caption2)
+                        .font(.system(size: 10))
                         .foregroundStyle(appState.isSupported ? .green : .red)
                     Text(appState.isSupported ? "Supported" : "Unsupported")
-                        .font(.caption2.weight(.medium))
+                        .font(.system(size: 10, weight: .medium))
                         .foregroundStyle(appState.isSupported ? .green : .red)
                 }
 
                 Text("v\(appVersion)")
-                    .font(.caption2)
+                    .font(.system(size: 9))
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(14)
+        .padding(12)
         .background(
             ZStack {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color(uiColor: .secondarySystemBackground))
+                    .fill(cardFill)
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.06),
-                                Color.white.opacity(0.02),
+                                Color.white.opacity(0.03),
                                 Color.clear
                             ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
+                            startPoint: .top,
+                            endPoint: .bottom
                         )
                     )
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
             }
         )
     }
 
     private var deviceStatusSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Device status")
-                .font(.subheadline.weight(.semibold))
+                .font(.footnote.weight(.semibold))
 
             VStack(spacing: 0) {
                 row(icon: "iphone", label: "Hardware model", value: AppInfo.displayMachineName)
-                Divider().padding(.leading, 42)
+                Divider().padding(.leading, 38)
                 row(icon: "gearshape", label: "iOS Version", value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
-                Divider().padding(.leading, 42)
+                Divider().padding(.leading, 38)
 
-                HStack(spacing: 10) {
+                HStack(spacing: 8) {
                     Image(systemName: "checkmark.shield")
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .frame(width: 24)
+                        .frame(width: 22)
                     Text("Exploit compatibility")
-                        .font(.subheadline)
+                        .font(.caption)
                     Spacer()
-                    HStack(spacing: 6) {
+                    HStack(spacing: 5) {
                         PulsingDot(color: appState.isSupported ? .green : .red)
                         Text(appState.isSupported ? "Supported" : "Unsupported")
-                            .font(.subheadline)
+                            .font(.caption)
                             .foregroundStyle(appState.isSupported ? .green : .red)
                     }
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 11)
             }
             .background(
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color(uiColor: .secondarySystemBackground))
+                        .fill(cardFill)
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.04),
+                                    Color.white.opacity(0.025),
                                     Color.clear
                                 ],
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
                         )
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
                 }
             )
         }
     }
 
     private func row(icon: String, label: String, value: String) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.subheadline)
+                .font(.caption)
                 .foregroundStyle(.secondary)
-                .frame(width: 24)
+                .frame(width: 22)
             Text(label)
-                .font(.subheadline)
+                .font(.caption)
             Spacer()
             Text(value)
-                .font(.subheadline)
+                .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
     }
 
     private var appVersion: String {
