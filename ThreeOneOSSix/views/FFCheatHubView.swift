@@ -6,6 +6,7 @@ struct FFCheatHubView: View {
     @Environment(\.appLanguage) private var language
     @AppStorage("selectedGame") private var selectedGameID = FFGameVariant.ffth.rawValue
     @State private var isBusy = false
+    @State private var busyEntryID: String?
     @State private var actionAlert: FFActionAlert?
     @State private var entranceShown = false
     @State private var activePatches: [String: PatchTransactionReceipt] = [:]
@@ -20,21 +21,13 @@ struct FFCheatHubView: View {
         FFPatchCatalog.entries(for: selectedVariant)
     }
 
-    private var sections: [(section: FFCheatSection, entries: [FFCheatEntry])] {
-        let grouped = Dictionary(grouping: entries) { $0.category.section }
-        return FFCheatSection.allCases.compactMap { section in
-            guard let items = grouped[section], !items.isEmpty else { return nil }
-            return (section, items)
-        }
-    }
-
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 14) {
+                VStack(spacing: 12) {
                     gameCard
-                    ForEach(sections, id: \.section.id) { group in
-                        sectionBlock(group.section, entries: group.entries)
+                    ForEach(entries) { entry in
+                        patchCard(entry)
                     }
                     if entries.isEmpty {
                         emptyCard
@@ -140,132 +133,107 @@ struct FFCheatHubView: View {
         )
     }
 
-    // MARK: - Section
+    // MARK: - Patch Card
 
-    private func sectionBlock(_ section: FFCheatSection, entries: [FFCheatEntry]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(section.displayName)
-                .font(.footnote.weight(.bold))
+    private func patchCard(_ entry: FFCheatEntry) -> some View {
+        let loaded = isActive(entry)
+        let loading = busyEntryID == entry.id
 
-            let categories = Dictionary(grouping: entries) { $0.category }
-            let orderedCategories = FFCheatCategory.allCases.filter { categories[$0] != nil }
-
-            VStack(spacing: 0) {
-                ForEach(Array(orderedCategories.enumerated()), id: \.element.id) { index, category in
-                    if let categoryEntries = categories[category] {
-                        if index > 0 {
-                            Divider().padding(.leading, 14)
-                        }
-                        categoryBlock(category: category, entries: categoryEntries)
-                    }
-                }
+        return HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(loaded ? AppTheme.accent.opacity(0.15) : Color(white: 0.16))
+                    .frame(width: 40, height: 40)
+                Image(systemName: entry.category.icon)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundColor(loaded ? AppTheme.accent : .secondary)
             }
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(cardFill)
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.015), Color.clear],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
-                }
-            )
-        }
-    }
 
-    // MARK: - Category Block
+            VStack(alignment: .leading, spacing: 4) {
+                Text(entryDisplayName(entry))
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
 
-    private func categoryBlock(category: FFCheatCategory, entries: [FFCheatEntry]) -> some View {
-        VStack(spacing: 0) {
-            if entries.count == 1, let entry = entries.first {
-                singleEntryRow(category: category, entry: entry)
-            } else {
-                HStack(spacing: 10) {
-                    Image(systemName: category.icon)
-                        .font(.footnote)
-                        .foregroundColor(AppTheme.accent)
-                        .frame(width: 26)
-                    Text(category.displayName)
-                        .font(.footnote.weight(.semibold))
-                    Spacer()
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 11)
-
-                ForEach(entries) { entry in
-                    Divider().padding(.leading, 50)
-                    patchRow(entry)
-                }
-            }
-        }
-    }
-
-    // MARK: - Single Entry Row
-
-    private func singleEntryRow(category: FFCheatCategory, entry: FFCheatEntry) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: category.icon)
-                .font(.footnote)
-                .foregroundColor(AppTheme.accent)
-                .frame(width: 26)
-            Text(category.displayName)
-                .font(.footnote.weight(.semibold))
-            Spacer(minLength: 4)
-            patchToggle(entry)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
-    }
-
-    // MARK: - Patch Row
-
-    private func patchRow(_ entry: FFCheatEntry) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: entry.hasAntenna
-                  ? "antenna.radiowaves.left.and.right"
-                  : "antenna.radiowaves.left.and.right.slash")
-                .font(.caption2)
-                .foregroundColor(entry.hasAntenna ? AppTheme.accent.opacity(0.7) : Color(white: 0.35))
-                .frame(width: 26)
-
-            Text(entry.hasAntenna ? "With Antenna" : "Without Antenna")
-                .font(.footnote)
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-
-            Spacer(minLength: 4)
-            patchToggle(entry)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
-    }
-
-    // MARK: - Toggle
-
-    private func patchToggle(_ entry: FFCheatEntry) -> some View {
-        Toggle("", isOn: Binding(
-            get: { isActive(entry) },
-            set: { newValue in
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    if newValue {
-                        applyPatch(entry)
+                HStack(spacing: 6) {
+                    if loading {
+                        Text(loaded ? "Removing..." : "Loading...")
+                            .font(.caption)
+                            .foregroundColor(AppTheme.accent)
                     } else {
-                        revertPatch(entry)
+                        Text(loaded ? "Loaded" : "Not loaded")
+                            .font(.caption)
+                            .foregroundColor(loaded ? .green : .secondary)
                     }
+
+                    Text("Safe")
+                        .font(.caption2.weight(.bold))
+                        .foregroundColor(.green)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.green.opacity(0.12), in: Capsule())
                 }
             }
-        ))
-        .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
-        .labelsHidden()
-        .disabled(isBusy)
-        .scaleEffect(0.85)
-        .fixedSize()
+
+            Spacer(minLength: 4)
+
+            if loading {
+                ProgressView()
+                    .tint(AppTheme.accent)
+                    .scaleEffect(0.8)
+                    .frame(width: 64)
+            } else {
+                Button {
+                    if loaded {
+                        revertPatch(entry)
+                    } else {
+                        applyPatch(entry)
+                    }
+                } label: {
+                    Text(loaded ? "Unload" : "Load")
+                        .font(.caption.weight(.bold))
+                        .foregroundColor(loaded ? .primary : AppTheme.accent)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 7)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(loaded ? Color(white: 0.2) : AppTheme.accent.opacity(0.15))
+                        )
+                }
+                .disabled(isBusy)
+            }
+        }
+        .padding(14)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(cardFill)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.015), Color.clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(
+                        loaded ? AppTheme.accent.opacity(0.2) : Color.white.opacity(0.06),
+                        lineWidth: 0.5
+                    )
+            }
+        )
+        .animation(.easeInOut(duration: 0.25), value: loaded)
+        .animation(.easeInOut(duration: 0.2), value: loading)
+    }
+
+    // MARK: - Display Name
+
+    private func entryDisplayName(_ entry: FFCheatEntry) -> String {
+        let base = entry.category.displayName
+        if entry.hasAntenna {
+            return base + " + Antenna"
+        }
+        return base
     }
 
     // MARK: - Empty
@@ -316,6 +284,7 @@ struct FFCheatHubView: View {
     private func applyPatch(_ entry: FFCheatEntry) {
         guard !isBusy else { return }
         isBusy = true
+        busyEntryID = entry.id
         Task.detached(priority: .userInitiated) {
             do {
                 guard let data = FFPatchCatalog.patchData(for: entry) else {
@@ -335,16 +304,16 @@ struct FFCheatHubView: View {
                     receipt = try DevicePatchService.apply(project: decoded.project)
                 }
                 await MainActor.run {
-                    activePatches[entry.id] = receipt
-                    isBusy = false
-                    actionAlert = FFActionAlert(
-                        title: "Enabled",
-                        message: "\(entry.category.displayName) patch applied."
-                    )
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        activePatches[entry.id] = receipt
+                        isBusy = false
+                        busyEntryID = nil
+                    }
                 }
             } catch {
                 await MainActor.run {
                     isBusy = false
+                    busyEntryID = nil
                     actionAlert = FFActionAlert(
                         title: "Failed",
                         message: error.localizedDescription
@@ -359,22 +328,23 @@ struct FFCheatHubView: View {
         let receipt = activePatches[entry.id] ?? recoverReceipt(for: entry)
         guard let receipt else { return }
         isBusy = true
+        busyEntryID = entry.id
         Task.detached(priority: .userInitiated) {
             do {
                 try DevicePatchService.restore(receipt: receipt, allowChangedTargets: true)
                 await MainActor.run {
-                    activePatches.removeValue(forKey: entry.id)
-                    isBusy = false
-                    actionAlert = FFActionAlert(
-                        title: "Reverted",
-                        message: "\(entry.category.displayName) patch removed."
-                    )
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        activePatches.removeValue(forKey: entry.id)
+                        isBusy = false
+                        busyEntryID = nil
+                    }
                 }
             } catch {
                 await MainActor.run {
                     isBusy = false
+                    busyEntryID = nil
                     actionAlert = FFActionAlert(
-                        title: "Revert Failed",
+                        title: "Unload Failed",
                         message: error.localizedDescription
                     )
                 }
