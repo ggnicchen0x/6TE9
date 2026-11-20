@@ -24,7 +24,7 @@ struct FFCheatHubView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 12) {
+                VStack(spacing: 14) {
                     gameCard
                     ForEach(entries) { entry in
                         patchCard(entry)
@@ -115,22 +115,32 @@ struct FFCheatHubView: View {
             .background(Color.green.opacity(0.12), in: Capsule())
         }
         .padding(14)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(cardFill)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.035), Color.clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+        .background(accentBarCard(cornerRadius: 14))
+    }
+
+    // MARK: - Accent Bar Card
+
+    private func accentBarCard(cornerRadius: CGFloat) -> some View {
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(cardFill)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.035), Color.clear],
+                        startPoint: .top,
+                        endPoint: .bottom
                     )
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                )
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+            HStack(spacing: 0) {
+                AppTheme.accent
+                    .frame(width: 3.5)
+                Spacer()
             }
-        )
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        }
     }
 
     // MARK: - Patch Card
@@ -139,13 +149,13 @@ struct FFCheatHubView: View {
         let loaded = isActive(entry)
         let loading = busyEntryID == entry.id
 
-        return HStack(spacing: 12) {
+        return HStack(spacing: 14) {
             ZStack {
                 Circle()
                     .fill(loaded ? AppTheme.accent.opacity(0.15) : Color(white: 0.16))
-                    .frame(width: 40, height: 40)
+                    .frame(width: 44, height: 44)
                 Image(systemName: entry.category.icon)
-                    .font(.subheadline.weight(.medium))
+                    .font(.body.weight(.medium))
                     .foregroundColor(loaded ? AppTheme.accent : .secondary)
             }
 
@@ -192,8 +202,8 @@ struct FFCheatHubView: View {
                     Text(loaded ? "Unload" : "Load")
                         .font(.caption.weight(.bold))
                         .foregroundColor(loaded ? .primary : AppTheme.accent)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 7)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .fill(loaded ? Color(white: 0.2) : AppTheme.accent.opacity(0.15))
@@ -202,7 +212,8 @@ struct FFCheatHubView: View {
                 .disabled(isBusy)
             }
         }
-        .padding(14)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
         .background(
             ZStack {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
@@ -229,7 +240,15 @@ struct FFCheatHubView: View {
     // MARK: - Display Name
 
     private func entryDisplayName(_ entry: FFCheatEntry) -> String {
-        let base = entry.category.displayName
+        let base: String
+        switch entry.category {
+        case .aimbotHead:  base = "Aim Head"
+        case .aimbotNeck:  base = "Aim Neck"
+        case .aimbotChest: base = "Aim Chest"
+        case .aimbotDrag:  base = "Aim Drag"
+        case .holoWeapons:   base = "Holo Weapons"
+        case .holoCharacter: base = "Holo Character"
+        }
         if entry.hasAntenna {
             return base + " + Antenna"
         }
