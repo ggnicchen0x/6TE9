@@ -92,7 +92,7 @@ enum FFCheatSection: String, CaseIterable, Identifiable {
 }
 
 struct FFCheatEntry: Identifiable {
-    let id = UUID()
+    let id: String
     let category: FFCheatCategory
     let variant: FFGameVariant
     let hasAntenna: Bool
@@ -148,6 +148,7 @@ enum FFPatchCatalog {
                 return nil
             }
             return FFCheatEntry(
+                id: "\(variant.rawValue):\(mapping.pattern)",
                 category: mapping.category,
                 variant: variant,
                 hasAntenna: mapping.hasAntenna,

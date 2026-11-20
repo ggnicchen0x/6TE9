@@ -6,7 +6,7 @@ struct FFCheatHubView: View {
     @State private var isBusy = false
     @State private var actionAlert: FFActionAlert?
     @State private var entranceShown = false
-    @State private var activePatches: [UUID: PatchTransactionReceipt] = [:]
+    @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
