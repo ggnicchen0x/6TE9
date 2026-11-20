@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var showAppGroupAlert = false
     @StateObject private var scanCoordinator = ScanCoordinator()
     @EnvironmentObject private var appState: AppState
+    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
 
     init() {
 #if targetEnvironment(simulator)
@@ -89,6 +90,13 @@ struct ContentView: View {
                     .environmentObject(scanCoordinator)
                     .environment(\.appLanguage, language)
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
+            isLoggedIn = false
+            tabNavigation.reconcileSelection(with: featureVisibility)
+        }
+        .onChange(of: isLoggedIn) { _ in
+            tabNavigation.reconcileSelection(with: featureVisibility)
         }
         .patchStorePresentation(patchStore)
         .repositoryStorePresentation(repositoryStore, patchStore: patchStore)
@@ -215,7 +223,8 @@ struct ContentView: View {
             wallpapersSupported: WallpaperFeatureSupportPolicy.isSupported(
                 major: AppInfo.versionTuple.major
             ),
-            developerModeEnabled: true
+            developerModeEnabled: true,
+            isLoggedIn: isLoggedIn
         )
     }
 
@@ -235,6 +244,7 @@ struct ContentView: View {
     }
 
     private func openCheats() {
+        isLoggedIn = ByteAuthService.shared.isLoggedIn
         tabNavigation.select(AppSection.cheats.rawValue)
     }
 }

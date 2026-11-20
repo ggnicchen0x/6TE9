@@ -103,19 +103,25 @@ struct FeatureVisibility: Equatable {
     let selectedSections: [AppSection]
     let wallpapersSupported: Bool
     let developerModeEnabled: Bool
+    let isLoggedIn: Bool
 
     init(
         selectedSections: [AppSection],
         wallpapersSupported: Bool,
-        developerModeEnabled: Bool
+        developerModeEnabled: Bool,
+        isLoggedIn: Bool = false
     ) {
         self.selectedSections = selectedSections
         self.wallpapersSupported = wallpapersSupported
         self.developerModeEnabled = developerModeEnabled
+        self.isLoggedIn = isLoggedIn
     }
 
     var visibleSections: [AppSection] {
-        [.home, .cheats, .account, .support]
+        if isLoggedIn {
+            return [.home, .cheats, .account, .support]
+        }
+        return [.home, .account, .support]
     }
 
     func isVisible(_ section: AppSection) -> Bool {
