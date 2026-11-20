@@ -8,7 +8,7 @@ struct CompassSupportView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 14) {
                     headerCard
                     telegramCards
                     faqCard
@@ -35,30 +35,48 @@ struct CompassSupportView: View {
     }
 
     private var headerCard: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "headphones.circle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(AppTheme.accent)
+        VStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .fill(AppTheme.accent.opacity(0.15))
+                    .frame(width: 56, height: 56)
+                Image(systemName: "headphones.circle.fill")
+                    .font(.system(size: 32))
+                    .foregroundStyle(AppTheme.accent)
+            }
 
             Text("Need Help?")
                 .font(.title3.weight(.bold))
 
-            Text("Reach out to us on Telegram for support, updates, and community.")
+            Text("Reach out to us on Telegram for\nsupport, updates, and community.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
         .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+            ZStack {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                AppTheme.accent.opacity(0.08),
+                                AppTheme.accent.opacity(0.03),
+                                Color.clear
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            }
         )
     }
 
     private var telegramCards: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             telegramLink(
                 icon: "person.fill.questionmark",
                 title: "Contact Support",
@@ -84,7 +102,16 @@ struct CompassSupportView: View {
             HStack(spacing: 14) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(AppTheme.accent.opacity(0.12))
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    AppTheme.accent.opacity(0.20),
+                                    AppTheme.accent.opacity(0.08)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
                         .frame(width: 44, height: 44)
                     Image(systemName: icon)
                         .font(.body.weight(.semibold))
@@ -102,14 +129,27 @@ struct CompassSupportView: View {
 
                 Spacer()
 
-                Image(systemName: "arrow.up.right")
+                Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
             }
             .padding(14)
             .background(
-                Color(uiColor: .secondarySystemBackground),
-                in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color(uiColor: .secondarySystemBackground))
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    AppTheme.accent.opacity(0.06),
+                                    Color.clear
+                                ],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                }
             )
         }
         .buttonStyle(.plain)
@@ -118,15 +158,20 @@ struct CompassSupportView: View {
     private var faqCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
-                Image(systemName: "questionmark.circle")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
+                ZStack {
+                    Circle()
+                        .fill(AppTheme.accent.opacity(0.12))
+                        .frame(width: 24, height: 24)
+                    Image(systemName: "questionmark")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(AppTheme.accent)
+                }
                 Text("FAQ")
                     .font(.subheadline.weight(.bold))
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
             }
-            .padding(.bottom, 4)
+            .padding(.bottom, 2)
 
             faqRow(q: "How do I get a license key?", a: "Contact support on Telegram to purchase a key.")
             Divider()
@@ -136,8 +181,8 @@ struct CompassSupportView: View {
         }
         .padding(16)
         .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemBackground))
         )
     }
 
