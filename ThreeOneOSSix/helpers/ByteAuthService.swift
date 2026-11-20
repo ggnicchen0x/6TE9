@@ -44,16 +44,49 @@ final class ByteAuthService {
         UserDefaults.standard.set(name, forKey: Self.userNameKey)
     }
 
+    private var profileImageURL: URL? {
+        guard let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        return docs.appendingPathComponent("compass_profile.jpg")
+    }
+
+    var profileImage: UIImage? {
+        guard let url = profileImageURL, let data = try? Data(contentsOf: url) else { return nil }
+        return UIImage(data: data)
+    }
+
+    func setProfileImage(_ image: UIImage?) {
+        guard let url = profileImageURL else { return }
+        if let image = image, let data = image.jpegData(compressionQuality: 0.8) {
+            try? data.write(to: url)
+        } else {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+
     var daysRemaining: Int? {
         guard let raw = expiresAt, raw.uppercased() != "LIFETIME" else { return nil }
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        let date = formatter.date(from: raw) ?? {
+
+        var date: Date?
+
+        let iso = ISO8601DateFormatter()
+        iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        date = iso.date(from: raw)
+
+        if date == nil {
+            iso.formatOptions = [.withInternetDateTime]
+            date = iso.date(from: raw)
+        }
+
+        if date == nil {
             let f = DateFormatter()
-            f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            f.locale = Locale(identifier: "en_US_POSIX")
             f.timeZone = TimeZone(identifier: "UTC")
-            return f.date(from: raw)
-        }()
+            for fmt in ["yyyy-MM-dd'T'HH:mm:ss.SSSSSS", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss"] {
+                f.dateFormat = fmt
+                if let d = f.date(from: raw) { date = d; break }
+            }
+        }
+
         guard let expiry = date else { return nil }
         let days = Calendar.current.dateComponents([.day], from: Date(), to: expiry).day ?? 0
         return max(days, 0)
@@ -124,6 +157,7 @@ final class ByteAuthService {
         UserDefaults.standard.removeObject(forKey: Self.expiresKey)
         UserDefaults.standard.removeObject(forKey: Self.loginTimeKey)
         UserDefaults.standard.removeObject(forKey: Self.userNameKey)
+        setProfileImage(nil)
     }
 
     private func deviceIdentifier() -> String {

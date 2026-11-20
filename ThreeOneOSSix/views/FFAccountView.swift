@@ -1,4 +1,5 @@
 import SwiftUI
+import PhotosUI
 
 private let cardFill = Color(white: 0.11)
 
@@ -13,6 +14,9 @@ struct FFAccountView: View {
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
     @State private var showNamePrompt = false
     @State private var nameInput = ""
+    @State private var profileImage: UIImage? = ByteAuthService.shared.profileImage
+    @State private var selectedPhoto: PhotosPickerItem?
+    @State private var showPhotoPicker = false
     @AppStorage("selectedGame") private var selectedGame = FFGameVariant.ffth.rawValue
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
@@ -151,19 +155,60 @@ struct FFAccountView: View {
 
     private var profileCardLoggedIn: some View {
         VStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [AppTheme.accent, AppTheme.accent.opacity(0.6)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 72, height: 72)
-                Image(systemName: "person.fill")
-                    .font(.system(size: 30, weight: .medium))
-                    .foregroundStyle(.white)
+            Button {
+                showPhotoPicker = true
+            } label: {
+                ZStack(alignment: .bottomTrailing) {
+                    if let img = profileImage {
+                        Image(uiImage: img)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 80, height: 80)
+                            .clipShape(Circle())
+                    } else {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [AppTheme.accent, AppTheme.accent.opacity(0.6)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 80, height: 80)
+                            .overlay(
+                                Image(systemName: "person.fill")
+                                    .font(.system(size: 32, weight: .medium))
+                                    .foregroundStyle(.white)
+                            )
+                    }
+
+                    ZStack {
+                        Circle()
+                            .fill(Color(white: 0.12))
+                            .frame(width: 26, height: 26)
+                        Image(systemName: "camera.fill")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.white)
+                    }
+                    .offset(x: 2, y: 2)
+                }
+            }
+            .buttonStyle(.plain)
+            .photosPicker(isPresented: $showPhotoPicker, selection: $selectedPhoto, matching: .images)
+            .onChange(of: selectedPhoto) { newItem in
+                guard let newItem else { return }
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self),
+                       let img = UIImage(data: data) {
+                        let cropped = cropToSquare(img)
+                        ByteAuthService.shared.setProfileImage(cropped)
+                        await MainActor.run {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                profileImage = cropped
+                            }
+                        }
+                    }
+                }
             }
 
             Text(ByteAuthService.shared.userName ?? "Compass User")
@@ -184,6 +229,15 @@ struct FFAccountView: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
         .background(accentBarCard(cornerRadius: 16))
+    }
+
+    private func cropToSquare(_ image: UIImage) -> UIImage {
+        let side = min(image.size.width, image.size.height)
+        let x = (image.size.width - side) / 2
+        let y = (image.size.height - side) / 2
+        let rect = CGRect(x: x, y: y, width: side, height: side)
+        guard let cgImage = image.cgImage?.cropping(to: rect) else { return image }
+        return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 
     private var licenseInfoCard: some View {
