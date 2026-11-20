@@ -40,10 +40,6 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    RespringButton()
-                }
-
-                Section {
                     Toggle(isOn: $soundEffectsEnabled) {
                         Label(
                             language.text("settings.sound_effects"),
@@ -78,43 +74,6 @@ struct SettingsView: View {
                     } label: {
                         Label(language.text("sandbox.diag.title"), systemImage: "stethoscope")
                     }
-                }
-
-                Section {
-                    HStack {
-                        Text(language.text("settings.current_version"))
-                        Spacer()
-                        Text(language.text(appState.isSupported ? "settings.supported" : "settings.unsupported"))
-                        .foregroundStyle(appState.isSupported ? Color.green : Color.red)
-                    }
-                    LabeledContent("iOS 17", value: ExploitSupportPolicy.verifiedIOS17Range)
-                    LabeledContent("iOS 18", value: ExploitSupportPolicy.verifiedIOS18Range)
-                    LabeledContent(
-                        "iOS 26",
-                        value: "\(ExploitSupportPolicy.verifiedIOS26BadQueryRange) · \(ExploitSupportPolicy.verifiedIOS26WorseQueryRange)"
-                    )
-                    LabeledContent("iOS 27", value: ExploitSupportPolicy.verifiedIOS27Range)
-                    // 27.3 is a separate row on purpose: its boundary is a
-                    // build number, not a version number, and folding it into
-                    // the row above would read as "all of 27.3 is supported".
-                    LabeledContent(
-                        "iOS 27.3",
-                        value: "\(ExploitSupportPolicy.verifiedIOS27BuildGatedRange) · \(ExploitSupportPolicy.verifiedIOS27Builds.joined(separator: ", "))"
-                    )
-                    if let reason = appState.unsupportedMessage {
-                        // The reason was computed at launch but never rendered
-                        // anywhere, so an unsupported device only ever saw a
-                        // red badge with no explanation. Show it here for every
-                        // unsupported case, not just iOS 18.
-                        Text(reason)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                } header: {
-                    Text(language.text("settings.verified_versions"))
-                } footer: {
-                    Text(language.text("settings.supported_versions_footer"))
                 }
 
             }

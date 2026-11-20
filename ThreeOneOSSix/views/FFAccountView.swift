@@ -11,7 +11,7 @@ struct FFAccountView: View {
     @State private var errorMessage: String?
     @State private var showError = false
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
-    @AppStorage("selectedGame") private var selectedGame = "freefire"
+    @AppStorage("selectedGame") private var selectedGame = FFGameVariant.ffth.rawValue
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
@@ -208,18 +208,20 @@ struct FFAccountView: View {
 
             HStack(spacing: 12) {
                 gameOption(
-                    id: "freefire",
+                    id: FFGameVariant.ffth.rawValue,
                     name: "Free Fire",
                     assetName: "FFIcon",
                     color: AppTheme.accent
                 )
                 gameOption(
-                    id: "freefiremax",
+                    id: FFGameVariant.ffmax.rawValue,
                     name: "Free Fire MAX",
                     assetName: "FFMaxIcon",
                     color: AppTheme.accent
                 )
             }
+
+            launchButton
         }
         .padding(16)
         .background(
@@ -236,6 +238,32 @@ struct FFAccountView: View {
                     )
             }
         )
+    }
+
+    private var launchButton: some View {
+        Button {
+            if let url = URL(string: "itms-apps://itunes.apple.com/app/\(selectedGame)") {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "play.fill")
+                    .font(.subheadline.weight(.semibold))
+                Text("Launch \(selectedGameVariant?.shortName ?? "Game")")
+                    .font(.subheadline.weight(.bold))
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(AppTheme.accent)
+            )
+        }
+    }
+
+    private var selectedGameVariant: FFGameVariant? {
+        FFGameVariant(rawValue: selectedGame)
     }
 
     private func gameOption(id: String, name: String, assetName: String, color: Color) -> some View {

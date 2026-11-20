@@ -9,14 +9,14 @@ enum FFGameVariant: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .ffmax: return "Free Fire MAX"
-        case .ffth: return "Free Fire TH"
+        case .ffth: return "Free Fire"
         }
     }
 
     var shortName: String {
         switch self {
-        case .ffmax: return "FFMAX"
-        case .ffth: return "FFTH"
+        case .ffmax: return "FF MAX"
+        case .ffth: return "FF"
         }
     }
 

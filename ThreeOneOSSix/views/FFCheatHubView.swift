@@ -2,13 +2,17 @@ import SwiftUI
 
 struct FFCheatHubView: View {
     @Environment(\.appLanguage) private var language
-    @State private var selectedVariant: FFGameVariant = .ffmax
+    @AppStorage("selectedGame") private var selectedGameID = FFGameVariant.ffth.rawValue
     @State private var isBusy = false
     @State private var actionAlert: FFActionAlert?
     @State private var entranceShown = false
     @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
+
+    private var selectedVariant: FFGameVariant {
+        FFGameVariant(rawValue: selectedGameID) ?? .ffth
+    }
 
     private var entries: [FFCheatEntry] {
         FFPatchCatalog.entries(for: selectedVariant)
@@ -75,7 +79,7 @@ struct FFCheatHubView: View {
             ForEach(FFGameVariant.allCases) { variant in
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
-                        selectedVariant = variant
+                        selectedGameID = variant.rawValue
                     }
                 } label: {
                     Text(variant.shortName)
@@ -95,7 +99,7 @@ struct FFCheatHubView: View {
         }
         .padding(4)
         .background(
-            Color(uiColor: .secondarySystemBackground),
+            Color(white: 0.11),
             in: RoundedRectangle(cornerRadius: 12, style: .continuous)
         )
     }
@@ -125,7 +129,7 @@ struct FFCheatHubView: View {
         }
         .padding(14)
         .background(
-            Color(uiColor: .secondarySystemBackground),
+            Color(white: 0.11),
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
     }
@@ -190,7 +194,7 @@ struct FFCheatHubView: View {
             }
         }
         .background(
-            Color(uiColor: .secondarySystemBackground),
+            Color(white: 0.11),
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
     }
