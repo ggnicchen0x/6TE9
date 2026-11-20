@@ -3,6 +3,7 @@ import SwiftUI
 struct AccentColorPickerView: View {
     @ObservedObject private var store = AccentColorStore.shared
     @Environment(\.dismiss) private var dismiss
+    @State private var hexInput = ""
 
     var body: some View {
         NavigationStack {
@@ -14,25 +15,71 @@ struct AccentColorPickerView: View {
                 }
 
                 Section {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 4), spacing: 12) {
-                        ForEach(AccentColorStore.presets) { preset in
-                            presetButton(preset)
+                    HStack(spacing: 12) {
+                        Text("#")
+                            .font(.title3.weight(.bold).monospaced())
+                            .foregroundStyle(.secondary)
+
+                        TextField("7B4AEB", text: $hexInput)
+                            .font(.title3.monospaced())
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                            .onChange(of: hexInput) { val in
+                                let cleaned = val.replacingOccurrences(of: "#", with: "")
+                                    .filter { $0.isHexDigit }
+                                if cleaned != val {
+                                    hexInput = String(cleaned.prefix(6))
+                                }
+                                if cleaned.count == 6 {
+                                    store.applyHex(cleaned)
+                                }
+                            }
+
+                        Button {
+                            store.applyHex(hexInput)
+                        } label: {
+                            Text("Apply")
+                                .font(.subheadline.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(store.accentColor)
+                                .foregroundStyle(.white)
+                                .clipShape(Capsule())
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 4)
+
+                    HStack {
+                        Text("Current")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(store.hexString)
+                            .font(.caption.monospaced().weight(.medium))
+                            .foregroundStyle(.primary)
+
+                        Button {
+                            UIPasteboard.general.string = store.hexString
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 } header: {
-                    Text("Presets")
+                    Text("Hex Code")
                 }
 
                 Section {
-                    VStack(alignment: .leading, spacing: 16) {
-                        sliderRow(label: "Hue", value: $store.hue, color: Color(hue: store.hue, saturation: 1, brightness: 1))
-                        sliderRow(label: "Saturation", value: $store.saturation, color: store.accentColor)
-                        sliderRow(label: "Brightness", value: $store.brightness, color: store.accentColor)
-                    }
-                    .padding(.vertical, 4)
+                    sliderRow(label: "Red", value: $store.red, color: .red,
+                              displayValue: Int(round(store.red * 255)))
+                    sliderRow(label: "Green", value: $store.green, color: .green,
+                              displayValue: Int(round(store.green * 255)))
+                    sliderRow(label: "Blue", value: $store.blue, color: .blue,
+                              displayValue: Int(round(store.blue * 255)))
                 } header: {
-                    Text("Fine Tune")
+                    Text("RGB")
                 }
             }
             .tint(store.accentColor)
@@ -43,6 +90,12 @@ struct AccentColorPickerView: View {
                     Button("Done") { dismiss() }
                         .fontWeight(.semibold)
                 }
+            }
+            .onAppear {
+                hexInput = store.hexString.replacingOccurrences(of: "#", with: "")
+            }
+            .onChange(of: [store.red, store.green, store.blue]) { _ in
+                hexInput = store.hexString.replacingOccurrences(of: "#", with: "")
             }
         }
     }
@@ -61,8 +114,8 @@ struct AccentColorPickerView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Byte External")
                     .font(.headline)
-                Text("Current accent color")
-                    .font(.caption)
+                Text(store.hexString)
+                    .font(.caption.monospaced())
                     .foregroundStyle(.secondary)
             }
 
@@ -79,46 +132,20 @@ struct AccentColorPickerView: View {
         .padding(.vertical, 4)
     }
 
-    private func presetButton(_ preset: AccentColorStore.AccentPreset) -> some View {
-        let isSelected = abs(store.hue - preset.hue) < 0.02
-            && abs(store.saturation - preset.saturation) < 0.05
-            && abs(store.brightness - preset.brightness) < 0.05
-
-        return Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                store.applyPreset(preset)
-            }
-        } label: {
-            VStack(spacing: 6) {
-                Circle()
-                    .fill(preset.color)
-                    .frame(width: 40, height: 40)
-                    .overlay(
-                        Circle()
-                            .strokeBorder(.white.opacity(isSelected ? 0.8 : 0), lineWidth: 2.5)
-                    )
-                    .shadow(color: isSelected ? preset.color.opacity(0.5) : .clear, radius: 6)
-                Text(preset.name)
-                    .font(.caption2.weight(isSelected ? .bold : .medium))
-                    .foregroundStyle(isSelected ? .primary : .secondary)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func sliderRow(label: String, value: Binding<CGFloat>, color: Color) -> some View {
+    private func sliderRow(label: String, value: Binding<CGFloat>, color: Color, displayValue: Int) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text(label)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text(String(format: "%.0f%%", value.wrappedValue * 100))
+                Text("\(displayValue)")
                     .font(.caption.monospaced())
                     .foregroundStyle(.secondary)
             }
             Slider(value: value, in: 0...1)
                 .tint(color)
         }
+        .padding(.vertical, 2)
     }
 }
