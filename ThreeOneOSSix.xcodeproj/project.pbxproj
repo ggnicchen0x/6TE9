@@ -676,8 +676,8 @@
 			);
 			dependencies = (
 			);
-			name = 3106;
-			productName = 3106;
+			name = Compass;
+			productName = Compass;
 			productReference = 3105A010;
 			productType = "com.apple.product-type.application";
 		};
