@@ -8,9 +8,9 @@ struct CompassHomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 16) {
                     appCard
-                    deviceStatusCard
+                    deviceStatusSection
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
@@ -21,7 +21,7 @@ struct CompassHomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: 14) {
                         Button { onOpenLogs() } label: {
                             Image(systemName: "apple.terminal.fill")
                                 .foregroundStyle(AppTheme.accent)
@@ -37,12 +37,12 @@ struct CompassHomeView: View {
     }
 
     private var appCard: some View {
-        HStack(spacing: 14) {
-            AppLogo(size: 52)
+        HStack(spacing: 12) {
+            AppLogo(size: 48)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Compass")
-                    .font(.body.weight(.bold))
+                    .font(.body.weight(.semibold))
                 Text("Your iPhone, ready.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -52,73 +52,65 @@ struct CompassHomeView: View {
 
             VStack(alignment: .trailing, spacing: 4) {
                 HStack(spacing: 4) {
-                    Image(systemName: "checkmark.seal.fill")
-                        .foregroundStyle(.green)
-                        .font(.caption)
-                    Text("Supported")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.green)
+                    Image(systemName: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill")
+                        .font(.caption2)
+                        .foregroundStyle(appState.isSupported ? .green : .red)
+                    Text(appState.isSupported ? "Supported" : "Unsupported")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(appState.isSupported ? .green : .red)
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.green.opacity(0.12), in: Capsule())
 
                 Text("v\(appVersion)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(16)
+        .padding(14)
         .background(
             Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+            in: RoundedRectangle(cornerRadius: 12, style: .continuous)
         )
     }
 
-    private var deviceStatusCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+    private var deviceStatusSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Device status")
-                .font(.headline.weight(.bold))
-                .padding(.bottom, 4)
+                .font(.subheadline.weight(.semibold))
 
             VStack(spacing: 0) {
-                statusRow(icon: "iphone", label: "Hardware model", value: AppInfo.displayMachineName)
-                Divider().padding(.leading, 44)
-                statusRow(icon: "gear", label: "iOS Version", value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
-                Divider().padding(.leading, 44)
-                HStack(spacing: 12) {
-                    Image(systemName: "checkmark.shield.fill")
-                        .font(.body)
-                        .foregroundStyle(AppTheme.accent)
-                        .frame(width: 28)
+                row(icon: "iphone", label: "Hardware model", value: AppInfo.displayMachineName)
+                Divider().padding(.leading, 42)
+                row(icon: "gearshape", label: "iOS Version", value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
+                Divider().padding(.leading, 42)
+
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark.shield")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 24)
                     Text("Exploit compatibility")
                         .font(.subheadline)
                     Spacer()
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(appState.isSupported ? Color.green : Color.red)
-                            .frame(width: 8, height: 8)
-                        Text(appState.isSupported ? "Supported" : "Unsupported")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(appState.isSupported ? .green : .red)
-                    }
+                    Text(appState.isSupported ? "Supported" : "Unsupported")
+                        .font(.subheadline)
+                        .foregroundStyle(appState.isSupported ? .green : .red)
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
             }
             .background(
                 Color(uiColor: .secondarySystemBackground),
-                in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                in: RoundedRectangle(cornerRadius: 12, style: .continuous)
             )
         }
     }
 
-    private func statusRow(icon: String, label: String, value: String) -> some View {
-        HStack(spacing: 12) {
+    private func row(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.body)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .frame(width: 28)
+                .frame(width: 24)
             Text(label)
                 .font(.subheadline)
             Spacer()
@@ -126,8 +118,8 @@ struct CompassHomeView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
     }
 
     private var appVersion: String {
