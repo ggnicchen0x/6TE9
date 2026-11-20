@@ -149,84 +149,85 @@ struct FFCheatHubView: View {
         let loaded = isActive(entry)
         let loading = busyEntryID == entry.id
 
-        return HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(loaded ? AppTheme.accent.opacity(0.15) : Color(white: 0.16))
-                    .frame(width: 44, height: 44)
-                Image(systemName: entry.category.icon)
-                    .font(.body.weight(.medium))
-                    .foregroundColor(loaded ? AppTheme.accent : .secondary)
-            }
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(entryDisplayName(entry))
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-
-                HStack(spacing: 6) {
-                    if loading {
-                        Text(loaded ? "Removing..." : "Loading...")
-                            .font(.caption)
-                            .foregroundColor(AppTheme.accent)
-                    } else {
-                        Text(loaded ? "Loaded" : "Not loaded")
-                            .font(.caption)
-                            .foregroundColor(loaded ? .green : .secondary)
-                    }
-
-                    Text("Safe")
-                        .font(.caption2.weight(.bold))
-                        .foregroundColor(.green)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(Color.green.opacity(0.12), in: Capsule())
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(loaded ? AppTheme.accent.opacity(0.15) : Color(white: 0.16))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: entry.category.icon)
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(loaded ? AppTheme.accent : .secondary)
                 }
-            }
 
-            Spacer(minLength: 4)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(entryDisplayName(entry))
+                        .font(.callout.weight(.bold))
 
-            if loading {
-                ProgressView()
-                    .tint(AppTheme.accent)
-                    .scaleEffect(0.8)
-                    .frame(width: 64)
-            } else {
-                Button {
-                    if loaded {
-                        revertPatch(entry)
-                    } else {
-                        applyPatch(entry)
+                    HStack(spacing: 8) {
+                        if loading {
+                            Text(loaded ? "Removing..." : "Loading...")
+                                .font(.caption)
+                                .foregroundColor(AppTheme.accent)
+                        } else {
+                            Text(loaded ? "Loaded" : "Not loaded")
+                                .font(.caption)
+                                .foregroundColor(loaded ? .green : .secondary)
+                        }
+
+                        Text("Safe")
+                            .font(.caption2.weight(.bold))
+                            .foregroundColor(.green)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 2)
+                            .background(Color.green.opacity(0.12), in: Capsule())
                     }
-                } label: {
-                    Text(loaded ? "Unload" : "Load")
-                        .font(.caption.weight(.bold))
-                        .foregroundColor(loaded ? .primary : AppTheme.accent)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(loaded ? Color(white: 0.2) : AppTheme.accent.opacity(0.15))
-                        )
                 }
-                .disabled(isBusy)
+
+                Spacer(minLength: 8)
+
+                if loading {
+                    ProgressView()
+                        .tint(AppTheme.accent)
+                        .scaleEffect(0.85)
+                        .frame(width: 72)
+                } else {
+                    Button {
+                        if loaded {
+                            revertPatch(entry)
+                        } else {
+                            applyPatch(entry)
+                        }
+                    } label: {
+                        Text(loaded ? "Unload" : "Load")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundColor(loaded ? .primary : AppTheme.accent)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(loaded ? Color(white: 0.2) : AppTheme.accent.opacity(0.15))
+                            )
+                    }
+                    .disabled(isBusy)
+                }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 18)
         .background(
             ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(cardFill)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color.white.opacity(0.015), Color.clear],
+                            colors: [Color.white.opacity(0.02), Color.clear],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .strokeBorder(
                         loaded ? AppTheme.accent.opacity(0.2) : Color.white.opacity(0.06),
                         lineWidth: 0.5
