@@ -211,13 +211,13 @@ struct FFAccountView: View {
                     id: "freefire",
                     name: "Free Fire",
                     icon: "flame.fill",
-                    color: .orange
+                    color: AppTheme.accent
                 )
                 gameOption(
                     id: "freefiremax",
                     name: "Free Fire MAX",
                     icon: "flame.circle.fill",
-                    color: .orange
+                    color: AppTheme.accent
                 )
             }
         }
@@ -398,14 +398,12 @@ struct FFAccountView: View {
                 )
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
-            UnevenRoundedRectangle(
-                topLeadingRadius: cornerRadius,
-                bottomLeadingRadius: cornerRadius,
-                bottomTrailingRadius: 0,
-                topTrailingRadius: 0
-            )
-            .fill(AppTheme.accent)
-            .frame(width: 3)
+            HStack(spacing: 0) {
+                AppTheme.accent
+                    .frame(width: 3.5)
+                Spacer()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
     }
 
