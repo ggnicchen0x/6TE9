@@ -11,7 +11,7 @@ struct ThreeOneOSSixApp: App {
     @StateObject private var migrationTaskCenter = MigrationTaskCenter()
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
     @State private var showOnboarding = OnboardingStore.shouldShow()
-    @State private var showAttribution = false
+
     @State private var configImportError: String?
     @State private var showSplash = true
     @Environment(\.scenePhase) private var scenePhase
@@ -109,10 +109,6 @@ struct ThreeOneOSSixApp: App {
                         showSplash = false
                     }
                 }
-            }
-            .displayIdentityAttribution(isPresented: $showAttribution, enabled: !showOnboarding)
-            .sheet(isPresented: $showAttribution) {
-                DisplayAttributionSheet()
             }
             .alert(
                 language.text("config.import_error.title"),
