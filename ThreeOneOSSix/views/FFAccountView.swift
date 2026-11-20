@@ -1,5 +1,7 @@
 import SwiftUI
 
+private let cardFill = Color(white: 0.11)
+
 struct FFAccountView: View {
     @Environment(\.appLanguage) private var language
     @EnvironmentObject private var appState: AppState
@@ -25,7 +27,7 @@ struct FFAccountView: View {
                     } else {
                         profileCardLoggedOut
                         loginCard
-                        activateHintCard
+                        getKeyCard
                     }
                 }
                 .padding(.horizontal, 16)
@@ -68,7 +70,7 @@ struct FFAccountView: View {
         VStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(Color(uiColor: .tertiarySystemBackground))
+                    .fill(Color(white: 0.16))
                     .frame(width: 72, height: 72)
                 Image(systemName: "lock.fill")
                     .font(.system(size: 28, weight: .medium))
@@ -84,24 +86,14 @@ struct FFAccountView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(uiColor: .secondarySystemBackground))
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.05), Color.clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-            }
-        )
+        .background(accentBarCard(cornerRadius: 16))
     }
 
-    private var activateHintCard: some View {
+    private var getKeyCard: some View {
         Button {
+            if let url = URL(string: "https://t.me/nxvoid12") {
+                UIApplication.shared.open(url)
+            }
         } label: {
             HStack(spacing: 12) {
                 ZStack {
@@ -120,9 +112,9 @@ struct FFAccountView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Activate key")
+                    Text("Get Key")
                         .font(.subheadline.weight(.semibold))
-                    Text("Enter your code")
+                    Text("Contact @nxvoid12 on Telegram")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -134,14 +126,7 @@ struct FFAccountView: View {
                     .foregroundStyle(.tertiary)
             }
             .padding(14)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color(uiColor: .secondarySystemBackground))
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(AppTheme.accent.opacity(0.3), lineWidth: 0.5)
-                }
-            )
+            .background(accentBarCard(cornerRadius: 14))
         }
         .buttonStyle(.plain)
     }
@@ -182,20 +167,7 @@ struct FFAccountView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(uiColor: .secondarySystemBackground))
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.05), Color.clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-            }
-        )
+        .background(accentBarCard(cornerRadius: 16))
     }
 
     private var licenseInfoCard: some View {
@@ -209,7 +181,7 @@ struct FFAccountView: View {
         }
         .padding(16)
         .background(
-            Color(uiColor: .secondarySystemBackground),
+            cardFill,
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
     }
@@ -219,7 +191,7 @@ struct FFAccountView: View {
             HStack(spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color(uiColor: .tertiarySystemBackground))
+                        .fill(Color(white: 0.16))
                         .frame(width: 36, height: 36)
                     Image(systemName: "gamecontroller.fill")
                         .font(.subheadline)
@@ -253,11 +225,11 @@ struct FFAccountView: View {
         .background(
             ZStack {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color(uiColor: .secondarySystemBackground))
+                    .fill(cardFill)
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color.white.opacity(0.04), Color.clear],
+                            colors: [Color.white.opacity(0.015), Color.clear],
                             startPoint: .top,
                             endPoint: .bottom
                         )
@@ -279,7 +251,7 @@ struct FFAccountView: View {
                             .fill(
                                 selectedGame == id
                                     ? color.opacity(0.15)
-                                    : Color(uiColor: .tertiarySystemBackground)
+                                    : Color(white: 0.16)
                             )
                             .frame(height: 70)
                         Image(systemName: icon)
@@ -304,7 +276,7 @@ struct FFAccountView: View {
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(
-                        selectedGame == id ? color : Color(uiColor: .separator).opacity(0.3),
+                        selectedGame == id ? color : Color.white.opacity(0.08),
                         lineWidth: selectedGame == id ? 1.5 : 0.5
                     )
             )
@@ -340,12 +312,12 @@ struct FFAccountView: View {
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(uiColor: .tertiarySystemBackground))
+                        .fill(Color(white: 0.16))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .strokeBorder(
-                            licenseKey.isEmpty ? Color(uiColor: .separator) : AppTheme.accent.opacity(0.4),
+                            licenseKey.isEmpty ? Color.white.opacity(0.08) : AppTheme.accent.opacity(0.4),
                             lineWidth: 0.5
                         )
                 )
@@ -380,7 +352,7 @@ struct FFAccountView: View {
         }
         .padding(16)
         .background(
-            Color(uiColor: .secondarySystemBackground),
+            cardFill,
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
     }
@@ -411,6 +383,31 @@ struct FFAccountView: View {
     }
 
     // MARK: - Shared Components
+
+    private func accentBarCard(cornerRadius: CGFloat) -> some View {
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(cardFill)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.02), Color.clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+            UnevenRoundedRectangle(
+                topLeadingRadius: cornerRadius,
+                bottomLeadingRadius: cornerRadius,
+                bottomTrailingRadius: 0,
+                topTrailingRadius: 0
+            )
+            .fill(AppTheme.accent)
+            .frame(width: 3)
+        }
+    }
 
     private func cardHeader(icon: String, title: String) -> some View {
         HStack(spacing: 8) {

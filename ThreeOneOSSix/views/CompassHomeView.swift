@@ -52,7 +52,7 @@ struct CompassHomeView: View {
                     Color.black
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.035),
+                            Color.white.opacity(0.02),
                             Color.clear
                         ],
                         startPoint: .top,
@@ -177,7 +177,7 @@ struct CompassHomeView: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.025),
+                                    Color.white.opacity(0.015),
                                     Color.clear
                                 ],
                                 startPoint: .top,
