@@ -140,7 +140,7 @@ struct CompassHomeView: View {
     private var deviceStatusSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Device status")
-                .font(.subheadline.weight(.bold))
+                .font(.footnote.weight(.bold))
 
             VStack(spacing: 0) {
                 row(icon: "iphone", label: "Hardware model", value: AppInfo.displayMachineName)
@@ -194,14 +194,14 @@ struct CompassHomeView: View {
     private func row(icon: String, label: String, value: String) -> some View {
         HStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.subheadline)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
                 .frame(width: 26)
             Text(label)
-                .font(.subheadline)
+                .font(.footnote)
             Spacer()
             Text(value)
-                .font(.subheadline)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
         }
         .padding(.horizontal, 14)
