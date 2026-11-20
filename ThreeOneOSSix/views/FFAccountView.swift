@@ -14,6 +14,7 @@ struct FFAccountView: View {
     @AppStorage("selectedGame") private var selectedGame = FFGameVariant.ffth.rawValue
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
+    let onLaunchGame: () -> Void
 
     var body: some View {
         NavigationStack {
@@ -23,7 +24,6 @@ struct FFAccountView: View {
                         profileCardLoggedIn
                         licenseInfoCard
                         gameSelectionCard
-                        logoutCard
                     } else {
                         profileCardLoggedOut
                         loginCard
@@ -242,9 +242,7 @@ struct FFAccountView: View {
 
     private var launchButton: some View {
         Button {
-            if let url = URL(string: "itms-apps://itunes.apple.com/app/\(selectedGame)") {
-                UIApplication.shared.open(url)
-            }
+            onLaunchGame()
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "play.fill")
@@ -385,31 +383,6 @@ struct FFAccountView: View {
             cardFill,
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
-    }
-
-    // MARK: - Logout
-
-    private var logoutCard: some View {
-        Button(role: .destructive) {
-            ByteAuthService.shared.logout()
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isLoggedIn = false
-            }
-            NotificationCenter.default.post(name: .byteDidLogout, object: nil)
-        } label: {
-            HStack {
-                Spacer()
-                Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
-                    .font(.body.weight(.semibold))
-                Spacer()
-            }
-            .foregroundStyle(AppTheme.accent)
-            .padding(.vertical, 14)
-            .background(
-                AppTheme.accent.opacity(0.1),
-                in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-            )
-        }
     }
 
     // MARK: - Shared Components

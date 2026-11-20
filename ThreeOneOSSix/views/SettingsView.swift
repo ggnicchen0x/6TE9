@@ -6,7 +6,7 @@ struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
     @AppStorage("sound.effects.enabled") private var soundEffectsEnabled = true
-
+    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
 
     var body: some View {
         NavigationStack {
@@ -73,6 +73,27 @@ struct SettingsView: View {
                         SandboxDiagnosticsView()
                     } label: {
                         Label(language.text("sandbox.diag.title"), systemImage: "stethoscope")
+                    }
+                }
+
+                if isLoggedIn {
+                    Section {
+                        Button(role: .destructive) {
+                            ByteAuthService.shared.logout()
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isLoggedIn = false
+                            }
+                            NotificationCenter.default.post(name: .byteDidLogout, object: nil)
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                                    .font(.body.weight(.semibold))
+                                Spacer()
+                            }
+                            .foregroundStyle(AppTheme.accent)
+                        }
                     }
                 }
 

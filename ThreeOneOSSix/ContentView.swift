@@ -189,7 +189,7 @@ struct ContentView: View {
         case .cheats:
             FFCheatHubView(onOpenSettings: openSettings)
         case .account:
-            FFAccountView(onOpenSettings: openSettings)
+            FFAccountView(onOpenSettings: openSettings, onLaunchGame: openCheats)
         case .support:
             CompassSupportView()
         }
@@ -232,6 +232,10 @@ struct ContentView: View {
 
     private func openLogs() {
         showLogs = true
+    }
+
+    private func openCheats() {
+        tabNavigation.select(AppSection.cheats.rawValue)
     }
 }
 
