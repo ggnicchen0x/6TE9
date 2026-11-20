@@ -102,7 +102,7 @@ struct FFCheatHubView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(selectedVariant.displayName)
                     .font(.callout.weight(.semibold))
-                Text("Patches loaded")
+                Text(selectedVariant.rawValue)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -361,7 +361,7 @@ struct FFCheatHubView: View {
         isBusy = true
         Task.detached(priority: .userInitiated) {
             do {
-                try DevicePatchService.restore(receipt: receipt)
+                try DevicePatchService.restore(receipt: receipt, allowChangedTargets: true)
                 await MainActor.run {
                     activePatches.removeValue(forKey: entry.id)
                     isBusy = false

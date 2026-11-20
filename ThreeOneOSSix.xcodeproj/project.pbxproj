@@ -939,7 +939,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.8;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qingtang.3106;
 				PRODUCT_NAME = 3106;
@@ -973,7 +973,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.8;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qingtang.3106;
 				PRODUCT_NAME = 3106;
