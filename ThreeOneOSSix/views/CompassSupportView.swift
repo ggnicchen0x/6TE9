@@ -63,8 +63,8 @@ struct CompassSupportView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                AppTheme.accent.opacity(0.08),
-                                AppTheme.accent.opacity(0.03),
+                                Color.white.opacity(0.06),
+                                Color.white.opacity(0.02),
                                 Color.clear
                             ],
                             startPoint: .top,
@@ -142,7 +142,7 @@ struct CompassSupportView: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    AppTheme.accent.opacity(0.06),
+                                    Color.white.opacity(0.05),
                                     Color.clear
                                 ],
                                 startPoint: .leading,

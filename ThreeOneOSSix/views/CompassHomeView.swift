@@ -1,5 +1,34 @@
 import SwiftUI
 
+struct PulsingDot: View {
+    @State private var isPulsing = false
+
+    var color: Color
+    var size: CGFloat = 8
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(color.opacity(0.3))
+                .frame(width: size * 2.2, height: size * 2.2)
+                .scaleEffect(isPulsing ? 1.0 : 0.5)
+                .opacity(isPulsing ? 0.0 : 0.6)
+
+            Circle()
+                .fill(color)
+                .frame(width: size, height: size)
+        }
+        .onAppear {
+            withAnimation(
+                .easeInOut(duration: 1.2)
+                .repeatForever(autoreverses: false)
+            ) {
+                isPulsing = true
+            }
+        }
+    }
+}
+
 struct CompassHomeView: View {
     @EnvironmentObject private var appState: AppState
     let onOpenSettings: () -> Void
@@ -21,8 +50,8 @@ struct CompassHomeView: View {
                     AppTheme.pageBackground
                     LinearGradient(
                         colors: [
-                            AppTheme.accent.opacity(0.10),
-                            AppTheme.accent.opacity(0.03),
+                            Color.white.opacity(0.06),
+                            Color.white.opacity(0.02),
                             Color.clear
                         ],
                         startPoint: .top,
@@ -88,7 +117,8 @@ struct CompassHomeView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                AppTheme.accent.opacity(0.08),
+                                Color.white.opacity(0.06),
+                                Color.white.opacity(0.02),
                                 Color.clear
                             ],
                             startPoint: .topLeading,
@@ -118,9 +148,12 @@ struct CompassHomeView: View {
                     Text("Exploit compatibility")
                         .font(.subheadline)
                     Spacer()
-                    Text(appState.isSupported ? "Supported" : "Unsupported")
-                        .font(.subheadline)
-                        .foregroundStyle(appState.isSupported ? .green : .red)
+                    HStack(spacing: 6) {
+                        PulsingDot(color: appState.isSupported ? .green : .red)
+                        Text(appState.isSupported ? "Supported" : "Unsupported")
+                            .font(.subheadline)
+                            .foregroundStyle(appState.isSupported ? .green : .red)
+                    }
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
@@ -133,7 +166,7 @@ struct CompassHomeView: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    AppTheme.accent.opacity(0.05),
+                                    Color.white.opacity(0.04),
                                     Color.clear
                                 ],
                                 startPoint: .top,
