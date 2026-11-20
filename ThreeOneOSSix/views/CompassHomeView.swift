@@ -4,7 +4,7 @@ struct PulsingDot: View {
     @State private var isPulsing = false
 
     var color: Color
-    var size: CGFloat = 7
+    var size: CGFloat = 8
 
     var body: some View {
         ZStack {
@@ -52,7 +52,7 @@ struct CompassHomeView: View {
                     Color.black
                     LinearGradient(
                         colors: [
-                            Color.white.opacity(0.03),
+                            Color.white.opacity(0.035),
                             Color.clear
                         ],
                         startPoint: .top,
@@ -65,7 +65,7 @@ struct CompassHomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack(spacing: 14) {
+                    HStack(spacing: 12) {
                         Button { onOpenLogs() } label: {
                             Image(systemName: "apple.terminal.fill")
                                 .foregroundStyle(AppTheme.accent)
@@ -81,51 +81,57 @@ struct CompassHomeView: View {
     }
 
     private var appCard: some View {
-        HStack(spacing: 10) {
-            AppLogo(size: 42)
+        HStack(spacing: 12) {
+            AppLogo(size: 46)
 
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Compass")
-                    .font(.footnote.weight(.semibold))
+                    .font(.callout.weight(.semibold))
                 Text("Your iPhone, ready.")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 3) {
-                HStack(spacing: 3) {
+            VStack(alignment: .trailing, spacing: 4) {
+                HStack(spacing: 4) {
                     Image(systemName: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .font(.system(size: 10))
+                        .font(.caption2)
                         .foregroundStyle(appState.isSupported ? .green : .red)
                     Text(appState.isSupported ? "Supported" : "Unsupported")
-                        .font(.system(size: 10, weight: .medium))
+                        .font(.caption2.weight(.semibold))
                         .foregroundStyle(appState.isSupported ? .green : .red)
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(
+                    (appState.isSupported ? Color.green : Color.red).opacity(0.12),
+                    in: Capsule()
+                )
 
                 Text("v\(appVersion)")
-                    .font(.system(size: 9))
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(12)
+        .padding(14)
         .background(
             ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(cardFill)
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.03),
+                                Color.white.opacity(0.035),
                                 Color.clear
                             ],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
             }
         )
@@ -134,37 +140,38 @@ struct CompassHomeView: View {
     private var deviceStatusSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Device status")
-                .font(.footnote.weight(.semibold))
+                .font(.subheadline.weight(.bold))
 
             VStack(spacing: 0) {
                 row(icon: "iphone", label: "Hardware model", value: AppInfo.displayMachineName)
-                Divider().padding(.leading, 38)
+                Divider().padding(.leading, 44)
                 row(icon: "gearshape", label: "iOS Version", value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
-                Divider().padding(.leading, 38)
+                Divider().padding(.leading, 44)
 
-                HStack(spacing: 8) {
-                    Image(systemName: "checkmark.shield")
-                        .font(.caption)
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark.shield.fill")
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .frame(width: 22)
+                        .frame(width: 26)
                     Text("Exploit compatibility")
-                        .font(.caption)
+                        .font(.subheadline)
+                        .lineLimit(1)
                     Spacer()
                     HStack(spacing: 5) {
                         PulsingDot(color: appState.isSupported ? .green : .red)
                         Text(appState.isSupported ? "Supported" : "Unsupported")
-                            .font(.caption)
+                            .font(.subheadline)
                             .foregroundStyle(appState.isSupported ? .green : .red)
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 11)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 13)
             }
             .background(
                 ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(cardFill)
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(
                             LinearGradient(
                                 colors: [
@@ -175,7 +182,7 @@ struct CompassHomeView: View {
                                 endPoint: .bottom
                             )
                         )
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
                 }
             )
@@ -183,20 +190,20 @@ struct CompassHomeView: View {
     }
 
     private func row(icon: String, label: String, value: String) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
-                .frame(width: 22)
+                .frame(width: 26)
             Text(label)
-                .font(.caption)
+                .font(.subheadline)
             Spacer()
             Text(value)
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 11)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
     }
 
     private var appVersion: String {
