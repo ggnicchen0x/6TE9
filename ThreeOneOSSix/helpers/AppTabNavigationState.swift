@@ -34,7 +34,7 @@ extension AppSection {
         case .home: return "square.grid.2x2.fill"
         case .new: return "clock.fill"
         case .sources: return "shippingbox.fill"
-        case .installed: return "tray.full.fill"
+        case .installed: return "shippingbox.fill"
         case .files: return "folder.fill"
         case .search: return "magnifyingglass"
         case .cleaner: return "sparkles"
@@ -46,8 +46,8 @@ extension AppSection {
 
 enum TabBarSelection {
     static let storageKey = "tabbar.selection"
-    static let maxSections = 2
-    static let defaultRaw = "0,6"
+    static let maxSections = 3
+    static let defaultRaw = "0,3,6"
     static let legacyDefaultRaw = "0,1,2,3,4"
 
     static func sections(from raw: String) -> [AppSection] {
@@ -106,7 +106,7 @@ struct FeatureVisibility: Equatable {
     }
 
     var visibleSections: [AppSection] {
-        [.home, .cleaner]
+        [.home, .installed, .cleaner]
     }
 
     func isVisible(_ section: AppSection) -> Bool {
