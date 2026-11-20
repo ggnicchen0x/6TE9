@@ -100,13 +100,14 @@ struct FFCheatHubView: View {
 
             Spacer()
 
-            Text("\(entries.count)")
-                .font(.title2.weight(.bold).monospacedDigit())
-                .foregroundStyle(AppTheme.accent)
-            +
-            Text(" patches")
-                .font(.caption.weight(.medium))
-                .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text("\(entries.count)")
+                    .font(.title2.weight(.bold).monospacedDigit())
+                    .foregroundColor(AppTheme.accent)
+                Text("patches")
+                    .font(.caption.weight(.medium))
+                    .foregroundColor(.secondary)
+            }
         }
         .padding(14)
         .background(
