@@ -6,7 +6,7 @@ struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
     @AppStorage("sound.effects.enabled") private var soundEffectsEnabled = true
-    @AppStorage(FeatureVisibility.developerModeStorageKey) private var experimentalFeaturesEnabled = false
+
 
     var body: some View {
         NavigationStack {
@@ -40,18 +40,7 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    NavigationLink {
-                        BackupCenterView()
-                    } label: {
-                        Label(
-                            language.text("backup.title"),
-                            systemImage: "externaldrive.badge.timemachine"
-                        )
-                    }
-
                     RespringButton()
-                } header: {
-                    Text(language.text("settings.backup"))
                 }
 
                 Section {
@@ -78,38 +67,6 @@ struct SettingsView: View {
                     Text(language.text("settings.sound_effects_footer"))
                 }
 
-
-                Section {
-                    Toggle(isOn: $experimentalFeaturesEnabled) {
-                        Label(
-                            language.text("settings.experimental"),
-                            systemImage: "flask"
-                        )
-                    }
-                } header: {
-                    Text(language.text("settings.experimental_header"))
-                } footer: {
-                    Text(language.text("settings.experimental_footer"))
-                }
-
-                if WallpaperFeatureSupportPolicy.isSupported(
-                    major: AppInfo.versionTuple.major
-                ) {
-                    Section {
-                        NavigationLink {
-                            WallpaperResetSettingsView()
-                        } label: {
-                            Label(
-                                language.text("wallpaper.reset"),
-                                systemImage: "arrow.counterclockwise"
-                            )
-                        }
-                    } header: {
-                        Text(language.text("tab.wallpapers"))
-                    } footer: {
-                        Text(language.text("wallpaper.reset_settings_footer"))
-                    }
-                }
 
                 Section(language.text("common.device")) {
                     LabeledContent(language.text("dashboard.hardware_model"), value: AppInfo.displayMachineName)
