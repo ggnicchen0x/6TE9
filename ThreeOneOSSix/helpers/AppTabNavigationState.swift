@@ -46,9 +46,8 @@ extension AppSection {
 
 enum TabBarSelection {
     static let storageKey = "tabbar.selection"
-    static let maxSections = 5
-    /// home(0), files(4), search(5), cleaner(6), backup(8)
-    static let defaultRaw = "0,4,5,6,8"
+    static let maxSections = 2
+    static let defaultRaw = "0,6"
     static let legacyDefaultRaw = "0,1,2,3,4"
 
     static func sections(from raw: String) -> [AppSection] {
@@ -107,10 +106,7 @@ struct FeatureVisibility: Equatable {
     }
 
     var visibleSections: [AppSection] {
-        // Fixed product shape: 功能 / 文件 / 搜索 / 清理 / 备份. Wallpapers,
-        // repository and patch entry points live inside the feature hub
-        // instead of the tab bar.
-        [.home, .files, .search, .cleaner, .backup]
+        [.home, .cleaner]
     }
 
     func isVisible(_ section: AppSection) -> Bool {
