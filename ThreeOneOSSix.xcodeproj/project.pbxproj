@@ -184,9 +184,8 @@
 		3106FF13 /* FFAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF03; };
 		3106FF14 /* Patches in Resources */ = {isa = PBXBuildFile; fileRef = 3106FF04; };
 		BYTE0A11 /* ByteAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A01; };
-		BYTE0A12 /* AccentColorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A02; };
 		BYTE0A13 /* ByteLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A03; };
-		BYTE0A14 /* AccentColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A04; };
+		BYTE0A15 /* ByteSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A05; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -389,9 +388,8 @@
 		3106FF03 /* FFAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFAccountView.swift; sourceTree = "<group>"; };
 		3106FF04 /* Patches */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Patches; path = Resources/Patches; sourceTree = "<group>"; };
 		BYTE0A01 /* ByteAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteAuthService.swift; sourceTree = "<group>"; };
-		BYTE0A02 /* AccentColorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccentColorStore.swift; sourceTree = "<group>"; };
 		BYTE0A03 /* ByteLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteLoginView.swift; sourceTree = "<group>"; };
-		BYTE0A04 /* AccentColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccentColorPickerView.swift; sourceTree = "<group>"; };
+		BYTE0A05 /* ByteSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteSplashView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -512,7 +510,7 @@
 				3106FF02 /* FFCheatHubView.swift */,
 				3106FF03 /* FFAccountView.swift */,
 				BYTE0A03 /* ByteLoginView.swift */,
-				BYTE0A04 /* AccentColorPickerView.swift */,
+				BYTE0A05 /* ByteSplashView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -630,7 +628,6 @@
 				3106C100 /* CrashLogCleaner.swift */,
 				3106FF01 /* FFPatchCatalog.swift */,
 				BYTE0A01 /* ByteAuthService.swift */,
-				BYTE0A02 /* AccentColorStore.swift */,
 			);
 			path = helpers;
 			sourceTree = "<group>";
@@ -889,9 +886,8 @@
 				3106FF12,
 				3106FF13,
 				BYTE0A11,
-				BYTE0A12,
 				BYTE0A13,
-				BYTE0A14,
+				BYTE0A15,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

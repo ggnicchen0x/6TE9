@@ -56,22 +56,6 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    NavigationLink {
-                        AccentColorPickerView()
-                    } label: {
-                        HStack {
-                            Label("Accent Color", systemImage: "paintpalette.fill")
-                            Spacer()
-                            Circle()
-                                .fill(AppTheme.accent)
-                                .frame(width: 22, height: 22)
-                        }
-                    }
-                } header: {
-                    Text("Appearance")
-                }
-
-                Section {
                     Toggle(isOn: $soundEffectsEnabled) {
                         Label(
                             language.text("settings.sound_effects"),

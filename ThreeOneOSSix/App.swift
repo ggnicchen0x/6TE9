@@ -14,6 +14,7 @@ struct ThreeOneOSSixApp: App {
     @State private var showAttribution = false
     @State private var configImportError: String?
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
+    @State private var showSplash = true
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -71,7 +72,11 @@ struct ThreeOneOSSixApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if isLoggedIn {
+                if showSplash {
+                    ByteSplashView()
+                        .transition(.opacity)
+                        .zIndex(2)
+                } else if isLoggedIn {
                     ContentView()
                         .environmentObject(appState)
                         .environmentObject(patchDraftCoordinator)
@@ -106,6 +111,13 @@ struct ThreeOneOSSixApp: App {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             isLoggedIn = true
                         }
+                    }
+                }
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        showSplash = false
                     }
                 }
             }
