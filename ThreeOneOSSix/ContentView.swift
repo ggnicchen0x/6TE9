@@ -203,6 +203,10 @@ struct ContentView: View {
                 onOpenSettings: openSettings,
                 onOpenLogs: openLogs
             )
+        case .cheats:
+            FFCheatHubView(onOpenSettings: openSettings)
+        case .account:
+            FFAccountView(onOpenSettings: openSettings)
         }
     }
 
@@ -222,7 +226,7 @@ struct ContentView: View {
 
     private var featureVisibility: FeatureVisibility {
         FeatureVisibility(
-            selectedSections: [.home, .installed, .cleaner],
+            selectedSections: [.home, .cheats, .installed, .cleaner, .account],
             wallpapersSupported: WallpaperFeatureSupportPolicy.isSupported(
                 major: AppInfo.versionTuple.major
             ),

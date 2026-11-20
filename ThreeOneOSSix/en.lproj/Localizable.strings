@@ -508,6 +508,8 @@
 "browser.open_new_tab" = "Open in New Tab";
 
 "tab.wallpapers" = "Wallpapers";
+"tab.cheats" = "Cheats";
+"tab.account" = "Account";
 
 /* Repository marketplace */
 "tab.explore" = "Explore";

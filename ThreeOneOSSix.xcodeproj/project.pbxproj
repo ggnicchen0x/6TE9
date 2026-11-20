@@ -179,6 +179,10 @@
 		3105A234 /* AppDataBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105A105; };
 		3105A228 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3105A120; };
 		3105A211 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3105A031; };
+		3106FF11 /* FFPatchCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF01; };
+		3106FF12 /* FFCheatHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF02; };
+		3106FF13 /* FFAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF03; };
+		3106FF14 /* Patches in Resources */ = {isa = PBXBuildFile; fileRef = 3106FF04; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -376,6 +380,10 @@
 		3106S101 /* HexViewerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexViewerView.swift; sourceTree = "<group>"; };
 		3106S102 /* PlistEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlistEditorView.swift; sourceTree = "<group>"; };
 		3106S103 /* FileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoView.swift; sourceTree = "<group>"; };
+		3106FF01 /* FFPatchCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFPatchCatalog.swift; sourceTree = "<group>"; };
+		3106FF02 /* FFCheatHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFCheatHubView.swift; sourceTree = "<group>"; };
+		3106FF03 /* FFAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFAccountView.swift; sourceTree = "<group>"; };
+		3106FF04 /* Patches */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Patches; path = Resources/Patches; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -411,6 +419,7 @@
 				3106W032 /* ThreeOneOSSix.entitlements */,
 				3105A120 /* Localizable.strings */,
 				3105A031 /* Assets.xcassets */,
+				3106FF04 /* Patches */,
 			);
 			path = ThreeOneOSSix;
 			sourceTree = "<group>";
@@ -492,6 +501,8 @@
 				3105D14C /* WiFiShareView.swift */,
 				3105D14D /* UnlockView.swift */,
 				3105D14E /* UnlockBanner.swift */,
+				3106FF02 /* FFCheatHubView.swift */,
+				3106FF03 /* FFAccountView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -607,6 +618,7 @@
 				3106M100 /* MobileGestaltService.swift */,
 				3106M102 /* KeypadThemeService.swift */,
 				3106C100 /* CrashLogCleaner.swift */,
+				3106FF01 /* FFPatchCatalog.swift */,
 			);
 			path = helpers;
 			sourceTree = "<group>";
@@ -692,6 +704,7 @@
 			files = (
 				3105A211,
 				3105A228,
+				3106FF14,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -860,6 +873,9 @@
 				3105D24C,
 				3105D24D,
 				3105D24E,
+				3106FF11,
+				3106FF12,
+				3106FF13,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

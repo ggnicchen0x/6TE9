@@ -10,6 +10,8 @@ enum AppSection: Int, CaseIterable, Identifiable {
     case cleaner
     case wallpapers
     case backup
+    case cheats
+    case account
 
     var id: Int { rawValue }
 }
@@ -26,6 +28,8 @@ extension AppSection {
         case .cleaner: return "tab.cleaner"
         case .wallpapers: return "tab.wallpapers"
         case .backup: return "tab.backup"
+        case .cheats: return "tab.cheats"
+        case .account: return "tab.account"
         }
     }
 
@@ -40,14 +44,16 @@ extension AppSection {
         case .cleaner: return "sparkles"
         case .wallpapers: return "photo.on.rectangle.angled"
         case .backup: return "externaldrive.badge.timemachine"
+        case .cheats: return "scope"
+        case .account: return "person.circle.fill"
         }
     }
 }
 
 enum TabBarSelection {
     static let storageKey = "tabbar.selection"
-    static let maxSections = 3
-    static let defaultRaw = "0,3,6"
+    static let maxSections = 5
+    static let defaultRaw = "0,9,3,6,10"
     static let legacyDefaultRaw = "0,1,2,3,4"
 
     static func sections(from raw: String) -> [AppSection] {
@@ -106,7 +112,7 @@ struct FeatureVisibility: Equatable {
     }
 
     var visibleSections: [AppSection] {
-        [.home, .installed, .cleaner]
+        [.home, .cheats, .installed, .cleaner, .account]
     }
 
     func isVisible(_ section: AppSection) -> Bool {
