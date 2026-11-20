@@ -16,7 +16,21 @@ struct CompassHomeView: View {
                 .padding(.top, 12)
                 .padding(.bottom, 24)
             }
-            .background(AppTheme.pageBackground)
+            .background(
+                ZStack {
+                    AppTheme.pageBackground
+                    LinearGradient(
+                        colors: [
+                            AppTheme.accent.opacity(0.10),
+                            AppTheme.accent.opacity(0.03),
+                            Color.clear
+                        ],
+                        startPoint: .top,
+                        endPoint: .center
+                    )
+                    .ignoresSafeArea()
+                }
+            )
             .navigationTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
