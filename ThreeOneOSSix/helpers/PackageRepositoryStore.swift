@@ -426,8 +426,8 @@ final class PackageRepositoryStore: ObservableObject {
         ]
         sources = [source]
         repositories[source.id] = PackageRepository(
-            identifier: "com.qingtang.3106.preview",
-            name: "3106 Preview",
+            identifier: "com.compass.app.preview",
+            name: "Compass Preview",
             summary: "Simulator-only marketplace preview",
             iconURL: nil,
             sourceURL: sourceURL,

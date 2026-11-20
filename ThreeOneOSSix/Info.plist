@@ -17,7 +17,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.qingtang.3106.patch-package</string>
+				<string>com.compass.app.patch-package</string>
 			</array>
 		</dict>
 		<dict>
@@ -29,14 +29,14 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.qingtang.3106.config-package</string>
+				<string>com.compass.app.config-package</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.qingtang.3106</string>
+	<string>com.compass.app</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -49,7 +49,7 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.qingtang.3106.patch-import</string>
+			<string>com.compass.app.patch-import</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>threeoneossix</string>
@@ -106,7 +106,7 @@
 			<key>UTTypeDescription</key>
 			<string>3106 Patch Package</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.qingtang.3106.patch-package</string>
+			<string>com.compass.app.patch-package</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -126,7 +126,7 @@
 			<key>UTTypeDescription</key>
 			<string>3106 Config Package</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.qingtang.3106.config-package</string>
+			<string>com.compass.app.config-package</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

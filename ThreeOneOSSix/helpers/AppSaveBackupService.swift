@@ -46,7 +46,7 @@ enum AppSaveBackupService {
     }
 
     static let protectedBundleIDs: Set<String> = [
-        "com.qingtang.3106",
+        "com.compass.app",
         "com.apple.springboard",
         "com.apple.Preferences",
         "com.apple.mobilephone",
