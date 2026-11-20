@@ -31,20 +31,30 @@ struct FFCheatHubView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
-                    gameHeader
+                VStack(spacing: 14) {
+                    gameCard
                     ForEach(sections, id: \.section.id) { group in
                         sectionBlock(group.section, entries: group.entries)
                     }
                     if entries.isEmpty {
-                        emptyState
+                        emptyCard
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.top, 12)
+                .padding(.top, 10)
                 .padding(.bottom, 24)
             }
-            .background(AppTheme.pageBackground)
+            .background(
+                ZStack {
+                    Color.black
+                    LinearGradient(
+                        colors: [Color.white.opacity(0.02), Color.clear],
+                        startPoint: .top,
+                        endPoint: UnitPoint(x: 0.5, y: 0.35)
+                    )
+                    .ignoresSafeArea()
+                }
+            )
             .navigationTitle("Cheats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
@@ -63,10 +73,9 @@ struct FFCheatHubView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        onOpenSettings()
-                    } label: {
+                    Button { onOpenSettings() } label: {
                         Image(systemName: "gear")
+                            .foregroundStyle(AppTheme.accent)
                     }
                 }
             }
@@ -80,34 +89,37 @@ struct FFCheatHubView: View {
         }
     }
 
-    // MARK: - Game Header
+    // MARK: - Game Card
 
-    private var gameHeader: some View {
-        HStack(spacing: 14) {
+    private var gameCard: some View {
+        HStack(spacing: 12) {
             Image(selectedVariant == .ffth ? "FFIcon" : "FFMaxIcon")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 48, height: 48)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .frame(width: 46, height: 46)
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(selectedVariant.displayName)
-                    .font(.headline)
-                Text(selectedVariant.rawValue)
-                    .font(.caption2.monospaced())
-                    .foregroundStyle(.tertiary)
+                    .font(.callout.weight(.semibold))
+                Text("Patches loaded")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
 
             Spacer()
 
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text("\(entries.count)")
-                    .font(.title2.weight(.bold).monospacedDigit())
-                    .foregroundColor(AppTheme.accent)
-                Text("patches")
-                    .font(.caption.weight(.medium))
-                    .foregroundColor(.secondary)
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.caption2)
+                    .foregroundColor(.green)
+                Text("Active")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(.green)
             }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Color.green.opacity(0.12), in: Capsule())
         }
         .padding(14)
         .background(
@@ -117,18 +129,13 @@ struct FFCheatHubView: View {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(
                         LinearGradient(
-                            colors: [Color.white.opacity(0.015), Color.clear],
+                            colors: [Color.white.opacity(0.035), Color.clear],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     )
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
-                HStack(spacing: 0) {
-                    AppTheme.accent.frame(width: 3.5)
-                    Spacer()
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
         )
     }
@@ -136,146 +143,152 @@ struct FFCheatHubView: View {
     // MARK: - Section
 
     private func sectionBlock(_ section: FFCheatSection, entries: [FFCheatEntry]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: section.icon)
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: 22, height: 22)
-                    .background(AppTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-                Text(section.displayName)
-                    .font(.subheadline.weight(.bold))
-                    .textCase(.uppercase)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Text("\(entries.count)")
-                    .font(.caption2.weight(.semibold).monospacedDigit())
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(.horizontal, 4)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(section.displayName)
+                .font(.footnote.weight(.bold))
 
             let categories = Dictionary(grouping: entries) { $0.category }
             let orderedCategories = FFCheatCategory.allCases.filter { categories[$0] != nil }
 
-            ForEach(orderedCategories) { category in
-                if let categoryEntries = categories[category] {
-                    categoryCard(category: category, entries: categoryEntries)
+            VStack(spacing: 0) {
+                ForEach(Array(orderedCategories.enumerated()), id: \.element.id) { index, category in
+                    if let categoryEntries = categories[category] {
+                        if index > 0 {
+                            Divider().padding(.leading, 14)
+                        }
+                        categoryBlock(category: category, entries: categoryEntries)
+                    }
+                }
+            }
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(cardFill)
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.white.opacity(0.015), Color.clear],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                }
+            )
+        }
+    }
+
+    // MARK: - Category Block
+
+    private func categoryBlock(category: FFCheatCategory, entries: [FFCheatEntry]) -> some View {
+        VStack(spacing: 0) {
+            if entries.count == 1, let entry = entries.first {
+                singleEntryRow(category: category, entry: entry)
+            } else {
+                HStack(spacing: 10) {
+                    Image(systemName: category.icon)
+                        .font(.footnote)
+                        .foregroundColor(AppTheme.accent)
+                        .frame(width: 26)
+                    Text(category.displayName)
+                        .font(.footnote.weight(.semibold))
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 11)
+
+                ForEach(entries) { entry in
+                    Divider().padding(.leading, 50)
+                    patchRow(entry)
                 }
             }
         }
     }
 
-    // MARK: - Category Card
+    // MARK: - Single Entry Row
 
-    private func categoryCard(category: FFCheatCategory, entries: [FFCheatEntry]) -> some View {
-        VStack(spacing: 0) {
-            // Category header
-            HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(AppTheme.accent.opacity(0.12))
-                        .frame(width: 38, height: 38)
-                    Image(systemName: category.icon)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(AppTheme.accent)
-                }
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(category.displayName)
-                        .font(.subheadline.weight(.semibold))
-                    Text("\(entries.count) variant\(entries.count == 1 ? "" : "s")")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-
-                Spacer()
-
-                let activeCount = entries.filter { isActive($0) }.count
-                if activeCount > 0 {
-                    Text("\(activeCount) ON")
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(AppTheme.accent)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(AppTheme.accent.opacity(0.12), in: Capsule())
-                }
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
-
-            ForEach(entries) { entry in
-                Divider()
-                    .padding(.leading, 14)
-                patchRow(entry)
-            }
+    private func singleEntryRow(category: FFCheatCategory, entry: FFCheatEntry) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: category.icon)
+                .font(.footnote)
+                .foregroundColor(AppTheme.accent)
+                .frame(width: 26)
+            Text(category.displayName)
+                .font(.footnote.weight(.semibold))
+            Spacer(minLength: 4)
+            patchToggle(entry)
         }
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(cardFill)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
-        )
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
     }
 
     // MARK: - Patch Row
 
     private func patchRow(_ entry: FFCheatEntry) -> some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 10) {
             Image(systemName: entry.hasAntenna
                   ? "antenna.radiowaves.left.and.right"
                   : "antenna.radiowaves.left.and.right.slash")
-                .font(.caption.weight(.medium))
-                .foregroundStyle(entry.hasAntenna ? AppTheme.accent : Color(white: 0.4))
-                .frame(width: 24, height: 24)
+                .font(.caption2)
+                .foregroundColor(entry.hasAntenna ? AppTheme.accent.opacity(0.7) : Color(white: 0.35))
+                .frame(width: 26)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.hasAntenna ? "With Antenna" : "Without Antenna")
-                    .font(.subheadline.weight(.medium))
-                Text(entry.filename)
-                    .font(.caption2.monospaced())
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-            }
+            Text(entry.hasAntenna ? "With Antenna" : "Without Antenna")
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                .lineLimit(1)
 
-            Spacer()
+            Spacer(minLength: 4)
+            patchToggle(entry)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 9)
+    }
 
-            Toggle("", isOn: Binding(
-                get: { isActive(entry) },
-                set: { newValue in
+    // MARK: - Toggle
+
+    private func patchToggle(_ entry: FFCheatEntry) -> some View {
+        Toggle("", isOn: Binding(
+            get: { isActive(entry) },
+            set: { newValue in
+                withAnimation(.easeInOut(duration: 0.25)) {
                     if newValue {
                         applyPatch(entry)
                     } else {
                         revertPatch(entry)
                     }
                 }
-            ))
-            .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
-            .labelsHidden()
-            .disabled(isBusy)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
+            }
+        ))
+        .toggleStyle(SwitchToggleStyle(tint: AppTheme.accent))
+        .labelsHidden()
+        .disabled(isBusy)
+        .scaleEffect(0.85)
+        .fixedSize()
     }
 
-    // MARK: - Empty State
+    // MARK: - Empty
 
-    private var emptyState: some View {
-        VStack(spacing: 12) {
+    private var emptyCard: some View {
+        VStack(spacing: 10) {
             Image(systemName: "tray")
-                .font(.system(size: 36, weight: .light))
-                .foregroundStyle(.tertiary)
+                .font(.title2)
+                .foregroundColor(.secondary)
             Text("No patches available")
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
-            Text("Select a game in your Profile to load patches.")
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-                .multilineTextAlignment(.center)
+                .font(.footnote)
+                .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .padding(.vertical, 36)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(cardFill)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+            }
+        )
     }
 
     // MARK: - Patch Logic
