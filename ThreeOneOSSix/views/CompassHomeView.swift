@@ -150,19 +150,21 @@ struct CompassHomeView: View {
 
                 HStack(spacing: 10) {
                     Image(systemName: "checkmark.shield.fill")
-                        .font(.subheadline)
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                         .frame(width: 26)
                     Text("Exploit compatibility")
-                        .font(.subheadline)
+                        .font(.footnote)
                         .lineLimit(1)
-                    Spacer()
+                        .layoutPriority(-1)
+                    Spacer(minLength: 4)
                     HStack(spacing: 5) {
                         PulsingDot(color: appState.isSupported ? .green : .red)
                         Text(appState.isSupported ? "Supported" : "Unsupported")
-                            .font(.subheadline)
+                            .font(.footnote)
                             .foregroundStyle(appState.isSupported ? .green : .red)
                     }
+                    .fixedSize()
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 13)

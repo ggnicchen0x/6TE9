@@ -18,7 +18,7 @@
 "update.agree" = "업데이트";
 "update.dismiss" = "다시 표시하지 않음";
 "patch.error.wrong_password" = "비밀번호가 올바르지 않습니다.";
-"attribution.title" = "3106 정보";
+"attribution.title" = "Compass 정보";
 "attribution.subtitle" = "프로젝트 정보";
 "attribution.link_section" = "프로젝트 링크";
 "attribution.url" = "URL";
