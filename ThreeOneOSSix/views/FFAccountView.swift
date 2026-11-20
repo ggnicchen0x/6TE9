@@ -210,13 +210,13 @@ struct FFAccountView: View {
                 gameOption(
                     id: "freefire",
                     name: "Free Fire",
-                    icon: "flame.fill",
+                    assetName: "FFIcon",
                     color: AppTheme.accent
                 )
                 gameOption(
                     id: "freefiremax",
                     name: "Free Fire MAX",
-                    icon: "flame.circle.fill",
+                    assetName: "FFMaxIcon",
                     color: AppTheme.accent
                 )
             }
@@ -238,7 +238,7 @@ struct FFAccountView: View {
         )
     }
 
-    private func gameOption(id: String, name: String, icon: String, color: Color) -> some View {
+    private func gameOption(id: String, name: String, assetName: String, color: Color) -> some View {
         Button {
             withAnimation(.easeInOut(duration: 0.2)) {
                 selectedGame = id
@@ -246,18 +246,20 @@ struct FFAccountView: View {
         } label: {
             VStack(spacing: 10) {
                 ZStack(alignment: .topTrailing) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(
-                                selectedGame == id
-                                    ? color.opacity(0.15)
-                                    : Color(white: 0.16)
-                            )
-                            .frame(height: 70)
-                        Image(systemName: icon)
-                            .font(.title2)
-                            .foregroundStyle(selectedGame == id ? color : .secondary)
-                    }
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(
+                            selectedGame == id
+                                ? color.opacity(0.15)
+                                : Color(white: 0.16)
+                        )
+                        .frame(height: 70)
+                        .overlay(
+                            Image(assetName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 44, height: 44)
+                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        )
 
                     if selectedGame == id {
                         Image(systemName: "checkmark.circle.fill")
