@@ -20,6 +20,8 @@ struct CompassSupportView: View {
             .background(AppTheme.pageBackground)
             .navigationTitle("Support")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(Color(white: 0.06), for: .navigationBar)
             .opacity(entranceShown ? 1 : 0)
             .offset(y: entranceShown ? 0 : 10)
             .onAppear {
