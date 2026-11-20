@@ -220,11 +220,9 @@ class AppState: ObservableObject {
         guard applicable else { return }
 
         refreshKernelExploitStatus()
-        // Deliberately no auto-run. The kernel chain reboots the device when it
-        // goes wrong, and a process that quietly executes an exploit at launch
-        // gives the user no chance to consent or to read what happened. The
-        // Unlock screen is the only entry point now; `kernelExploitRunning`,
-        // `exploitStatus` and the banner state drive it.
+        if !exploitStatus.isSuccess {
+            runKernelExploitIfNeeded()
+        }
     }
 
     /// True when the app should offer the Unlock screen: a kernel backend that
