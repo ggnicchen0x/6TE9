@@ -7,7 +7,6 @@ struct SettingsView: View {
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
     @AppStorage("sound.effects.enabled") private var soundEffectsEnabled = true
     @AppStorage(FeatureVisibility.developerModeStorageKey) private var experimentalFeaturesEnabled = false
-    var onLogout: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -161,25 +160,6 @@ struct SettingsView: View {
                     Text(language.text("settings.supported_versions_footer"))
                 }
 
-                if let onLogout {
-                    Section {
-                        Button(role: .destructive) {
-                            onLogout()
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
-                                    .font(.body.weight(.semibold))
-                                Spacer()
-                            }
-                        }
-                    } footer: {
-                        if let key = ByteAuthService.shared.savedLicenseKey {
-                            Text("Logged in with key: \(key)")
-                                .font(.caption2)
-                        }
-                    }
-                }
             }
             .tint(AppTheme.accent)
             .navigationTitle(language.text("settings.title"))

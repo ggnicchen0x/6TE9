@@ -13,7 +13,6 @@ struct ThreeOneOSSixApp: App {
     @State private var showOnboarding = OnboardingStore.shouldShow()
     @State private var showAttribution = false
     @State private var configImportError: String?
-    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
     @State private var showSplash = true
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -76,7 +75,23 @@ struct ThreeOneOSSixApp: App {
                     ByteSplashView()
                         .transition(.opacity)
                         .zIndex(2)
-                } else if isLoggedIn {
+                } else if showOnboarding {
+                    OnboardingView {
+                        OnboardingStore.markCompleted()
+                        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.24)) {
+                            showOnboarding = false
+                        }
+                        appState.detectSupport()
+                    }
+                    .environment(\.appLanguage, language)
+                    .environment(\.locale, language.locale)
+                    .transition(
+                        reduceMotion
+                            ? .opacity
+                            : .opacity.combined(with: .scale(scale: 0.98))
+                    )
+                    .zIndex(1)
+                } else {
                     ContentView()
                         .environmentObject(appState)
                         .environmentObject(patchDraftCoordinator)
@@ -86,32 +101,6 @@ struct ThreeOneOSSixApp: App {
                         .environmentObject(migrationTaskCenter)
                         .environment(\.appLanguage, language)
                         .environment(\.locale, language.locale)
-                        .opacity(showOnboarding ? 0 : 1)
-                        .allowsHitTesting(!showOnboarding)
-
-                    if showOnboarding {
-                        OnboardingView {
-                            OnboardingStore.markCompleted()
-                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.24)) {
-                                showOnboarding = false
-                            }
-                            appState.detectSupport()
-                        }
-                        .environment(\.appLanguage, language)
-                        .environment(\.locale, language.locale)
-                        .transition(
-                            reduceMotion
-                                ? .opacity
-                                : .opacity.combined(with: .scale(scale: 0.98))
-                        )
-                        .zIndex(1)
-                    }
-                } else {
-                    ByteLoginView {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            isLoggedIn = true
-                        }
-                    }
                 }
             }
             .onAppear {
@@ -139,20 +128,13 @@ struct ThreeOneOSSixApp: App {
                 Text(configImportError ?? "")
             }
             .onAppear {
-                if !showOnboarding {
-                    appState.detectSupport()
-                }
+                appState.detectSupport()
                 migrationTaskCenter.refreshPendingResumes()
                 importSharedConfigPackages()
             }
             .onChange(of: scenePhase) { phase in
-                guard phase == .active, !showOnboarding else { return }
+                guard phase == .active else { return }
                 appState.detectSupport()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isLoggedIn = false
-                }
             }
             .onOpenURL { url in
                 // Config backup packages (.3106cfg) route to the migration

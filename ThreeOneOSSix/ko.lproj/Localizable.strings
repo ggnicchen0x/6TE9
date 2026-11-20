@@ -496,7 +496,8 @@
 "tab.sources" = "소스";
 "tab.installed" = "설치됨";
 "tab.cheats" = "Cheats";
-"tab.account" = "Account";
+"tab.account" = "Profile";
+"tab.support" = "Support";
 "installed.search" = "패치 또는 배경화면 검색";
 "installed.empty_title" = "설치된 항목 없음";
 "installed.empty_message" = "시작하려면 .3106 패치 또는 .tendies 배경화면 패키지를 가져오세요.";

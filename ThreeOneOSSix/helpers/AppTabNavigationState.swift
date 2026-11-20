@@ -12,6 +12,7 @@ enum AppSection: Int, CaseIterable, Identifiable {
     case backup
     case cheats
     case account
+    case support
 
     var id: Int { rawValue }
 }
@@ -30,12 +31,13 @@ extension AppSection {
         case .backup: return "tab.backup"
         case .cheats: return "tab.cheats"
         case .account: return "tab.account"
+        case .support: return "tab.support"
         }
     }
 
     var systemImage: String {
         switch self {
-        case .home: return "square.grid.2x2.fill"
+        case .home: return "house.fill"
         case .new: return "clock.fill"
         case .sources: return "shippingbox.fill"
         case .installed: return "shippingbox.fill"
@@ -45,7 +47,8 @@ extension AppSection {
         case .wallpapers: return "photo.on.rectangle.angled"
         case .backup: return "externaldrive.badge.timemachine"
         case .cheats: return "scope"
-        case .account: return "person.circle.fill"
+        case .account: return "person.fill"
+        case .support: return "headphones"
         }
     }
 }
@@ -112,7 +115,7 @@ struct FeatureVisibility: Equatable {
     }
 
     var visibleSections: [AppSection] {
-        [.home, .cheats, .cleaner, .account]
+        [.home, .account, .support]
     }
 
     func isVisible(_ section: AppSection) -> Bool {

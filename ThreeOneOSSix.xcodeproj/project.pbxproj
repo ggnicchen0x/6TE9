@@ -186,6 +186,8 @@
 		BYTE0A11 /* ByteAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A01; };
 		BYTE0A13 /* ByteLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A03; };
 		BYTE0A15 /* ByteSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A05; };
+		BYTE0A17 /* CompassHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A07; };
+		BYTE0A19 /* CompassSupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A09; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -390,6 +392,8 @@
 		BYTE0A01 /* ByteAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteAuthService.swift; sourceTree = "<group>"; };
 		BYTE0A03 /* ByteLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteLoginView.swift; sourceTree = "<group>"; };
 		BYTE0A05 /* ByteSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteSplashView.swift; sourceTree = "<group>"; };
+		BYTE0A07 /* CompassHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassHomeView.swift; sourceTree = "<group>"; };
+		BYTE0A09 /* CompassSupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassSupportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -511,6 +515,8 @@
 				3106FF03 /* FFAccountView.swift */,
 				BYTE0A03 /* ByteLoginView.swift */,
 				BYTE0A05 /* ByteSplashView.swift */,
+				BYTE0A07 /* CompassHomeView.swift */,
+				BYTE0A09 /* CompassSupportView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -888,6 +894,8 @@
 				BYTE0A11,
 				BYTE0A13,
 				BYTE0A15,
+				BYTE0A17,
+				BYTE0A19,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -514,7 +514,8 @@
 "tab.sources" = "Nguồn";
 "tab.installed" = "Đã cài";
 "tab.cheats" = "Cheats";
-"tab.account" = "Account";
+"tab.account" = "Profile";
+"tab.support" = "Support";
 "installed.search" = "Tìm patch hoặc hình nền";
 "installed.empty_title" = "Chưa có nội dung";
 "installed.empty_message" = "Nhập patch .3106 hoặc gói hình nền .tendies để bắt đầu.";

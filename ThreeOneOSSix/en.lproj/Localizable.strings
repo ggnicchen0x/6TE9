@@ -509,7 +509,8 @@
 
 "tab.wallpapers" = "Wallpapers";
 "tab.cheats" = "Cheats";
-"tab.account" = "Account";
+"tab.account" = "Profile";
+"tab.support" = "Support";
 
 /* Repository marketplace */
 "tab.explore" = "Explore";
@@ -736,7 +737,7 @@
 "backup.detail.hash" = "Verification";
 "backup.detail.reason" = "Source";
 "settings.backup" = "Backup & Restore";
-"tab.features" = "Features";
+"tab.features" = "Home";
 "home.status" = "Status";
 "home.version" = "Version";
 "home.backend" = "Access backend";

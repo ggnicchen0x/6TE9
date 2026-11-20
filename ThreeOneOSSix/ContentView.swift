@@ -75,11 +75,7 @@ struct ContentView: View {
         }
         .environmentObject(scanCoordinator)
         .sheet(isPresented: $showSettings) {
-            SettingsView(onLogout: {
-                showSettings = false
-                ByteAuthService.shared.logout()
-                NotificationCenter.default.post(name: .byteDidLogout, object: nil)
-            })
+            SettingsView()
         }
         .sheet(isPresented: $showLogs) { LogView() }
         .sheet(isPresented: $scanCoordinator.isPresented) {
@@ -167,10 +163,7 @@ struct ContentView: View {
     private func sectionContent(_ section: AppSection) -> some View {
         switch section {
         case .home:
-            FeatureHubView(
-                onSelectTab: { section in
-                    tabNavigation.select(section.rawValue)
-                },
+            CompassHomeView(
                 onOpenSettings: openSettings,
                 onOpenLogs: openLogs
             )
@@ -213,6 +206,8 @@ struct ContentView: View {
             FFCheatHubView(onOpenSettings: openSettings)
         case .account:
             FFAccountView(onOpenSettings: openSettings)
+        case .support:
+            CompassSupportView()
         }
     }
 
