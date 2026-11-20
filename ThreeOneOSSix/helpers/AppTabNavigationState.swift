@@ -52,8 +52,8 @@ extension AppSection {
 
 enum TabBarSelection {
     static let storageKey = "tabbar.selection"
-    static let maxSections = 5
-    static let defaultRaw = "0,9,3,6,10"
+    static let maxSections = 4
+    static let defaultRaw = "0,9,6,10"
     static let legacyDefaultRaw = "0,1,2,3,4"
 
     static func sections(from raw: String) -> [AppSection] {
@@ -112,7 +112,7 @@ struct FeatureVisibility: Equatable {
     }
 
     var visibleSections: [AppSection] {
-        [.home, .cheats, .installed, .cleaner, .account]
+        [.home, .cheats, .cleaner, .account]
     }
 
     func isVisible(_ section: AppSection) -> Bool {

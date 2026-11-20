@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FFCheatHubView: View {
     @Environment(\.appLanguage) private var language
-    @EnvironmentObject private var patchStore: PatchProjectStore
     @State private var selectedVariant: FFGameVariant = .ffmax
     @State private var isApplying = false
     @State private var actionAlert: FFActionAlert?
@@ -234,20 +233,30 @@ struct FFCheatHubView: View {
     private func applyPatch(_ entry: FFCheatEntry) {
         guard !isApplying else { return }
         isApplying = true
-        guard let data = FFPatchCatalog.patchData(for: entry) else {
-            isApplying = false
-            actionAlert = FFActionAlert(
-                title: "Failed",
-                message: "Patch file not found in bundle."
-            )
-            return
+        Task.detached(priority: .userInitiated) {
+            do {
+                guard let data = FFPatchCatalog.patchData(for: entry) else {
+                    throw PatchPackageError.unsupportedFormat
+                }
+                let decoded = try PatchPackageCodec.decode(data, password: nil)
+                _ = try DevicePatchService.apply(project: decoded.project)
+                await MainActor.run {
+                    isApplying = false
+                    actionAlert = FFActionAlert(
+                        title: "Applied",
+                        message: "\(entry.category.displayName) patch applied to device."
+                    )
+                }
+            } catch {
+                await MainActor.run {
+                    isApplying = false
+                    actionAlert = FFActionAlert(
+                        title: "Failed",
+                        message: error.localizedDescription
+                    )
+                }
+            }
         }
-        patchStore.importPackage(data: data)
-        isApplying = false
-        actionAlert = FFActionAlert(
-            title: "Imported",
-            message: "\(entry.category.displayName) patch imported. Go to Patches tab to apply it to your device."
-        )
     }
 }
 

@@ -226,7 +226,7 @@ struct ContentView: View {
 
     private var featureVisibility: FeatureVisibility {
         FeatureVisibility(
-            selectedSections: [.home, .cheats, .installed, .cleaner, .account],
+            selectedSections: [.home, .cheats, .cleaner, .account],
             wallpapersSupported: WallpaperFeatureSupportPolicy.isSupported(
                 major: AppInfo.versionTuple.major
             ),
