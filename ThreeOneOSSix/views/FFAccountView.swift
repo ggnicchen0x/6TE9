@@ -9,21 +9,24 @@ struct FFAccountView: View {
     @State private var errorMessage: String?
     @State private var showError = false
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
+    @AppStorage("selectedGame") private var selectedGame = "freefire"
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    profileCard
+                VStack(spacing: 16) {
                     if isLoggedIn {
+                        profileCardLoggedIn
                         licenseInfoCard
+                        gameSelectionCard
                         logoutCard
                     } else {
+                        profileCardLoggedOut
                         loginCard
+                        activateHintCard
                     }
-                    deviceInfoCard
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
@@ -47,6 +50,7 @@ struct FFAccountView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { onOpenSettings() } label: {
                         Image(systemName: "gear")
+                            .foregroundStyle(AppTheme.accent)
                     }
                 }
             }
@@ -58,8 +62,94 @@ struct FFAccountView: View {
         }
     }
 
-    private var profileCard: some View {
-        VStack(spacing: 16) {
+    // MARK: - Logged Out State
+
+    private var profileCardLoggedOut: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color(uiColor: .tertiarySystemBackground))
+                    .frame(width: 72, height: 72)
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 28, weight: .medium))
+                    .foregroundStyle(.secondary)
+            }
+
+            Text("No membership")
+                .font(.title3.weight(.bold))
+
+            Text("Activate your key to use Compass")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.05), Color.clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            }
+        )
+    }
+
+    private var activateHintCard: some View {
+        Button {
+        } label: {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [AppTheme.accent.opacity(0.20), AppTheme.accent.opacity(0.08)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "key.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Activate key")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Enter your code")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(14)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color(uiColor: .secondarySystemBackground))
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(AppTheme.accent.opacity(0.3), lineWidth: 0.5)
+                }
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Logged In State
+
+    private var profileCardLoggedIn: some View {
+        VStack(spacing: 14) {
             ZStack {
                 Circle()
                     .fill(
@@ -69,38 +159,160 @@ struct FFAccountView: View {
                             endPoint: .bottomTrailing
                         )
                     )
-                    .frame(width: 80, height: 80)
+                    .frame(width: 72, height: 72)
                 Image(systemName: "person.fill")
-                    .font(.system(size: 36, weight: .medium))
+                    .font(.system(size: 30, weight: .medium))
                     .foregroundStyle(.white)
             }
 
-            VStack(spacing: 4) {
-                Text("Compass User")
-                    .font(.title3.weight(.bold))
-                HStack(spacing: 6) {
-                    Image(systemName: isLoggedIn ? "checkmark.seal.fill" : "xmark.seal.fill")
-                        .foregroundStyle(isLoggedIn ? AppTheme.accent : .secondary)
-                        .font(.caption)
-                    Text(isLoggedIn ? "Licensed" : "Not Logged In")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(isLoggedIn ? AppTheme.accent : .secondary)
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-                .background(
-                    (isLoggedIn ? AppTheme.accent : Color.gray).opacity(0.12),
-                    in: Capsule()
-                )
+            Text("Compass User")
+                .font(.title3.weight(.bold))
+
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(.green)
+                    .font(.caption)
+                Text("Licensed")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.green)
             }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(Color.green.opacity(0.12), in: Capsule())
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
         .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 16, style: .continuous)
+            ZStack {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.05), Color.clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            }
         )
     }
+
+    private var licenseInfoCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            cardHeader(icon: "key.fill", title: "License")
+            if let key = ByteAuthService.shared.savedLicenseKey {
+                infoRow(label: "Key", value: key)
+            }
+            Divider()
+            infoRow(label: "Status", value: "Active", valueColor: .green)
+        }
+        .padding(16)
+        .background(
+            Color(uiColor: .secondarySystemBackground),
+            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+        )
+    }
+
+    private var gameSelectionCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color(uiColor: .tertiarySystemBackground))
+                        .frame(width: 36, height: 36)
+                    Image(systemName: "gamecontroller.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Game")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Choose which game's products appear in the list.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            HStack(spacing: 12) {
+                gameOption(
+                    id: "freefire",
+                    name: "Free Fire",
+                    icon: "flame.fill",
+                    color: .orange
+                )
+                gameOption(
+                    id: "freefiremax",
+                    name: "Free Fire MAX",
+                    icon: "flame.circle.fill",
+                    color: .orange
+                )
+            }
+        }
+        .padding(16)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemBackground))
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.04), Color.clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            }
+        )
+    }
+
+    private func gameOption(id: String, name: String, icon: String, color: Color) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                selectedGame = id
+            }
+        } label: {
+            VStack(spacing: 10) {
+                ZStack(alignment: .topTrailing) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(
+                                selectedGame == id
+                                    ? color.opacity(0.15)
+                                    : Color(uiColor: .tertiarySystemBackground)
+                            )
+                            .frame(height: 70)
+                        Image(systemName: icon)
+                            .font(.title2)
+                            .foregroundStyle(selectedGame == id ? color : .secondary)
+                    }
+
+                    if selectedGame == id {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                            .padding(6)
+                    }
+                }
+
+                Text(name)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(selectedGame == id ? .primary : .secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(
+                        selectedGame == id ? color : Color(uiColor: .separator).opacity(0.3),
+                        lineWidth: selectedGame == id ? 1.5 : 0.5
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Login Card
 
     private var loginCard: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -173,21 +385,7 @@ struct FFAccountView: View {
         )
     }
 
-    private var licenseInfoCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            cardHeader(icon: "key.fill", title: "License")
-            if let key = ByteAuthService.shared.savedLicenseKey {
-                infoRow(label: "Key", value: key)
-            }
-            Divider()
-            infoRow(label: "Status", value: "Active")
-        }
-        .padding(16)
-        .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-        )
-    }
+    // MARK: - Logout
 
     private var logoutCard: some View {
         Button(role: .destructive) {
@@ -203,44 +401,16 @@ struct FFAccountView: View {
                     .font(.body.weight(.semibold))
                 Spacer()
             }
-            .foregroundStyle(.red)
+            .foregroundStyle(AppTheme.accent)
             .padding(.vertical, 14)
             .background(
-                Color.red.opacity(0.1),
+                AppTheme.accent.opacity(0.1),
                 in: RoundedRectangle(cornerRadius: 14, style: .continuous)
             )
         }
     }
 
-    private var deviceInfoCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            cardHeader(icon: "iphone", title: "Device")
-            infoRow(label: "Model", value: AppInfo.displayMachineName)
-            Divider()
-            infoRow(label: "iOS Version", value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
-            Divider()
-            infoRow(label: "Backend", value: SandboxAccess.backend.displayName)
-            Divider()
-            HStack {
-                Text("Supported")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                HStack(spacing: 4) {
-                    Image(systemName: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundStyle(appState.isSupported ? .green : .red)
-                    Text(appState.isSupported ? "Yes" : "No")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(appState.isSupported ? .green : .red)
-                }
-            }
-        }
-        .padding(16)
-        .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-        )
-    }
+    // MARK: - Shared Components
 
     private func cardHeader(icon: String, title: String) -> some View {
         HStack(spacing: 8) {
@@ -255,7 +425,7 @@ struct FFAccountView: View {
         .padding(.bottom, 4)
     }
 
-    private func infoRow(label: String, value: String) -> some View {
+    private func infoRow(label: String, value: String, valueColor: Color? = nil) -> some View {
         HStack {
             Text(label)
                 .font(.subheadline)
@@ -263,6 +433,7 @@ struct FFAccountView: View {
             Spacer()
             Text(value)
                 .font(.subheadline.weight(.medium))
+                .foregroundStyle(valueColor ?? .primary)
         }
     }
 
