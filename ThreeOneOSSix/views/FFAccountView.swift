@@ -11,6 +11,8 @@ struct FFAccountView: View {
     @State private var errorMessage: String?
     @State private var showError = false
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
+    @State private var showNamePrompt = false
+    @State private var nameInput = ""
     @AppStorage("selectedGame") private var selectedGame = FFGameVariant.ffth.rawValue
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
@@ -62,6 +64,18 @@ struct FFAccountView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(errorMessage ?? "An unknown error occurred.")
+            }
+            .alert("Welcome to Compass", isPresented: $showNamePrompt) {
+                TextField("Your name", text: $nameInput)
+                Button("Save") {
+                    let trimmed = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty {
+                        ByteAuthService.shared.setUserName(trimmed)
+                    }
+                }
+                Button("Skip", role: .cancel) {}
+            } message: {
+                Text("Enter your name to personalize your profile.")
             }
         }
     }
@@ -152,7 +166,7 @@ struct FFAccountView: View {
                     .foregroundStyle(.white)
             }
 
-            Text("Compass User")
+            Text(ByteAuthService.shared.userName ?? "Compass User")
                 .font(.title3.weight(.bold))
 
             HStack(spacing: 6) {
@@ -179,7 +193,13 @@ struct FFAccountView: View {
                 infoRow(label: "Key", value: key)
             }
             Divider()
-            infoRow(label: "Status", value: "Active", valueColor: .green)
+            if ByteAuthService.shared.isLifetime {
+                infoRow(label: "Expiry", value: "Lifetime", valueColor: .green)
+            } else if let days = ByteAuthService.shared.daysRemaining {
+                infoRow(label: "Expiry", value: "\(days) days", valueColor: days > 7 ? .green : .orange)
+            } else {
+                infoRow(label: "Expiry", value: "Active", valueColor: .green)
+            }
         }
         .padding(16)
         .background(
@@ -450,6 +470,10 @@ struct FFAccountView: View {
                 if result.success {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         isLoggedIn = true
+                    }
+                    if ByteAuthService.shared.userName == nil {
+                        nameInput = ""
+                        showNamePrompt = true
                     }
                 } else {
                     errorMessage = result.error

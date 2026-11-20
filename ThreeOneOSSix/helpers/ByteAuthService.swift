@@ -22,6 +22,7 @@ final class ByteAuthService {
     private static let licenseKey = "byte_license_key"
     private static let expiresKey = "byte_license_expires"
     private static let loginTimeKey = "byte_login_time"
+    private static let userNameKey = "byte_user_name"
 
     var isLoggedIn: Bool {
         UserDefaults.standard.string(forKey: Self.tokenKey) != nil
@@ -33,6 +34,33 @@ final class ByteAuthService {
 
     var expiresAt: String? {
         UserDefaults.standard.string(forKey: Self.expiresKey)
+    }
+
+    var userName: String? {
+        UserDefaults.standard.string(forKey: Self.userNameKey)
+    }
+
+    func setUserName(_ name: String) {
+        UserDefaults.standard.set(name, forKey: Self.userNameKey)
+    }
+
+    var daysRemaining: Int? {
+        guard let raw = expiresAt, raw.uppercased() != "LIFETIME" else { return nil }
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        let date = formatter.date(from: raw) ?? {
+            let f = DateFormatter()
+            f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            f.timeZone = TimeZone(identifier: "UTC")
+            return f.date(from: raw)
+        }()
+        guard let expiry = date else { return nil }
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: expiry).day ?? 0
+        return max(days, 0)
+    }
+
+    var isLifetime: Bool {
+        expiresAt?.uppercased() == "LIFETIME"
     }
 
     struct LoginResult {
@@ -95,6 +123,7 @@ final class ByteAuthService {
         UserDefaults.standard.removeObject(forKey: Self.licenseKey)
         UserDefaults.standard.removeObject(forKey: Self.expiresKey)
         UserDefaults.standard.removeObject(forKey: Self.loginTimeKey)
+        UserDefaults.standard.removeObject(forKey: Self.userNameKey)
     }
 
     private func deviceIdentifier() -> String {
