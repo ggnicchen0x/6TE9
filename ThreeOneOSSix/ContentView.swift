@@ -154,7 +154,7 @@ struct ContentView: View {
                     )
                 }
             }
-            .navigationTitle("Byte External")
+            .navigationTitle("Compass")
             .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
         } detail: {
             sectionContent(selectedVisibleSection)

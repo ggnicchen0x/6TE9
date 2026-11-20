@@ -129,7 +129,7 @@ struct ByteLoginView: View {
             .opacity(logoOpacity)
 
             VStack(spacing: 6) {
-                Text("Byte External")
+                Text("Compass")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
 
@@ -221,7 +221,7 @@ struct ByteLoginView: View {
 
     private var footerText: some View {
         VStack(spacing: 6) {
-            Text("Byte External v\(appVersion)")
+            Text("Compass v\(appVersion)")
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(.white.opacity(0.25))
             Text("Purchase keys from authorized resellers")

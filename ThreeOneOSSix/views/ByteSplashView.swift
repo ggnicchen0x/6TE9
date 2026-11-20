@@ -45,7 +45,7 @@ struct ByteSplashView: View {
                 .scaleEffect(logoScale)
                 .opacity(logoOpacity)
 
-                Text("Byte External")
+                Text("Compass")
                     .font(.title2.weight(.bold))
                     .foregroundStyle(.white)
                     .padding(.top, 20)

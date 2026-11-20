@@ -37,7 +37,7 @@ struct FFCheatHubView: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.pageBackground)
-            .navigationTitle("Byte External")
+            .navigationTitle("Compass")
             .navigationBarTitleDisplayMode(.inline)
             .opacity(entranceShown ? 1 : 0)
             .offset(y: entranceShown ? 0 : 10)

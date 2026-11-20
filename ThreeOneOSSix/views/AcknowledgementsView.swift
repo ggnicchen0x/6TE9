@@ -4,7 +4,7 @@ struct AcknowledgementsView: View {
     var body: some View {
         List {
             Section {
-                Text("Byte External")
+                Text("Compass")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

@@ -17,7 +17,7 @@ struct SettingsView: View {
                         AppLogo()
 
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("Byte External").font(.headline)
+                            Text("Compass").font(.headline)
                             Text("v\(appVersion)")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
