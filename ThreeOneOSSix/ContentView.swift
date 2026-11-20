@@ -74,7 +74,13 @@ struct ContentView: View {
             Text(language.text("appgroup.message"))
         }
         .environmentObject(scanCoordinator)
-        .sheet(isPresented: $showSettings) { SettingsView() }
+        .sheet(isPresented: $showSettings) {
+            SettingsView(onLogout: {
+                showSettings = false
+                ByteAuthService.shared.logout()
+                NotificationCenter.default.post(name: .byteDidLogout, object: nil)
+            })
+        }
         .sheet(isPresented: $showLogs) { LogView() }
         .sheet(isPresented: $scanCoordinator.isPresented) {
             ScanProgressSheet()

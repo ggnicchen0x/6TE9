@@ -5,12 +5,9 @@ struct SettingsView: View {
     @Environment(\.appLanguage) private var language
     @EnvironmentObject private var appState: AppState
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
-    // Mirrors SoundEffects.isEnabled so the effect player reads one source of
-    // truth (UserDefaults) while the toggle gets @AppStorage semantics.
     @AppStorage("sound.effects.enabled") private var soundEffectsEnabled = true
-    // Gates high-risk experimental flows (Siri AI experimental mode) behind
-    // an explicit opt-in; the flows stay hidden until this is on.
     @AppStorage(FeatureVisibility.developerModeStorageKey) private var experimentalFeaturesEnabled = false
+    var onLogout: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -56,6 +53,22 @@ struct SettingsView: View {
                     RespringButton()
                 } header: {
                     Text(language.text("settings.backup"))
+                }
+
+                Section {
+                    NavigationLink {
+                        AccentColorPickerView()
+                    } label: {
+                        HStack {
+                            Label("Accent Color", systemImage: "paintpalette.fill")
+                            Spacer()
+                            Circle()
+                                .fill(AppTheme.accent)
+                                .frame(width: 22, height: 22)
+                        }
+                    }
+                } header: {
+                    Text("Appearance")
                 }
 
                 Section {
@@ -164,6 +177,25 @@ struct SettingsView: View {
                     Text(language.text("settings.supported_versions_footer"))
                 }
 
+                if let onLogout {
+                    Section {
+                        Button(role: .destructive) {
+                            onLogout()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                                    .font(.body.weight(.semibold))
+                                Spacer()
+                            }
+                        }
+                    } footer: {
+                        if let key = ByteAuthService.shared.savedLicenseKey {
+                            Text("Logged in with key: \(key)")
+                                .font(.caption2)
+                        }
+                    }
+                }
             }
             .tint(AppTheme.accent)
             .navigationTitle(language.text("settings.title"))

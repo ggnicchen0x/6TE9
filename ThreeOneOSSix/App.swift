@@ -13,6 +13,7 @@ struct ThreeOneOSSixApp: App {
     @State private var showOnboarding = OnboardingStore.shouldShow()
     @State private var showAttribution = false
     @State private var configImportError: String?
+    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -70,34 +71,42 @@ struct ThreeOneOSSixApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                ContentView()
-                    .environmentObject(appState)
-                    .environmentObject(patchDraftCoordinator)
-                    .environmentObject(fileOperationCoordinator)
-                    .environmentObject(patchStore)
-                    .environmentObject(repositoryStore)
-                    .environmentObject(migrationTaskCenter)
-                    .environment(\.appLanguage, language)
-                    .environment(\.locale, language.locale)
-                    .opacity(showOnboarding ? 0 : 1)
-                    .allowsHitTesting(!showOnboarding)
+                if isLoggedIn {
+                    ContentView()
+                        .environmentObject(appState)
+                        .environmentObject(patchDraftCoordinator)
+                        .environmentObject(fileOperationCoordinator)
+                        .environmentObject(patchStore)
+                        .environmentObject(repositoryStore)
+                        .environmentObject(migrationTaskCenter)
+                        .environment(\.appLanguage, language)
+                        .environment(\.locale, language.locale)
+                        .opacity(showOnboarding ? 0 : 1)
+                        .allowsHitTesting(!showOnboarding)
 
-                if showOnboarding {
-                    OnboardingView {
-                        OnboardingStore.markCompleted()
-                        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.24)) {
-                            showOnboarding = false
+                    if showOnboarding {
+                        OnboardingView {
+                            OnboardingStore.markCompleted()
+                            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.24)) {
+                                showOnboarding = false
+                            }
+                            appState.detectSupport()
                         }
-                        appState.detectSupport()
+                        .environment(\.appLanguage, language)
+                        .environment(\.locale, language.locale)
+                        .transition(
+                            reduceMotion
+                                ? .opacity
+                                : .opacity.combined(with: .scale(scale: 0.98))
+                        )
+                        .zIndex(1)
                     }
-                    .environment(\.appLanguage, language)
-                    .environment(\.locale, language.locale)
-                    .transition(
-                        reduceMotion
-                            ? .opacity
-                            : .opacity.combined(with: .scale(scale: 0.98))
-                    )
-                    .zIndex(1)
+                } else {
+                    ByteLoginView {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            isLoggedIn = true
+                        }
+                    }
                 }
             }
             .displayIdentityAttribution(isPresented: $showAttribution, enabled: !showOnboarding)
@@ -127,6 +136,11 @@ struct ThreeOneOSSixApp: App {
             .onChange(of: scenePhase) { phase in
                 guard phase == .active, !showOnboarding else { return }
                 appState.detectSupport()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isLoggedIn = false
+                }
             }
             .onOpenURL { url in
                 // Config backup packages (.3106cfg) route to the migration
