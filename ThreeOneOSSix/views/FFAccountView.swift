@@ -64,6 +64,11 @@ struct FFAccountView: View {
                     isLoggedIn = true
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isLoggedIn = false
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { onOpenSettings() } label: {

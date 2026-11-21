@@ -15,7 +15,6 @@ struct ThreeOneOSSixApp: App {
     @State private var configImportError: String?
     @State private var showSplash = true
     @State private var compassLocked = true
-    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -108,13 +107,6 @@ struct ThreeOneOSSixApp: App {
                             : .opacity.combined(with: .scale(scale: 0.98))
                     )
                     .zIndex(1)
-                } else if !isLoggedIn {
-                    ByteLoginView {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            isLoggedIn = true
-                        }
-                    }
-                    .transition(.opacity)
                 } else {
                     ContentView()
                         .environmentObject(appState)
@@ -125,11 +117,6 @@ struct ThreeOneOSSixApp: App {
                         .environmentObject(migrationTaskCenter)
                         .environment(\.appLanguage, language)
                         .environment(\.locale, language.locale)
-                        .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                isLoggedIn = false
-                            }
-                        }
                 }
             }
             .alert(
@@ -149,11 +136,6 @@ struct ThreeOneOSSixApp: App {
                 appState.detectSupport()
                 migrationTaskCenter.refreshPendingResumes()
                 importSharedConfigPackages()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .byteDidLogin)) { _ in
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isLoggedIn = true
-                }
             }
             .onChange(of: scenePhase) { phase in
                 guard phase == .active else { return }
