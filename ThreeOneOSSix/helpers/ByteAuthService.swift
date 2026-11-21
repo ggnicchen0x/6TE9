@@ -4,6 +4,7 @@ import Security
 
 extension Notification.Name {
     static let byteDidLogout = Notification.Name("byteDidLogout")
+    static let byteDidLogin = Notification.Name("byteDidLogin")
 }
 
 final class ByteAuthService {
@@ -161,11 +162,82 @@ final class ByteAuthService {
         setProfileImage(nil)
     }
 
+    func handleActivationURL(_ url: URL) {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let queryItems = components.queryItems else { return }
+
+        let key = queryItems.first(where: { $0.name == "key" })?.value?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let udid = queryItems.first(where: { $0.name == "udid" })?.value?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let token = queryItems.first(where: { $0.name == "token" })?.value
+
+        if let udid = udid, !udid.isEmpty {
+            saveUDIDToKeychain(udid)
+        }
+
+        if let key = key, !key.isEmpty, let token = token, !token.isEmpty {
+            UserDefaults.standard.set(token, forKey: Self.tokenKey)
+            UserDefaults.standard.set(key, forKey: Self.licenseKey)
+            UserDefaults.standard.set("LIFETIME", forKey: Self.expiresKey)
+            UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.loginTimeKey)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .byteDidLogin, object: nil)
+            }
+        }
+    }
+
+    func saveUDIDToKeychain(_ udid: String) {
+        let tag = "com.compass.hardware_udid"
+        let service = "CompassAuth"
+        guard let data = udid.data(using: .utf8) else { return }
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: tag,
+            kSecAttrService as String: service
+        ]
+        SecItemDelete(query as CFDictionary)
+
+        let addQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: tag,
+            kSecAttrService as String: service,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        SecItemAdd(addQuery as CFDictionary, nil)
+    }
+
+    func getHardwareUDID() -> String? {
+        let tag = "com.compass.hardware_udid"
+        let service = "CompassAuth"
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: tag,
+            kSecAttrService as String: service,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var dataTypeRef: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        if status == errSecSuccess,
+           let data = dataTypeRef as? Data,
+           let val = String(data: data, encoding: .utf8),
+           !val.isEmpty {
+            return val
+        }
+        return nil
+    }
+
     private func deviceIdentifier() -> String {
+        // Priority 1: Hardware UDID registered via Apple Profile Service
+        if let udid = getHardwareUDID(), !udid.isEmpty {
+            return udid
+        }
+
         let tag = "com.compass.device_identifier"
         let service = "CompassAuth"
 
-        // 1. Check Keychain (persists even if app is uninstalled and reinstalled!)
+        // Priority 2: Check Keychain UUID
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: tag,
@@ -184,10 +256,9 @@ final class ByteAuthService {
             return savedId
         }
 
-        // 2. Generate or use identifierForVendor
+        // Priority 3: Generate or use identifierForVendor
         let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
 
-        // 3. Save to Keychain for future app reinstalls / re-signs
         if let data = id.data(using: .utf8) {
             let addQuery: [String: Any] = [
                 kSecClass as String: kSecClassGenericPassword,

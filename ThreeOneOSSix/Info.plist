@@ -52,6 +52,7 @@
 			<string>com.compass.app.patch-import</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>compass</string>
 				<string>threeoneossix</string>
 				<string>threeoneosfive</string>
 			</array>

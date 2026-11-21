@@ -140,6 +140,12 @@ struct ThreeOneOSSixApp: App {
                 appState.detectSupport()
             }
             .onOpenURL { url in
+                if url.scheme == "compass" || url.scheme == "threeoneossix" {
+                    if url.host == "activate" || url.path.contains("activate") {
+                        ByteAuthService.shared.handleActivationURL(url)
+                        return
+                    }
+                }
                 // Config backup packages (.3106cfg) route to the migration
                 // importer; everything else stays on the patch-package path.
                 if url.isFileURL,
