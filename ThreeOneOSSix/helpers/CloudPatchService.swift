@@ -222,16 +222,7 @@ final class CloudPatchService {
     // MARK: - Helpers
 
     private func deviceIdentifier() -> String {
-        if let id = UIDevice.current.identifierForVendor?.uuidString {
-            return id
-        }
-        let key = "byte_device_fallback_id"
-        if let stored = UserDefaults.standard.string(forKey: key) {
-            return stored
-        }
-        let generated = UUID().uuidString
-        UserDefaults.standard.set(generated, forKey: key)
-        return generated
+        ByteAuthService.shared.deviceIdentifier()
     }
 
     private func appVersion() -> String {
