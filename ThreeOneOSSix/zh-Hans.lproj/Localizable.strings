@@ -15,7 +15,7 @@
 "common.finish" = "完成";
 
 "update.title" = "发现新版本";
-"update.message" = "GitHub 上已发布 3106 %@。";
+"update.message" = "GitHub 上已发布 Compass %@。";
 "update.agree" = "更新";
 "update.dismiss" = "不再显示";
 "patch.error.wrong_password" = "密码错误。";
@@ -28,9 +28,9 @@
 "attribution.share" = "分享链接";
 
 "onboarding.versions_title" = "支持的 iOS 版本";
-"onboarding.versions_subtitle" = "3106 已在下列范围内验证。不支持的版本会被阻止。";
+"onboarding.versions_subtitle" = "Compass 已在下列范围内验证。不支持的版本会被阻止。";
 "onboarding.versions_footer" = "本设备：iOS %@（%@）";
-"onboarding.install_message" = "3106 在 iOS 26.7+ 与 27.x 上使用 worse_query，需要 App Group entitlement：用 AltStore、SideStore 或 Sideloadly 签名（免费 Apple ID 即可），或使用带 App Groups 的显式 App ID。";
+"onboarding.install_message" = "Compass 在 iOS 26.7+ 与 27.x 上使用 worse_query，需要 App Group entitlement：用 AltStore、SideStore 或 Sideloadly 签名（免费 Apple ID 即可），或使用带 App Groups 的显式 App ID。";
 "onboarding.install_footer" = "继续前，请在未越狱的设备上使用受支持的证书。";
 
 "dashboard.exploit_access" = "漏洞利用权限";
@@ -56,7 +56,7 @@
 "dashboard.kernel_running" = "正在激活…";
 "dashboard.kernel_active" = "已激活";
 "dashboard.kernel_inactive" = "未激活";
-"dashboard.enterprise_signing" = "3106 需要 App Group。AltStore、SideStore、Sideloadly 会用你的 Apple ID 自动创建；通配符证书 profile 无法携带 App Group。";
+"dashboard.enterprise_signing" = "Compass 需要 App Group。AltStore、SideStore、Sideloadly 会用你的 Apple ID 自动创建；通配符证书 profile 无法携带 App Group。";
 "dashboard.features" = "功能";
 "dashboard.features_footer" = "开启清理或壁纸后，该功能才会显示在应用导航中。";
 "tab.home" = "主页";
@@ -87,7 +87,7 @@
 "cleaner.clean_button" = "清理 %@";
 "cleaner.cleaning" = "正在清理…";
 "cleaner.confirm_title" = "删除临时数据？";
-"cleaner.confirm_message" = "3106 将永久删除所选 %lld 个应用的 Library/Caches 和 tmp（%@）。请先关闭这些应用。下次打开时，重建缓存可能会使启动变慢。此操作无法撤销。";
+"cleaner.confirm_message" = "Compass 将永久删除所选 %lld 个应用的 Library/Caches 和 tmp（%@）。请先关闭这些应用。下次打开时，重建缓存可能会使启动变慢。此操作无法撤销。";
 "cleaner.confirm_action" = "立即清理";
 "cleaner.result_title" = "清理完成";
 "cleaner.result_message" = "已释放 %@，删除 %lld 个文件。有 %lld 个项目或应用无法清理。";
@@ -130,13 +130,13 @@
 "patch.private_hidden_title" = "私密补丁";
 "patch.private_hidden_message" = "作者已隐藏此补丁的文件和目标路径。你仍可在不查看内容的情况下应用或恢复。";
 "patch.target_bundle" = "目标 Bundle";
-"patch.workspace_bundle_footer" = "3106 会在可编辑的补丁工作区中创建此 Bundle 文件夹，且不会保存容器 UUID。";
+"patch.workspace_bundle_footer" = "Compass 会在可编辑的补丁工作区中创建此 Bundle 文件夹，且不会保存容器 UUID。";
 "patch.captured_content" = "已获取内容";
-"patch.workspace_edit_footer" = "创建后，可在“文件”中的 3106 工作区管理完整的 Bundle 目录树。";
+"patch.workspace_edit_footer" = "创建后，可在“文件”中的 Compass 工作区管理完整的 Bundle 目录树。";
 "patch.workspace" = "工作区";
 "patch.open_workspace" = "打开补丁文件";
 "patch.workspace_detail_footer" = "可直接编辑此 Bundle 目录树。应用或导出时会自动同步到加密的 .3106 软件包。";
-"patch.legacy_footer" = "旧版 v1 补丁，当前版本的 3106 仍可完整使用。";
+"patch.legacy_footer" = "旧版 v1 补丁，当前版本的 Compass 仍可完整使用。";
 "patch.files" = "文件";
 "patch.folders" = "文件夹";
 "patch.rules" = "规则";
@@ -183,8 +183,8 @@
 "patch.restore_confirm_title" = "要恢复原始文件吗？";
 "patch.restore_confirm_message" = "请先关闭目标应用或游戏。文件将恢复到应用补丁前的状态；由补丁新建的文件将被删除。";
 "patch.restore_changed_title" = "部分文件已更改";
-"patch.restore_changed_message" = "应用补丁后有 %lld 个文件发生更改：\n%@\n\n3106 会先保存当前状态；若恢复失败，将回滚所有文件。";
-"patch.restore_changed_private_message" = "应用后有 %lld 个私密补丁文件发生更改。路径仍会隐藏。3106 将在恢复前保存当前状态。";
+"patch.restore_changed_message" = "应用补丁后有 %lld 个文件发生更改：\n%@\n\nCompass 会先保存当前状态；若恢复失败，将回滚所有文件。";
+"patch.restore_changed_private_message" = "应用后有 %lld 个私密补丁文件发生更改。路径仍会隐藏。Compass 将在恢复前保存当前状态。";
 "patch.restore_changed_action" = "仍要恢复";
 "patch.reset_confirm_title" = "重置为软件包内容吗？";
 "patch.reset_confirm_message" = "请先关闭目标应用或游戏。当前运行时更改将替换为此 .3106 软件包最初应用的内容。";
@@ -197,7 +197,7 @@
 "patch.restored_message" = "原始文件已恢复。";
 "patch.reset_message" = "所有补丁文件已重置为应用时的软件包状态。";
 "patch.error.unsupported_format" = "这不是有效的 .3106 补丁软件包。";
-"patch.error.unsupported_version" = "此补丁需要更高版本的 3106。请更新应用后再导入。";
+"patch.error.unsupported_version" = "此补丁需要更高版本的 Compass。请更新应用后再导入。";
 "patch.error.password_or_corrupt" = "密码不正确，或软件包已被修改。";
 "patch.error.invalid_bundle" = "请输入有效的应用 bundle identifier，而不是容器 UUID。";
 "patch.error.unsafe_path" = "目标必须是应用数据容器内的安全相对路径。";
@@ -226,7 +226,7 @@
 "accessibility.requesting_access" = "正在请求漏洞利用权限";
 "accessibility.open_editor_hint" = "打开 MobileGestalt 功能编辑器";
 "accessibility.run_exploit_hint" = "请求 Gestalt 编辑器所需的写入权限";
-"accessibility.open_github" = "在 GitHub 上打开 3106";
+"accessibility.open_github" = "在 GitHub 上打开 Compass";
 "accessibility.open_profile" = "打开 %@ 的个人资料";
 "accessibility.log_entry" = "日志条目 %lld：%@";
 
@@ -234,9 +234,9 @@
 "status.ok_via" = "通过 %@ 成功";
 "status.failed_via" = "%@ 失败（%lld）";
 "status.unsupported_a10_ios17" = "不支持：A10 芯片（iPhone 7、iPad 6/7）在 iOS 17 上运行内核链会导致设备卡死重启，因此本机不启用。系统版本本身是受支持的 —— 不是需要升级系统，而是在这台设备上无法获得容器访问。iOS 18 及以上的同一台设备不受此限制。";
-"{{SECRET_hisgwbph}}" = "不支持：检测到越狱环境。越狱设备上沙箱可能已被插件改动，内核链的成功或失败都无法归因于 3106，因此不执行。请使用未越狱的设备。";
+"{{SECRET_hisgwbph}}" = "不支持：检测到越狱环境。越狱设备上沙箱可能已被插件改动，内核链的成功或失败都无法归因于 Compass，因此不执行。请使用未越狱的设备。";
 "status.unsupported_reason" = "不支持：%@";
-"status.unsupported_ios18_patched" = "不支持：iOS 18.7.2 起 Apple 已修补 3106 在 iOS 17/18 上依赖的内核漏洞（CVE-2025-43520），18.7.2 及之后版本无法获得容器访问。可选：设备留在 iOS 18.7.1 或更低、改用 iOS 26 以上设备（无需内核漏洞），或在越狱环境使用支持根文件系统的文件管理器。";
+"status.unsupported_ios18_patched" = "不支持：iOS 18.7.2 起 Apple 已修补 Compass 在 iOS 17/18 上依赖的内核漏洞（CVE-2025-43520），18.7.2 及之后版本无法获得容器访问。可选：设备留在 iOS 18.7.1 或更低、改用 iOS 26 以上设备（无需内核漏洞），或在越狱环境使用支持根文件系统的文件管理器。";
 "status.unsupported_ios27_build" = "不支持：iOS 27.3 的沙箱逃逸已被 Apple 修补，仅已验证的 build 可用（%@）。请勿升级到更新的 27.3 build。";
 "method.simulator_preview" = "模拟器预览";
 
@@ -341,7 +341,7 @@
 "temp.purged" = "已清理过期临时文件";
 
 "browser.title" = "应用数据浏览器";
-"browser.workspace" = "3106 工作区";
+"browser.workspace" = "Compass 工作区";
 "browser.workspace_subtitle" = "可在“我的 iPhone”中访问补丁和文件";
 "browser.loading" = "正在加载…";
 "browser.empty" = "无法解析任何应用 bundle。轻点“重试”再次扫描。";
@@ -582,7 +582,7 @@
 "repository.download_package" = "下载";
 "repository.downloading_elapsed" = "正在下载 · %@";
 "repository.update_package" = "更新";
-"repository.install_footer" = "导入前，3106 会验证 HTTPS、SHA-256、软件包内容和 iOS 兼容性。";
+"repository.install_footer" = "导入前，Compass 会验证 HTTPS、SHA-256、软件包内容和 iOS 兼容性。";
 "repository.wallpaper_imported" = "壁纸包已通过验证并添加到“已安装”。请在那里打开、查看并应用。";
 "repository.by_version" = "%@ · 版本 %@";
 "repository.version_source" = "版本 %@ · %@";
@@ -590,7 +590,7 @@
 "repository.source_url_footer" = "输入指向版本 1 JSON 清单的完整 HTTPS URL。";
 "repository.add" = "添加";
 "repository.error.insecure_url" = "请使用公开的 HTTPS 软件源 URL，且不得包含凭据、本地主机或 IP 地址。";
-"repository.error.unsupported_schema" = "此软件源需要更新版本的 3106。";
+"repository.error.unsupported_schema" = "此软件源需要更新版本的 Compass。";
 "repository.error.invalid_manifest" = "软件源清单无效或过大。";
 "repository.error.invalid_package" = "软件源包含无效的软件包元数据。";
 "repository.error.duplicate_package" = "软件源包含重复的软件包标识符或 UUID。";
@@ -624,16 +624,16 @@
 "wallpaper.recovery_summary" = "已安装 %lld 个描述符";
 "wallpaper.restore" = "恢复";
 "wallpaper.restored" = "已恢复";
-"wallpaper.recovery_footer" = "恢复只会删除对应 3106 安装创建的描述符目录，不会删除原有壁纸。";
+"wallpaper.recovery_footer" = "恢复只会删除对应 Compass 安装创建的描述符目录，不会删除原有壁纸。";
 "wallpaper.safety" = "安全";
 "wallpaper.additive_only" = "仅添加新描述符，不替换 Collections";
 "wallpaper.uuid_dynamic" = "动态解析 com.apple.PosterBoard";
 "wallpaper.archive_validation" = "安装前检查 ZIP 路径、大小、符号链接和 CRC";
-"wallpaper.ios27_footer" = "PosterBoard 会随系统 build 改变。3106 会检测实时存储结构，而不是假定 generation 61；部分依赖插件的壁纸仍可能与 iOS 27 不兼容。";
+"wallpaper.ios27_footer" = "PosterBoard 会随系统 build 改变。Compass 会检测实时存储结构，而不是假定 generation 61；部分依赖插件的壁纸仍可能与 iOS 27 不兼容。";
 "wallpaper.install" = "应用";
 "wallpaper.install_warning_title" = "安装此壁纸包？";
 "wallpaper.install_warning_message" = "应用“%@”中的 %lld 张壁纸（iOS %@，%@）？现有壁纸不会改变。";
-"wallpaper.installed_by_3106" = "3106 添加的壁纸";
+"wallpaper.installed_by_Compass" = "Compass 添加的壁纸";
 "wallpaper.custom_count" = "已添加的壁纸";
 "wallpaper.reset" = "重置精选集";
 "wallpaper.reset_footer" = "移除自定义精选集，包括其他工具添加的内容。Apple 默认精选集会保留。";
@@ -645,9 +645,9 @@
 "wallpaper.no_custom_title" = "没有自定义精选集";
 "wallpaper.no_custom_message" = "目前没有需要重置的自定义壁纸。";
 "wallpaper.restore_title" = "恢复此次安装？";
-"wallpaper.restore_message" = "这将删除之前由 3106 添加的 %lld 个描述符目录。安装前已有的壁纸会保留。";
+"wallpaper.restore_message" = "这将删除之前由 Compass 添加的 %lld 个描述符目录。安装前已有的壁纸会保留。";
 "wallpaper.delete_title" = "移除已导入的软件包？";
-"wallpaper.delete_message" = "“%@”将从 3106 暂存区移除，不影响已安装的壁纸。";
+"wallpaper.delete_message" = "“%@”将从 Compass 暂存区移除，不影响已安装的壁纸。";
 "wallpaper.importing" = "正在验证 .tendies 软件包…";
 "wallpaper.installing" = "正在安全安装描述符…";
 "wallpaper.restoring" = "正在重置壁纸…";
@@ -658,7 +658,7 @@
 "wallpaper.install_done_opened" = "已打开 PosterBoard 以刷新集合。请从应用切换器中关闭它，然后检查锁定屏幕壁纸选择器。";
 "wallpaper.install_done_manual" = "请打开锁定屏幕壁纸选择器来刷新 PosterBoard。如果壁纸未出现，请从应用切换器关闭 PosterBoard 后重试。";
 "wallpaper.restore_done_title" = "安装已恢复";
-"wallpaper.restore_done_message" = "3106 添加的描述符已移除，并已请求 PosterBoard 刷新。";
+"wallpaper.restore_done_message" = "Compass 添加的描述符已移除，并已请求 PosterBoard 刷新。";
 "wallpaper.operation_failed" = "壁纸操作失败";
 "wallpaper.error.unsafe_container" = "PosterBoard 返回了不安全或异常的容器路径。";
 "wallpaper.error.store_unavailable" = "此 build 上无法访问 PosterBoard 扩展存储。";
@@ -666,12 +666,12 @@
 "wallpaper.error.package" = "这不是受支持的 .tendies 软件包。";
 "wallpaper.error.archive" = "压缩包格式错误或包含不安全路径。";
 "wallpaper.error.symlink" = "壁纸包和目标目录不能包含符号链接。";
-"wallpaper.error.size" = "壁纸包超过 3106 的安全大小或项目数限制。";
+"wallpaper.error.size" = "壁纸包超过 Compass 的安全大小或项目数限制。";
 "wallpaper.error.no_descriptors" = "此软件包中没有找到受支持的壁纸描述符。";
-"wallpaper.error.access" = "3106 无法获得 com.apple.PosterBoard 的已验证读写权限。";
+"wallpaper.error.access" = "Compass 无法获得 com.apple.PosterBoard 的已验证读写权限。";
 "wallpaper.error.backup" = "无法写入恢复日志，因此已停止安装。";
 "wallpaper.error.install" = "安装失败，本次尝试添加的描述符已回滚。";
-"wallpaper.error.restore" = "3106 无法安全移除此安装中的全部描述符。";
+"wallpaper.error.restore" = "Compass 无法安全移除此安装中的全部描述符。";
 "wallpaper.error.unknown" = "发生意外错误。请查看会话日志了解详情。";
 "repository.for_you" = "为你推荐";
 "repository.new" = "最新";
@@ -680,7 +680,7 @@
 "repository.published" = "发布日期";
 "repository.more_patches" = "更多软件包";
 "repository.utilities" = "实用工具";
-"repository.home_no_sources_message" = "添加软件源后，主页会显示带图片的 3106 补丁。";
+"repository.home_no_sources_message" = "添加软件源后，主页会显示带图片的 Compass 补丁。";
 "repository.home_package_meta" = "%@ · %@";
 "repository.sources_hierarchy_footer" = "打开软件源可浏览标签及其中的软件包。请只添加你信任的软件源。";
 "repository.disable_source" = "停用软件源";
@@ -1597,7 +1597,7 @@
 "wifishare.pin_footer" = "密码每次启用都会重新生成，退出本页即停止服务。浏览器弹出的登录框里填这两项。";
 "wifishare.requests" = "最近请求";
 "wifishare.usage" = "命令行用法";
-"wifishare.usage_curl" = "上传：curl -u 3106:PIN -T ./file \"http://地址:端口/api/upload?path=file\"";
+"wifishare.usage_curl" = "上传：curl -u Compass:PIN -T ./file \"http://地址:端口/api/upload?path=file\"";
 "wifishare.usage_footer" = "下载单文件用 /api/download?path=名字，打包整个目录用 /api/zip?path=目录名。同名上传会自动改名，不会覆盖已有文件。";
 "wifishare.entry" = "Wi-Fi 互传";
 "wifishare.entry_footer" = "在同一 Wi-Fi 下用浏览器传输文件，无需数据线或云盘。";

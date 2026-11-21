@@ -9,8 +9,8 @@ import Security
 /// serving a file outside the container, letting two uploads race onto one
 /// path, or accepting a request because the comparison was short-circuited.
 enum WiFiSharePolicy {
-    static let username = "3106"
-    static let realm = "3106 Wi-Fi Transfer"
+    static let username = "Compass"
+    static let realm = "Compass Wi-Fi Transfer"
 
     /// Ports the listener tries in order. One entitlement-free port is not
     /// enough: AirPlay, printers and other LAN services squat on 8080 often
