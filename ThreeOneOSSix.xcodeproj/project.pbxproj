@@ -182,7 +182,7 @@
 		3106FF11 /* FFPatchCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF01; };
 		3106FF12 /* FFCheatHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF02; };
 		3106FF13 /* FFAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF03; };
-		3106FF14 /* Patches in Resources */ = {isa = PBXBuildFile; fileRef = 3106FF04; };
+		3106FF15 /* CloudPatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3106FF05; };
 		BYTE0A11 /* ByteAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A01; };
 		BYTE0A13 /* ByteLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A03; };
 		BYTE0A15 /* ByteSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A05; };
@@ -388,7 +388,7 @@
 		3106FF01 /* FFPatchCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFPatchCatalog.swift; sourceTree = "<group>"; };
 		3106FF02 /* FFCheatHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFCheatHubView.swift; sourceTree = "<group>"; };
 		3106FF03 /* FFAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFAccountView.swift; sourceTree = "<group>"; };
-		3106FF04 /* Patches */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Patches; path = Resources/Patches; sourceTree = "<group>"; };
+		3106FF05 /* CloudPatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudPatchService.swift; sourceTree = "<group>"; };
 		BYTE0A01 /* ByteAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteAuthService.swift; sourceTree = "<group>"; };
 		BYTE0A03 /* ByteLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteLoginView.swift; sourceTree = "<group>"; };
 		BYTE0A05 /* ByteSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteSplashView.swift; sourceTree = "<group>"; };
@@ -429,7 +429,6 @@
 				3106W032 /* ThreeOneOSSix.entitlements */,
 				3105A120 /* Localizable.strings */,
 				3105A031 /* Assets.xcassets */,
-				3106FF04 /* Patches */,
 			);
 			path = ThreeOneOSSix;
 			sourceTree = "<group>";
@@ -633,6 +632,7 @@
 				3106M102 /* KeypadThemeService.swift */,
 				3106C100 /* CrashLogCleaner.swift */,
 				3106FF01 /* FFPatchCatalog.swift */,
+				3106FF05 /* CloudPatchService.swift */,
 				BYTE0A01 /* ByteAuthService.swift */,
 			);
 			path = helpers;
@@ -719,7 +719,6 @@
 			files = (
 				3105A211,
 				3105A228,
-				3106FF14,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -891,6 +890,7 @@
 				3106FF11,
 				3106FF12,
 				3106FF13,
+				3106FF15,
 				BYTE0A11,
 				BYTE0A13,
 				BYTE0A15,
