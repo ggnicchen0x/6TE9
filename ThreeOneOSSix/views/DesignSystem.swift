@@ -2,6 +2,10 @@ import SwiftUI
 
 enum AppTheme {
     static let accent = Color(red: 230/255, green: 57/255, blue: 70/255)
+    static let statusGreen = Color(red: 34/255, green: 197/255, blue: 94/255)
+    static let cardFill = Color(white: 0.065)
+    static let cardGradientOpacity: Double = 0.018
+    static let cardBorderOpacity: Double = 0.05
     static let pageBackground = Color.black
     static let consoleBackground = Color(uiColor: .secondarySystemBackground)
     static let pageInset: CGFloat = 16

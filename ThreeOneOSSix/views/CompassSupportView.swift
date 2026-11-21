@@ -60,12 +60,12 @@ struct CompassSupportView: View {
         .background(
             ZStack {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(white: 0.11))
+                    .fill(AppTheme.cardFill)
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.02),
+                                Color.white.opacity(AppTheme.cardGradientOpacity),
                                 Color.clear
                             ],
                             startPoint: .top,
@@ -73,7 +73,7 @@ struct CompassSupportView: View {
                         )
                     )
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                    .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
             }
         )
     }
@@ -140,12 +140,12 @@ struct CompassSupportView: View {
             .background(
                 ZStack {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color(white: 0.11))
+                        .fill(AppTheme.cardFill)
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.015),
+                                    Color.white.opacity(AppTheme.cardGradientOpacity),
                                     Color.clear
                                 ],
                                 startPoint: .leading,
@@ -153,7 +153,7 @@ struct CompassSupportView: View {
                             )
                         )
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                        .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
                 }
             )
         }
@@ -187,7 +187,7 @@ struct CompassSupportView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color(white: 0.11))
+                .fill(AppTheme.cardFill)
         )
     }
 

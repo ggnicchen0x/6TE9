@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-private let cardFill = Color(white: 0.09)
+private let cardFill = AppTheme.cardFill
 
 struct FFAccountView: View {
     @Environment(\.appLanguage) private var language
@@ -91,7 +91,7 @@ struct FFAccountView: View {
         VStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(Color(white: 0.14))
+                    .fill(Color(white: 0.10))
                     .frame(width: 72, height: 72)
                 Image(systemName: "lock.fill")
                     .font(.system(size: 26, weight: .regular))
@@ -226,15 +226,15 @@ struct FFAccountView: View {
 
             HStack(spacing: 6) {
                 Image(systemName: "checkmark.seal.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(AppTheme.statusGreen)
                     .font(.caption)
                 Text(language.text("account.licensed"))
                     .font(.caption)
-                    .foregroundStyle(.green)
+                    .foregroundStyle(AppTheme.statusGreen)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
-            .background(Color.green.opacity(0.10), in: Capsule())
+            .background(AppTheme.statusGreen.opacity(0.10), in: Capsule())
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
@@ -310,11 +310,11 @@ struct FFAccountView: View {
             }
             Divider().overlay(Color(white: 0.15))
             if ByteAuthService.shared.isLifetime {
-                infoRow(label: language.text("account.expiry"), value: language.text("account.lifetime"), valueColor: .green)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.lifetime"), valueColor: AppTheme.statusGreen)
             } else if let days = ByteAuthService.shared.daysRemaining {
-                infoRow(label: language.text("account.expiry"), value: language.text("account.days", days), valueColor: days > 7 ? .green : .orange)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.days", days), valueColor: days > 7 ? AppTheme.statusGreen : .orange)
             } else {
-                infoRow(label: language.text("account.expiry"), value: language.text("account.active"), valueColor: .green)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.active"), valueColor: AppTheme.statusGreen)
             }
         }
         .padding(16)
@@ -335,7 +335,7 @@ struct FFAccountView: View {
             HStack(spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color(white: 0.14))
+                        .fill(Color(white: 0.09))
                         .frame(width: 36, height: 36)
                     Image(systemName: "gamecontroller.fill")
                         .font(.subheadline)
@@ -414,7 +414,7 @@ struct FFAccountView: View {
                         .fill(
                             selectedGame == id
                                 ? color.opacity(0.12)
-                                : Color(white: 0.13)
+                                : Color(white: 0.08)
                         )
                         .frame(height: 70)
                         .overlay(
@@ -428,7 +428,7 @@ struct FFAccountView: View {
                     if selectedGame == id {
                         Image(systemName: "checkmark.circle.fill")
                             .font(.caption)
-                            .foregroundStyle(.green)
+                            .foregroundStyle(AppTheme.statusGreen)
                             .padding(6)
                     }
                 }
@@ -478,7 +478,7 @@ struct FFAccountView: View {
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(white: 0.12))
+                        .fill(Color(white: 0.07))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)

@@ -1,6 +1,6 @@
 import SwiftUI
 
-private let cardFill = Color(white: 0.11)
+private let cardFill = AppTheme.cardFill
 
 private enum CategoryTab: String, CaseIterable, Identifiable {
     case aimbot
@@ -184,11 +184,11 @@ struct FFCheatHubView: View {
                     .foregroundColor(.green)
                 Text(language.text("cheats.active"))
                     .font(.caption2.weight(.medium))
-                    .foregroundColor(.green)
+                    .foregroundColor(AppTheme.statusGreen)
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 3)
-            .background(Color.green.opacity(0.12), in: Capsule())
+            .background(AppTheme.statusGreen.opacity(0.12), in: Capsule())
         }
         .padding(14)
         .background(accentBarCard(cornerRadius: 14, barColor: AppTheme.accent))
@@ -215,7 +215,7 @@ struct FFCheatHubView: View {
                     .padding(.vertical, 10)
                     .background(
                         Capsule(style: .continuous)
-                            .fill(selectedCategory == tab ? AppTheme.accent : Color(white: 0.16))
+                            .fill(selectedCategory == tab ? AppTheme.accent : Color(white: 0.10))
                     )
                     .overlay(
                         Capsule(style: .continuous)
@@ -246,7 +246,7 @@ struct FFCheatHubView: View {
                         .padding(.vertical, 8)
                         .background(
                             Capsule(style: .continuous)
-                                .fill(selectedAimbotSub == sub ? AppTheme.accent : Color(white: 0.14))
+                                .fill(selectedAimbotSub == sub ? AppTheme.accent : Color(white: 0.09))
                         )
                         .overlay(
                             Capsule(style: .continuous)
@@ -271,13 +271,13 @@ struct FFCheatHubView: View {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [Color.white.opacity(0.035), Color.clear],
+                        colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
             HStack(spacing: 0) {
                 barColor
                     .frame(width: 3.5)
@@ -296,11 +296,11 @@ struct FFCheatHubView: View {
         return HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(loaded ? Color.green.opacity(0.15) : Color(white: 0.16))
+                    .fill(loaded ? AppTheme.statusGreen.opacity(0.15) : Color(white: 0.10))
                     .frame(width: 48, height: 48)
                 Image(systemName: entry.category.icon)
                     .font(.body.weight(.medium))
-                    .foregroundColor(loaded ? .green : .secondary)
+                    .foregroundColor(loaded ? AppTheme.statusGreen : .secondary)
             }
 
             VStack(alignment: .leading, spacing: 5) {
@@ -315,15 +315,15 @@ struct FFCheatHubView: View {
                     } else {
                         Text(loaded ? language.text("cheats.loaded") : language.text("cheats.not_loaded"))
                             .font(.caption)
-                            .foregroundColor(loaded ? .green : .secondary)
+                            .foregroundColor(loaded ? AppTheme.statusGreen : .secondary)
                     }
 
                     Text(isSafe ? language.text("cheats.safe") : language.text("cheats.unsafe"))
                         .font(.caption2.weight(.medium))
-                        .foregroundColor(isSafe ? .green : .red)
+                        .foregroundColor(isSafe ? AppTheme.statusGreen : .red)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background((isSafe ? Color.green : Color.red).opacity(0.12), in: Capsule())
+                        .background((isSafe ? AppTheme.statusGreen : Color.red).opacity(0.12), in: Capsule())
                 }
             }
 
@@ -349,7 +349,7 @@ struct FFCheatHubView: View {
                         .padding(.vertical, 10)
                         .background(
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(loaded ? AppTheme.accent : Color(white: 0.22))
+                                .fill(loaded ? AppTheme.accent : Color(white: 0.14))
                         )
                 }
                 .disabled(isBusy)
@@ -359,7 +359,7 @@ struct FFCheatHubView: View {
         .padding(.vertical, 18)
         .background(
             loaded
-                ? AnyView(accentBarCard(cornerRadius: 16, barColor: .green))
+                ? AnyView(accentBarCard(cornerRadius: 16, barColor: AppTheme.statusGreen))
                 : AnyView(
                     ZStack {
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -367,13 +367,13 @@ struct FFCheatHubView: View {
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
                             .fill(
                                 LinearGradient(
-                                    colors: [Color.white.opacity(0.02), Color.clear],
+                                    colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )
                             )
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                            .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
                     }
                 )
         )

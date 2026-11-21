@@ -32,7 +32,7 @@ struct ByteSplashView: View {
 
                     ZStack {
                         Circle()
-                            .fill(Color(white: 0.12))
+                            .fill(AppTheme.cardFill)
                             .frame(width: 110, height: 110)
 
                         Circle()

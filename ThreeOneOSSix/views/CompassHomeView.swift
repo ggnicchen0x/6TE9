@@ -29,7 +29,7 @@ struct PulsingDot: View {
     }
 }
 
-private let cardFill = Color(white: 0.11)
+private let cardFill = AppTheme.cardFill
 
 struct CompassHomeView: View {
     @EnvironmentObject private var appState: AppState
@@ -100,15 +100,15 @@ struct CompassHomeView: View {
                 HStack(spacing: 4) {
                     Image(systemName: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill")
                         .font(.caption2)
-                        .foregroundStyle(appState.isSupported ? .green : .red)
+                        .foregroundStyle(appState.isSupported ? AppTheme.statusGreen : .red)
                     Text(appState.isSupported ? "Supported" : "Unsupported")
                         .font(.caption2.weight(.semibold))
-                        .foregroundStyle(appState.isSupported ? .green : .red)
+                        .foregroundStyle(appState.isSupported ? AppTheme.statusGreen : .red)
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 3)
                 .background(
-                    (appState.isSupported ? Color.green : Color.red).opacity(0.12),
+                    (appState.isSupported ? AppTheme.statusGreen : Color.red).opacity(0.12),
                     in: Capsule()
                 )
 
@@ -126,7 +126,7 @@ struct CompassHomeView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color.white.opacity(0.035),
+                                Color.white.opacity(AppTheme.cardGradientOpacity),
                                 Color.clear
                             ],
                             startPoint: .top,
@@ -134,7 +134,7 @@ struct CompassHomeView: View {
                         )
                     )
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                    .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
             }
         )
     }
@@ -161,10 +161,10 @@ struct CompassHomeView: View {
                         .layoutPriority(-1)
                     Spacer(minLength: 4)
                     HStack(spacing: 5) {
-                        PulsingDot(color: appState.isSupported ? .green : .red)
+                        PulsingDot(color: appState.isSupported ? AppTheme.statusGreen : .red)
                         Text(appState.isSupported ? "Supported" : "Unsupported")
                             .font(.footnote)
-                            .foregroundStyle(appState.isSupported ? .green : .red)
+                            .foregroundStyle(appState.isSupported ? AppTheme.statusGreen : .red)
                     }
                     .fixedSize()
                 }
@@ -179,7 +179,7 @@ struct CompassHomeView: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    Color.white.opacity(0.015),
+                                    Color.white.opacity(AppTheme.cardGradientOpacity),
                                     Color.clear
                                 ],
                                 startPoint: .top,
@@ -187,7 +187,7 @@ struct CompassHomeView: View {
                             )
                         )
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                        .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
                 }
             )
         }
