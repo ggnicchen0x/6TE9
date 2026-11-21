@@ -107,38 +107,16 @@ struct FFCheatEntry: Identifiable {
     let displayLabel: String
 }
 
-private let featureCategoryMap: [String: FFCheatCategory] = [
-    "avatar": .aimbotDrag,
-    "avatar_cs": .aimbotDrag,
-    "avatar_rooms": .aimbotDrag,
-    "avatar_ffth": .aimbotDrag,
-    "avatar_ffth_antena": .aimbotDrag,
-    "aimbody": .aimbotChest,
-    "aim_head": .aimbotHead,
-    "aim_neck": .aimbotNeck,
-    "aim_chest": .aimbotChest,
-    "aim_drag": .aimbotDrag,
-    "magic": .aimbotHead,
-    "hologram_ffmax": .holoWeapons,
-    "hologram_ffth": .holoWeapons,
-    "hologram_char": .holoCharacter,
-    "holo_weapons": .holoWeapons,
-    "holo_character": .holoCharacter,
-]
-
-private let featureAntennaSet: Set<String> = [
-    "avatar_ffth_antena",
-]
-
 private func inferCategory(from featureID: String, name: String) -> FFCheatCategory {
-    if let mapped = featureCategoryMap[featureID] { return mapped }
-
     let lower = featureID.lowercased() + " " + name.lowercased()
-    if lower.contains("holo") || lower.contains("visual") { return .holoWeapons }
-    if lower.contains("head") || lower.contains("cabeza") { return .aimbotHead }
-    if lower.contains("neck") || lower.contains("cuello") { return .aimbotNeck }
-    if lower.contains("chest") || lower.contains("pecho") || lower.contains("body") { return .aimbotChest }
-    if lower.contains("drag") || lower.contains("avatar") { return .aimbotDrag }
+    if lower.contains("holo") || lower.contains("visual") || lower.contains("character") || lower.contains("skin") {
+        if lower.contains("character") || lower.contains("personaje") { return .holoCharacter }
+        return .holoWeapons
+    }
+    if lower.contains("head") { return .aimbotHead }
+    if lower.contains("neck") { return .aimbotNeck }
+    if lower.contains("chest") || lower.contains("body") { return .aimbotChest }
+    if lower.contains("drag") { return .aimbotDrag }
     return .aimbotDrag
 }
 
@@ -179,8 +157,7 @@ enum FFPatchCatalog {
             guard hasVariantFile else { return nil }
 
             let category = inferCategory(from: feature.id, name: feature.name)
-            let hasAntenna = featureAntennaSet.contains(feature.id)
-                || feature.name.lowercased().contains("antena")
+            let hasAntenna = feature.name.lowercased().contains("antena")
                 || feature.name.lowercased().contains("antenna")
 
             return FFCheatEntry(
