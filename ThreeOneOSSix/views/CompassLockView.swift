@@ -44,17 +44,16 @@ struct CompassLockView: View {
                     // Fixed Top Heading Index Line (12 o'clock)
                     topIndexMarker
 
-                    // Green confirmation ring only shown AFTER 2-second hold completes
-                    if isUnlocked && ringProgress > 0 {
-                        Circle()
-                            .trim(from: 0, to: ringProgress)
-                            .stroke(
-                                AppTheme.statusGreen,
-                                style: StrokeStyle(lineWidth: 3.5, lineCap: .round)
-                            )
-                            .frame(width: 308, height: 308)
-                            .rotationEffect(.degrees(-90))
-                    }
+                    // Green animated confirmation ring (sweeps around after 2s hold)
+                    Circle()
+                        .trim(from: 0, to: ringProgress)
+                        .stroke(
+                            AppTheme.statusGreen,
+                            style: StrokeStyle(lineWidth: 3.5, lineCap: .round)
+                        )
+                        .frame(width: 308, height: 308)
+                        .rotationEffect(.degrees(-90))
+                        .opacity(ringProgress > 0 ? 1 : 0)
                 }
                 .frame(width: 320, height: 320)
 
@@ -107,6 +106,7 @@ struct CompassLockView: View {
             holdTimer?.invalidate()
         }
         .onChange(of: isOnTarget) { onTarget in
+            guard !isUnlocked else { return }
             if onTarget {
                 startHoldTimer()
             } else {
@@ -118,7 +118,7 @@ struct CompassLockView: View {
     // MARK: - Top Fixed Index Marker (12 o'clock)
     private var topIndexMarker: some View {
         Rectangle()
-            .fill(isUnlocked ? AppTheme.statusGreen : Color.white)
+            .fill(ringProgress > 0 ? AppTheme.statusGreen : Color.white)
             .frame(width: 2.5, height: 30)
             .offset(y: -140)
     }
@@ -205,25 +205,43 @@ struct CompassLockView: View {
     }
 
     private func cancelHoldTimer() {
+        guard !isUnlocked else { return }
         holdTimer?.invalidate()
         holdTimer = nil
     }
 
     private func triggerUnlock() {
+        guard !isUnlocked else { return }
         isUnlocked = true
-        let generator = UIImpactFeedbackGenerator(style: .heavy)
-        generator.impactOccurred()
-        withAnimation(.easeOut(duration: 0.35)) {
-            ringProgress = 1.0
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
-            withAnimation(.easeIn(duration: 0.15)) {
-                showUnlockFlash = true
+
+        let startHaptic = UIImpactFeedbackGenerator(style: .medium)
+        startHaptic.impactOccurred()
+
+        // Animate the green circle drawing smoothly around 360 degrees
+        let duration: Double = 0.55
+        let interval: Double = 0.016 // ~60 FPS
+        let totalSteps = duration / interval
+        var currentStep = 0.0
+
+        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { animTimer in
+            currentStep += 1
+            ringProgress = min(1.0, currentStep / totalSteps)
+
+            if currentStep >= totalSteps {
+                animTimer.invalidate()
+
+                let heavyHaptic = UIImpactFeedbackGenerator(style: .heavy)
+                heavyHaptic.impactOccurred()
+
+                withAnimation(.easeIn(duration: 0.15)) {
+                    showUnlockFlash = true
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    headingManager.stop()
+                    onUnlock()
+                }
             }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-            headingManager.stop()
-            onUnlock()
         }
     }
 
