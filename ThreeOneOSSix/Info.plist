@@ -69,6 +69,8 @@
 	<string>Compass needs access to documents.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Compass uses the local network to transfer files to and from this device over Wi-Fi.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Compass uses your location to show heading, coordinates, and elevation on the compass screen.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Compass needs access to photos for wallpaper customization.</string>
 	<key>NSAppTransportSecurity</key>

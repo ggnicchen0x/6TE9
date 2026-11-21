@@ -14,6 +14,7 @@ struct ThreeOneOSSixApp: App {
 
     @State private var configImportError: String?
     @State private var showSplash = true
+    @State private var compassLocked = true
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -75,6 +76,14 @@ struct ThreeOneOSSixApp: App {
                     ByteSplashView()
                         .transition(.opacity)
                         .zIndex(2)
+                } else if compassLocked {
+                    CompassLockView {
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            compassLocked = false
+                        }
+                    }
+                    .transition(.opacity)
+                    .zIndex(1.5)
                 } else if showOnboarding {
                     OnboardingView {
                         OnboardingStore.markCompleted()

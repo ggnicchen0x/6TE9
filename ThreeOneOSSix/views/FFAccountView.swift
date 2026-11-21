@@ -70,19 +70,99 @@ struct FFAccountView: View {
             } message: {
                 Text(errorMessage ?? language.text("account.unknown_error"))
             }
-            .alert(language.text("account.welcome"), isPresented: $showNamePrompt) {
-                TextField(language.text("account.name_placeholder"), text: $nameInput)
-                Button(language.text("account.save")) {
-                    let trimmed = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
-                    if !trimmed.isEmpty {
-                        ByteAuthService.shared.setUserName(trimmed)
-                    }
+            .overlay {
+                if showNamePrompt {
+                    namePromptOverlay
                 }
-                Button(language.text("account.skip"), role: .cancel) {}
-            } message: {
-                Text(language.text("account.name_prompt"))
             }
         }
+    }
+
+    // MARK: - Name Prompt Overlay
+
+    private var namePromptOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.6)
+                .ignoresSafeArea()
+                .onTapGesture {}
+
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(AppTheme.accent.opacity(0.15))
+                        .frame(width: 56, height: 56)
+                    Image(systemName: "person.fill")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.accent)
+                }
+
+                Text(language.text("account.welcome"))
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.white)
+
+                Text(language.text("account.name_prompt"))
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.6))
+                    .multilineTextAlignment(.center)
+
+                TextField(language.text("account.name_placeholder"), text: $nameInput)
+                    .font(.body)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(Color(white: 0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5)
+                    )
+                    .foregroundStyle(.white)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.words)
+                    .padding(.horizontal, 4)
+
+                HStack(spacing: 10) {
+                    Button {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            showNamePrompt = false
+                        }
+                    } label: {
+                        Text(language.text("account.skip"))
+                            .font(.body.weight(.semibold))
+                            .foregroundStyle(AppTheme.accent)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Color(white: 0.12), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    }
+
+                    Button {
+                        let trimmed = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
+                        if !trimmed.isEmpty {
+                            ByteAuthService.shared.setUserName(trimmed)
+                        }
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            showNamePrompt = false
+                        }
+                    } label: {
+                        Text(language.text("account.save"))
+                            .font(.body.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(AppTheme.accent, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    }
+                }
+            }
+            .padding(24)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color(white: 0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.08), lineWidth: 0.5)
+            )
+            .padding(.horizontal, 32)
+        }
+        .transition(.opacity)
     }
 
     // MARK: - Logged Out State

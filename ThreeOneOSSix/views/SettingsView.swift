@@ -6,6 +6,7 @@ struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
     @AppStorage("sound.effects.enabled") private var soundEffectsEnabled = true
+    @AppStorage("compass.unlock_degree") private var unlockDegree: Int = 0
     @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
 
     var body: some View {
@@ -64,6 +65,22 @@ struct SettingsView: View {
                 }
 
 
+                Section("Compass Lock") {
+                    HStack {
+                        Label("Unlock Degree", systemImage: "location.north.circle")
+                        Spacer()
+                        Picker("", selection: $unlockDegree) {
+                            ForEach(Array(stride(from: 0, through: 350, by: 10)), id: \.self) { deg in
+                                Text("\(deg)\u{00B0} \(cardinalName(for: Double(deg)))").tag(deg)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .tint(.white)
+                    }
+                } footer: {
+                    Text("Point your device to this heading to unlock the app. Default is 0\u{00B0} (North).")
+                }
+
                 Section(language.text("common.device")) {
                     LabeledContent(language.text("dashboard.hardware_model"), value: AppInfo.displayMachineName)
                     LabeledContent(language.text("settings.ios_version"), value: "\(AppInfo.osVersion) (\(AppInfo.osBuild))")
@@ -113,6 +130,12 @@ struct SettingsView: View {
     private var appVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             ?? "1.0"
+    }
+
+    private func cardinalName(for deg: Double) -> String {
+        let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+        let idx = Int((deg + 22.5).truncatingRemainder(dividingBy: 360) / 45)
+        return dirs[idx % 8]
     }
 
     private var appGroupStatus: String {
