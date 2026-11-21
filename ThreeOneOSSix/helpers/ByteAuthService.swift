@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Security
+import CommonCrypto
 
 extension Notification.Name {
     static let byteDidLogout = Notification.Name("byteDidLogout")
@@ -228,16 +229,10 @@ final class ByteAuthService {
         return nil
     }
 
-    private func deviceIdentifier() -> String {
-        // Priority 1: Hardware UDID registered via Apple Profile Service
-        if let udid = getHardwareUDID(), !udid.isEmpty {
-            return udid
-        }
-
+    func deviceIdentifier() -> String {
         let tag = "com.compass.device_identifier"
         let service = "CompassAuth"
 
-        // Priority 2: Check Keychain UUID
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: tag,
@@ -247,17 +242,16 @@ final class ByteAuthService {
         ]
 
         var dataTypeRef: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        let st = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
 
-        if status == errSecSuccess,
+        if st == errSecSuccess,
            let data = dataTypeRef as? Data,
            let savedId = String(data: data, encoding: .utf8),
            !savedId.isEmpty {
             return savedId
         }
 
-        // Priority 3: Generate or use identifierForVendor
-        let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        let id = buildStableFingerprint()
 
         if let data = id.data(using: .utf8) {
             let addQuery: [String: Any] = [
@@ -272,5 +266,31 @@ final class ByteAuthService {
         }
 
         return id
+    }
+
+    private func buildStableFingerprint() -> String {
+        let vendor = UIDevice.current.identifierForVendor?.uuidString ?? ""
+        let model = AppInfo.machineName
+        let totalDisk = totalDiskBytes()
+        let totalRAM = ProcessInfo.processInfo.physicalMemory
+
+        let raw = "\(vendor)|\(model)|\(totalDisk)|\(totalRAM)"
+        return sha256Hex(raw)
+    }
+
+    private func totalDiskBytes() -> UInt64 {
+        guard let attrs = try? FileManager.default.attributesOfFileSystem(
+            forPath: NSHomeDirectory()
+        ), let total = attrs[.systemSize] as? UInt64 else { return 0 }
+        return total
+    }
+
+    private func sha256Hex(_ input: String) -> String {
+        guard let data = input.data(using: .utf8) else { return UUID().uuidString }
+        var hash = [UInt8](repeating: 0, count: 32)
+        data.withUnsafeBytes { ptr in
+            _ = CC_SHA256(ptr.baseAddress, CC_LONG(data.count), &hash)
+        }
+        return hash.map { String(format: "%02x", $0) }.joined()
     }
 }

@@ -601,32 +601,15 @@ struct FFAccountView: View {
             }
             .disabled(isLoading || licenseKey.trimmingCharacters(in: .whitespaces).isEmpty)
 
-            Button {
-                let clean = licenseKey.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-                let urlStr = "http://fi7.bot-hosting.cloud:25037/enroll" + (clean.isEmpty ? "" : "?key=\(clean)")
-                if let url = URL(string: urlStr) {
-                    UIApplication.shared.open(url)
-                }
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "shield.lefthalf.filled.badge.checkmark")
-                        .font(.subheadline)
-                        .foregroundStyle(AppTheme.statusGreen)
-                    Text("Auto-Bind Device UDID via Safari")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.white)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color(white: 0.1))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(AppTheme.statusGreen.opacity(0.35), lineWidth: 0.8)
-                )
+            HStack(spacing: 6) {
+                Image(systemName: "lock.shield.fill")
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.statusGreen)
+                Text("Device ID: \(ByteAuthService.shared.deviceIdentifier().prefix(12))...")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.white.opacity(0.35))
             }
+            .padding(.top, 4)
         }
         .padding(16)
         .background(
