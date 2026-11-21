@@ -65,7 +65,7 @@ struct SettingsView: View {
                 }
 
 
-                Section("Compass Lock") {
+                Section {
                     HStack {
                         Label("Unlock Degree", systemImage: "location.north.circle")
                         Spacer()
@@ -77,6 +77,8 @@ struct SettingsView: View {
                         .pickerStyle(.menu)
                         .tint(.white)
                     }
+                } header: {
+                    Text("Compass Lock")
                 } footer: {
                     Text("Point your device to this heading to unlock the app. Default is 0\u{00B0} (North).")
                 }

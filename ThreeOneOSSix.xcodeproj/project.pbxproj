@@ -188,6 +188,8 @@
 		BYTE0A15 /* ByteSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A05; };
 		BYTE0A17 /* CompassHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A07; };
 		BYTE0A19 /* CompassSupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BYTE0A09; };
+		COMP0B11 /* HeadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = COMP0B01; };
+		COMP0B13 /* CompassLockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = COMP0B03; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -394,6 +396,8 @@
 		BYTE0A05 /* ByteSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteSplashView.swift; sourceTree = "<group>"; };
 		BYTE0A07 /* CompassHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassHomeView.swift; sourceTree = "<group>"; };
 		BYTE0A09 /* CompassSupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassSupportView.swift; sourceTree = "<group>"; };
+		COMP0B01 /* HeadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadingManager.swift; sourceTree = "<group>"; };
+		COMP0B03 /* CompassLockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassLockView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -516,6 +520,7 @@
 				BYTE0A05 /* ByteSplashView.swift */,
 				BYTE0A07 /* CompassHomeView.swift */,
 				BYTE0A09 /* CompassSupportView.swift */,
+				COMP0B03 /* CompassLockView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -633,6 +638,7 @@
 				3106C100 /* CrashLogCleaner.swift */,
 				3106FF01 /* FFPatchCatalog.swift */,
 				3106FF05 /* CloudPatchService.swift */,
+				COMP0B01 /* HeadingManager.swift */,
 				BYTE0A01 /* ByteAuthService.swift */,
 			);
 			path = helpers;
@@ -891,6 +897,8 @@
 				3106FF12,
 				3106FF13,
 				3106FF15,
+				COMP0B11,
+				COMP0B13,
 				BYTE0A11,
 				BYTE0A13,
 				BYTE0A15,
