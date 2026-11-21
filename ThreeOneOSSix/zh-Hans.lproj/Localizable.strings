@@ -1637,6 +1637,7 @@
 "cheats.loaded" = "已加载";
 "cheats.not_loaded" = "未加载";
 "cheats.safe" = "安全";
+"cheats.unsafe" = "不安全";
 "cheats.unload" = "卸载";
 "cheats.load" = "加载";
 "cheats.empty" = "无可用补丁";

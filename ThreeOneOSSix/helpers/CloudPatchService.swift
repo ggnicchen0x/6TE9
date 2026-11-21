@@ -42,6 +42,7 @@ struct CloudPatchFeature: Identifiable, Codable {
 struct CloudCatalogResponse: Codable {
     let status: String
     let features: [CloudPatchFeature]
+    let safe_status: Bool?
 }
 
 final class CloudPatchService {
@@ -60,6 +61,7 @@ final class CloudPatchService {
 
     // MARK: - Catalog
 
+    private(set) var isSafe: Bool = true
     private var cachedCatalog: CloudCatalogResponse?
     private var catalogFetchTime: Date?
 
@@ -89,6 +91,7 @@ final class CloudPatchService {
         let catalog = try JSONDecoder().decode(CloudCatalogResponse.self, from: data)
         cachedCatalog = catalog
         catalogFetchTime = Date()
+        isSafe = catalog.safe_status ?? true
         return catalog.features
     }
 

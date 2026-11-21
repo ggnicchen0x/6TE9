@@ -1602,6 +1602,7 @@
 "cheats.loaded" = "로드됨";
 "cheats.not_loaded" = "미로드";
 "cheats.safe" = "안전";
+"cheats.unsafe" = "위험";
 "cheats.unload" = "언로드";
 "cheats.load" = "로드";
 "cheats.empty" = "사용 가능한 패치 없음";

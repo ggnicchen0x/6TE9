@@ -1637,6 +1637,7 @@
 "cheats.loaded" = "Loaded";
 "cheats.not_loaded" = "Not loaded";
 "cheats.safe" = "Safe";
+"cheats.unsafe" = "Unsafe";
 "cheats.unload" = "Unload";
 "cheats.load" = "Load";
 "cheats.empty" = "No patches available";

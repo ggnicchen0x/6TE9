@@ -62,6 +62,7 @@ struct FFCheatHubView: View {
     @State private var selectedAimbotSub: AimbotSubTab = .head
     @State private var catalogLoaded = false
     @State private var catalogLoading = false
+    @State private var isSafe = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
@@ -136,6 +137,7 @@ struct FFCheatHubView: View {
                 await FFPatchCatalog.loadCatalogIfNeeded()
                 catalogLoading = false
                 catalogLoaded = true
+                isSafe = CloudPatchService.shared.isSafe
                 refreshActiveState()
             }
             .toolbar {
@@ -316,12 +318,12 @@ struct FFCheatHubView: View {
                             .foregroundColor(loaded ? .green : .secondary)
                     }
 
-                    Text(language.text("cheats.safe"))
+                    Text(isSafe ? language.text("cheats.safe") : language.text("cheats.unsafe"))
                         .font(.caption2.weight(.medium))
-                        .foregroundColor(.green)
+                        .foregroundColor(isSafe ? .green : .red)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background(Color.green.opacity(0.12), in: Capsule())
+                        .background((isSafe ? Color.green : Color.red).opacity(0.12), in: Capsule())
                 }
             }
 
@@ -423,6 +425,7 @@ struct FFCheatHubView: View {
                             catalogLoading = true
                             await FFPatchCatalog.refreshCatalog()
                             catalogLoading = false
+                            isSafe = CloudPatchService.shared.isSafe
                             refreshActiveState()
                         }
                     } label: {

@@ -1637,6 +1637,7 @@
 "cheats.loaded" = "Đã tải";
 "cheats.not_loaded" = "Chưa tải";
 "cheats.safe" = "An toàn";
+"cheats.unsafe" = "Không an toàn";
 "cheats.unload" = "Gỡ";
 "cheats.load" = "Tải";
 "cheats.empty" = "Không có bản vá";
