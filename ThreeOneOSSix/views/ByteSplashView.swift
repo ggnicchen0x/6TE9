@@ -57,6 +57,18 @@ struct ByteSplashView: View {
                     .padding(.top, 4)
                     .opacity(textOpacity)
 
+                VStack(spacing: 2) {
+                    Text("by")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(Color.white.opacity(0.35))
+                        .tracking(1.5)
+                    Text("Nicchen")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Color.white.opacity(0.85))
+                }
+                .padding(.top, 14)
+                .opacity(textOpacity)
+
                 Spacer()
 
                 HStack(spacing: 8) {
