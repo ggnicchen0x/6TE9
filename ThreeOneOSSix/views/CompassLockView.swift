@@ -11,8 +11,8 @@ struct CompassLockView: View {
 
     var onUnlock: () -> Void
 
-    private let tolerance: Double = 3
-    private let holdDuration: Double = 1.5
+    private let tolerance: Double = 3.5
+    private let holdDuration: Double = 2.0
 
     private var isOnTarget: Bool {
         let diff = abs(heading - Double(unlockDegree))
@@ -31,70 +31,69 @@ struct CompassLockView: View {
             VStack(spacing: 0) {
                 Spacer()
 
+                // MARK: - Compass Dial & Reticle
                 ZStack {
+                    // Rotating Dial (ticks, numbers, cardinals, red north marker)
                     compassDial
                         .rotationEffect(.degrees(-heading))
 
-                    crosshair
+                    // Fixed Center Reticle / Level Crosshair (does not rotate)
+                    centerReticle
 
-                    if isOnTarget {
+                    // Fixed Top Heading Index Line (12 o'clock)
+                    topIndexMarker
+
+                    // Green progress bar when holding on target degree
+                    if isOnTarget && holdProgress > 0 {
                         Circle()
-                            .stroke(AppTheme.statusGreen, lineWidth: 3)
-                            .frame(width: 280, height: 280)
-                            .transition(.opacity)
+                            .trim(from: 0, to: holdProgress)
+                            .stroke(
+                                AppTheme.statusGreen,
+                                style: StrokeStyle(lineWidth: 3.5, lineCap: .round)
+                            )
+                            .frame(width: 308, height: 308)
+                            .rotationEffect(.degrees(-90))
                     }
-
-                    Circle()
-                        .trim(from: 0, to: holdProgress)
-                        .stroke(AppTheme.statusGreen, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                        .frame(width: 290, height: 290)
-                        .rotationEffect(.degrees(-90))
                 }
-                .frame(width: 300, height: 300)
-                .animation(.easeInOut(duration: 0.15), value: isOnTarget)
+                .frame(width: 320, height: 320)
 
-                Spacer().frame(height: 40)
+                Spacer().frame(height: 36)
 
+                // MARK: - Heading & Direction Text
                 Text("\(Int(heading))\u{00B0} \(cardinalDirection)")
-                    .font(.system(size: 56, weight: .light, design: .default))
+                    .font(.system(size: 60, weight: .light, design: .default))
                     .foregroundStyle(.white)
                     .monospacedDigit()
 
+                // MARK: - Coordinates
                 if let coord = headingManager.coordinate {
                     Text(formatCoordinate(coord))
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.6))
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundStyle(.white)
                         .padding(.top, 8)
                 }
 
+                // MARK: - Place Name
                 if !headingManager.placeName.isEmpty {
                     Text(headingManager.placeName)
-                        .font(.title3.weight(.medium))
+                        .font(.system(size: 21, weight: .medium))
                         .foregroundStyle(.white)
                         .padding(.top, 4)
                 }
 
+                // MARK: - Elevation
                 if headingManager.altitude != 0 {
-                    Text("\(Int(headingManager.altitude)) m Elevation")
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.6))
+                    Text(formatElevation(headingManager.altitude))
+                        .font(.system(size: 17, weight: .regular))
+                        .foregroundStyle(.white)
                         .padding(.top, 2)
                 }
 
                 Spacer()
-
-                HStack(spacing: 6) {
-                    Image(systemName: isOnTarget ? "checkmark.circle.fill" : "location.north.fill")
-                        .foregroundStyle(isOnTarget ? AppTheme.statusGreen : .white.opacity(0.4))
-                    Text(isOnTarget ? "Hold steady..." : "Point to \(unlockDegree)\u{00B0} \(cardinalName(for: Double(unlockDegree)))")
-                        .font(.subheadline)
-                        .foregroundStyle(isOnTarget ? AppTheme.statusGreen : .white.opacity(0.4))
-                }
-                .padding(.bottom, 50)
             }
 
             if showUnlockFlash {
-                Color.white.opacity(0.15)
+                Color.white.opacity(0.2)
                     .ignoresSafeArea()
                     .transition(.opacity)
             }
@@ -115,67 +114,100 @@ struct CompassLockView: View {
         }
     }
 
-    // MARK: - Compass Dial
+    // MARK: - Top Fixed Index Marker (12 o'clock)
+    private var topIndexMarker: some View {
+        Rectangle()
+            .fill(isOnTarget ? AppTheme.statusGreen : Color.white)
+            .frame(width: 2.5, height: 30)
+            .offset(y: -140)
+    }
 
+    // MARK: - Center Reticle / Level Crosshair (Fixed)
+    private var centerReticle: some View {
+        ZStack {
+            Circle()
+                .fill(Color.white.opacity(0.12))
+                .frame(width: 60, height: 60)
+
+            Rectangle()
+                .fill(Color.white.opacity(0.3))
+                .frame(width: 104, height: 0.8)
+
+            Rectangle()
+                .fill(Color.white.opacity(0.3))
+                .frame(width: 0.8, height: 104)
+
+            Rectangle()
+                .fill(Color.white.opacity(0.6))
+                .frame(width: 14, height: 0.8)
+
+            Rectangle()
+                .fill(Color.white.opacity(0.6))
+                .frame(width: 0.8, height: 14)
+        }
+    }
+
+    // MARK: - Compass Dial (Rotates)
     private var compassDial: some View {
         ZStack {
-            ForEach(0..<360, id: \.self) { deg in
+            // 180 tick marks (every 2 degrees)
+            ForEach(0..<180, id: \.self) { i in
+                let deg = i * 2
                 let isMajor = deg % 30 == 0
-                let isMinor = deg % 10 == 0
-                if isMajor || isMinor {
-                    Rectangle()
-                        .fill(isMajor ? Color.white : Color.white.opacity(0.4))
-                        .frame(width: isMajor ? 2 : 1, height: isMajor ? 16 : 8)
-                        .offset(y: -125)
-                        .rotationEffect(.degrees(Double(deg)))
-                }
-            }
+                let isMedium = deg % 10 == 0
+                let len: CGFloat = isMajor ? 13 : (isMedium ? 9.5 : 5.5)
+                let wid: CGFloat = isMajor ? 1.8 : (isMedium ? 1.2 : 0.8)
+                let opacity: Double = isMajor ? 1.0 : (isMedium ? 0.8 : 0.45)
 
-            ForEach(0..<12, id: \.self) { i in
-                let deg = i * 30
-                let label = degreeLabel(deg)
-                Text(label)
-                    .font(.system(size: label.count <= 2 ? 16 : 14, weight: .bold))
-                    .foregroundStyle(labelColor(deg))
-                    .offset(y: -100)
+                Rectangle()
+                    .fill(Color.white.opacity(opacity))
+                    .frame(width: wid, height: len)
+                    .offset(y: -128 + len / 2)
                     .rotationEffect(.degrees(Double(deg)))
             }
 
+            // Red triangle at 0° (North)
             Triangle()
-                .fill(Color.red)
-                .frame(width: 12, height: 10)
-                .offset(y: -140)
+                .fill(Color(red: 0.95, green: 0.25, blue: 0.2))
+                .frame(width: 8, height: 7)
+                .offset(y: -136)
                 .rotationEffect(.degrees(0))
+
+            // Outer degree numbers: 0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330
+            ForEach(0..<12, id: \.self) { i in
+                let deg = i * 30
+                Text("\(deg)")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .offset(y: deg == 0 ? -148 : -146)
+                    .rotationEffect(.degrees(Double(deg)))
+            }
+
+            // Cardinal letters inside tick ring: N, E, S, W
+            ForEach(["N": 0, "E": 90, "S": 180, "W": 270].sorted(by: { $0.value < $1.value }), id: \.key) { key, deg in
+                Text(key)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(.white)
+                    .offset(y: -75)
+                    .rotationEffect(.degrees(Double(deg)))
+            }
         }
     }
 
-    private var crosshair: some View {
-        ZStack {
-            Rectangle()
-                .fill(Color.white.opacity(0.3))
-                .frame(width: 1, height: 20)
-            Rectangle()
-                .fill(Color.white.opacity(0.3))
-                .frame(width: 20, height: 1)
-            Circle()
-                .fill(Color.white.opacity(0.1))
-                .frame(width: 8, height: 8)
-        }
-    }
-
-    // MARK: - Hold Timer
-
+    // MARK: - Hold Timer (2 Seconds)
     private func startHoldTimer() {
         holdProgress = 0
-        let interval: Double = 0.03
+        let interval: Double = 0.02
         let steps = holdDuration / interval
         var tick = 0.0
 
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+
         holdTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { timer in
             tick += 1
-            withAnimation(.linear(duration: interval)) {
-                holdProgress = tick / steps
-            }
+            holdProgress = min(1.0, tick / steps)
+
             if tick >= steps {
                 timer.invalidate()
                 triggerUnlock()
@@ -204,29 +236,15 @@ struct CompassLockView: View {
     }
 
     // MARK: - Helpers
-
     private var cardinalDirection: String {
         cardinalName(for: heading)
     }
 
     private func cardinalName(for deg: Double) -> String {
         let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-        let idx = Int((deg + 22.5).truncatingRemainder(dividingBy: 360) / 45)
-        return dirs[idx % 8]
-    }
-
-    private func degreeLabel(_ deg: Int) -> String {
-        switch deg {
-        case 0: return "N"
-        case 90: return "E"
-        case 180: return "S"
-        case 270: return "W"
-        default: return "\(deg)"
-        }
-    }
-
-    private func labelColor(_ deg: Int) -> Color {
-        deg == 0 ? .red : .white
+        let normalized = (deg.truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
+        let idx = Int((normalized + 22.5) / 45) % 8
+        return dirs[idx]
     }
 
     private func formatCoordinate(_ coord: CLLocationCoordinate2D) -> String {
@@ -242,7 +260,14 @@ struct CompassLockView: View {
         let lonDeg = Int(absLon)
         let lonMin = Int((absLon - Double(lonDeg)) * 60)
         let lonSec = Int(((absLon - Double(lonDeg)) * 60 - Double(lonMin)) * 60)
-        return "\(latDeg)\u{00B0}\(latMin)\u{2032}\(latSec)\u{2033} \(latDir)  \(lonDeg)\u{00B0}\(lonMin)\u{2032}\(lonSec)\u{2033} \(lonDir)"
+        return "\(latDeg)°\(latMin)'\(latSec)\" \(latDir) \(lonDeg)°\(lonMin)'\(lonSec)\" \(lonDir)"
+    }
+
+    private func formatElevation(_ alt: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        let numStr = formatter.string(from: NSNumber(value: Int(alt))) ?? "\(Int(alt))"
+        return "\(numStr) m Elevation"
     }
 }
 
