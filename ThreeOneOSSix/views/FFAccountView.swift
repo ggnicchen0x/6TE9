@@ -40,6 +40,8 @@ struct FFAccountView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
                 .padding(.bottom, 24)
+                .frame(maxWidth: 500)
+                .frame(maxWidth: .infinity)
             }
             .background(AppTheme.pageBackground)
             .navigationTitle(language.text("account.title"))

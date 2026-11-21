@@ -43,6 +43,8 @@ struct OnboardingView: View {
                 bottomControls
                     .padding(.bottom, 16)
             }
+            .frame(maxWidth: 500)
+            .frame(maxWidth: .infinity)
         }
     }
 

@@ -46,6 +46,8 @@ struct CompassHomeView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 10)
                 .padding(.bottom, 24)
+                .frame(maxWidth: 600)
+                .frame(maxWidth: .infinity)
             }
             .background(
                 ZStack {
