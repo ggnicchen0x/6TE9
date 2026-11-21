@@ -1,7 +1,7 @@
 import SwiftUI
 import PhotosUI
 
-private let cardFill = Color(white: 0.11)
+private let cardFill = Color(white: 0.09)
 
 struct FFAccountView: View {
     @Environment(\.appLanguage) private var language
@@ -17,6 +17,7 @@ struct FFAccountView: View {
     @State private var profileImage: UIImage? = ByteAuthService.shared.profileImage
     @State private var selectedPhoto: PhotosPickerItem?
     @State private var showPhotoPicker = false
+    @State private var glowRotation: Double = 0
     @AppStorage("selectedGame") private var selectedGame = FFGameVariant.ffth.rawValue
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
@@ -90,19 +91,19 @@ struct FFAccountView: View {
         VStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(Color(white: 0.16))
+                    .fill(Color(white: 0.14))
                     .frame(width: 72, height: 72)
                 Image(systemName: "lock.fill")
-                    .font(.system(size: 28, weight: .medium))
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 26, weight: .regular))
+                    .foregroundStyle(Color(white: 0.4))
             }
 
             Text(language.text("account.no_membership"))
-                .font(.title3.weight(.bold))
+                .font(.title3.weight(.medium))
 
             Text(language.text("account.activate_key"))
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(white: 0.45))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
@@ -120,30 +121,30 @@ struct FFAccountView: View {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .fill(
                             LinearGradient(
-                                colors: [AppTheme.accent.opacity(0.20), AppTheme.accent.opacity(0.08)],
+                                colors: [AppTheme.accent.opacity(0.18), AppTheme.accent.opacity(0.06)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
                         .frame(width: 40, height: 40)
                     Image(systemName: "key.fill")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                         .foregroundStyle(AppTheme.accent)
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(language.text("account.get_key"))
-                        .font(.subheadline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                     Text(language.text("account.get_key_subtitle"))
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color(white: 0.45))
                 }
 
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Color(white: 0.3))
             }
             .padding(14)
             .background(accentBarCard(cornerRadius: 14))
@@ -159,36 +160,45 @@ struct FFAccountView: View {
                 showPhotoPicker = true
             } label: {
                 ZStack(alignment: .bottomTrailing) {
-                    if let img = profileImage {
-                        Image(uiImage: img)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 80, height: 80)
-                            .clipShape(Circle())
-                    } else {
-                        Circle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [AppTheme.accent, AppTheme.accent.opacity(0.6)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+                    ZStack {
+                        if profileImage != nil {
+                            glowRing
+                        }
+
+                        if let img = profileImage {
+                            Image(uiImage: img)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 80, height: 80)
+                                .clipShape(Circle())
+                        } else {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [AppTheme.accent.opacity(0.7), AppTheme.accent.opacity(0.4)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
                                 )
-                            )
-                            .frame(width: 80, height: 80)
-                            .overlay(
-                                Image(systemName: "person.fill")
-                                    .font(.system(size: 32, weight: .medium))
-                                    .foregroundStyle(.white)
-                            )
+                                .frame(width: 80, height: 80)
+                                .overlay(
+                                    Image(systemName: "person.fill")
+                                        .font(.system(size: 30, weight: .regular))
+                                        .foregroundStyle(.white.opacity(0.9))
+                                )
+                        }
                     }
 
                     ZStack {
                         Circle()
-                            .fill(Color(white: 0.12))
+                            .fill(Color(white: 0.1))
+                            .frame(width: 26, height: 26)
+                        Circle()
+                            .strokeBorder(Color(white: 0.2), lineWidth: 0.5)
                             .frame(width: 26, height: 26)
                         Image(systemName: "camera.fill")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(Color(white: 0.7))
                     }
                     .offset(x: 2, y: 2)
                 }
@@ -212,23 +222,73 @@ struct FFAccountView: View {
             }
 
             Text(ByteAuthService.shared.userName ?? language.text("account.default_name"))
-                .font(.title3.weight(.bold))
+                .font(.title3.weight(.medium))
 
             HStack(spacing: 6) {
                 Image(systemName: "checkmark.seal.fill")
                     .foregroundStyle(.green)
                     .font(.caption)
                 Text(language.text("account.licensed"))
-                    .font(.caption.weight(.medium))
+                    .font(.caption)
                     .foregroundStyle(.green)
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
-            .background(Color.green.opacity(0.12), in: Capsule())
+            .background(Color.green.opacity(0.10), in: Capsule())
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
         .background(accentBarCard(cornerRadius: 16))
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.linear(duration: 4).repeatForever(autoreverses: false)) {
+                glowRotation = 360
+            }
+        }
+    }
+
+    // MARK: - Animated Glow Ring
+
+    private var glowRing: some View {
+        Circle()
+            .stroke(
+                AngularGradient(
+                    gradient: Gradient(colors: [
+                        AppTheme.accent.opacity(0.0),
+                        AppTheme.accent.opacity(0.6),
+                        AppTheme.accent,
+                        AppTheme.accent.opacity(0.6),
+                        AppTheme.accent.opacity(0.0)
+                    ]),
+                    center: .center,
+                    startAngle: .degrees(0),
+                    endAngle: .degrees(360)
+                ),
+                lineWidth: 2.5
+            )
+            .frame(width: 94, height: 94)
+            .rotationEffect(.degrees(glowRotation))
+            .blur(radius: 3)
+            .overlay(
+                Circle()
+                    .stroke(
+                        AngularGradient(
+                            gradient: Gradient(colors: [
+                                AppTheme.accent.opacity(0.0),
+                                AppTheme.accent.opacity(0.4),
+                                AppTheme.accent.opacity(0.8),
+                                AppTheme.accent.opacity(0.4),
+                                AppTheme.accent.opacity(0.0)
+                            ]),
+                            center: .center,
+                            startAngle: .degrees(0),
+                            endAngle: .degrees(360)
+                        ),
+                        lineWidth: 1.5
+                    )
+                    .frame(width: 92, height: 92)
+                    .rotationEffect(.degrees(glowRotation))
+            )
     }
 
     private func cropToSquare(_ image: UIImage) -> UIImage {
@@ -240,13 +300,15 @@ struct FFAccountView: View {
         return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
     }
 
+    // MARK: - License Info
+
     private var licenseInfoCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             cardHeader(icon: "key.fill", title: language.text("account.license"))
             if let key = ByteAuthService.shared.savedLicenseKey {
-                infoRow(label: language.text("account.key"), value: key)
+                infoRow(label: language.text("account.key"), value: key, valueFont: .caption.monospaced())
             }
-            Divider()
+            Divider().overlay(Color(white: 0.15))
             if ByteAuthService.shared.isLifetime {
                 infoRow(label: language.text("account.expiry"), value: language.text("account.lifetime"), valueColor: .green)
             } else if let days = ByteAuthService.shared.daysRemaining {
@@ -260,25 +322,31 @@ struct FFAccountView: View {
             cardFill,
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
+        )
     }
+
+    // MARK: - Game Selection
 
     private var gameSelectionCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 10) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color(white: 0.16))
+                        .fill(Color(white: 0.14))
                         .frame(width: 36, height: 36)
                     Image(systemName: "gamecontroller.fill")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color(white: 0.45))
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(language.text("account.game"))
-                        .font(.subheadline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                     Text(language.text("account.game_subtitle"))
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color(white: 0.45))
                 }
             }
 
@@ -301,18 +369,12 @@ struct FFAccountView: View {
         }
         .padding(16)
         .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(cardFill)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.015), Color.clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-            }
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(cardFill)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
         )
     }
 
@@ -322,9 +384,9 @@ struct FFAccountView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "play.fill")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.subheadline.weight(.medium))
                 Text(language.text("account.launch", selectedGameVariant?.shortName ?? language.text("account.game")))
-                    .font(.subheadline.weight(.bold))
+                    .font(.subheadline.weight(.medium))
             }
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
@@ -351,8 +413,8 @@ struct FFAccountView: View {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(
                             selectedGame == id
-                                ? color.opacity(0.15)
-                                : Color(white: 0.16)
+                                ? color.opacity(0.12)
+                                : Color(white: 0.13)
                         )
                         .frame(height: 70)
                         .overlay(
@@ -372,16 +434,16 @@ struct FFAccountView: View {
                 }
 
                 Text(name)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(selectedGame == id ? .primary : .secondary)
+                    .font(.caption)
+                    .foregroundStyle(selectedGame == id ? .primary : Color(white: 0.5))
             }
             .frame(maxWidth: .infinity)
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .strokeBorder(
-                        selectedGame == id ? color : Color.white.opacity(0.08),
-                        lineWidth: selectedGame == id ? 1.5 : 0.5
+                        selectedGame == id ? color.opacity(0.6) : Color.white.opacity(0.06),
+                        lineWidth: selectedGame == id ? 1 : 0.5
                     )
             )
         }
@@ -396,17 +458,17 @@ struct FFAccountView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(language.text("account.license_key_label"))
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(.secondary)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(Color(white: 0.4))
                     .tracking(1.2)
 
                 HStack(spacing: 12) {
                     Image(systemName: "key.fill")
                         .font(.subheadline)
-                        .foregroundStyle(AppTheme.accent.opacity(0.7))
+                        .foregroundStyle(AppTheme.accent.opacity(0.6))
 
-                    TextField("", text: $licenseKey, prompt: Text("BYTE-XXXX-XXXX-XXXX").foregroundColor(.secondary.opacity(0.5)))
-                        .font(.body.monospaced())
+                    TextField("", text: $licenseKey, prompt: Text("BYTE-XXXX-XXXX-XXXX").foregroundColor(Color(white: 0.3)))
+                        .font(.callout.monospaced())
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                         .submitLabel(.go)
@@ -416,12 +478,12 @@ struct FFAccountView: View {
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(white: 0.16))
+                        .fill(Color(white: 0.12))
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .strokeBorder(
-                            licenseKey.isEmpty ? Color.white.opacity(0.08) : AppTheme.accent.opacity(0.4),
+                            licenseKey.isEmpty ? Color.white.opacity(0.06) : AppTheme.accent.opacity(0.3),
                             lineWidth: 0.5
                         )
                 )
@@ -435,10 +497,10 @@ struct FFAccountView: View {
                             .scaleEffect(0.85)
                     } else {
                         Image(systemName: "arrow.right.circle.fill")
-                            .font(.body.weight(.semibold))
+                            .font(.body.weight(.medium))
                     }
                     Text(isLoading ? language.text("account.authenticating") : language.text("account.login"))
-                        .font(.body.weight(.bold))
+                        .font(.body.weight(.medium))
                 }
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
@@ -459,6 +521,10 @@ struct FFAccountView: View {
             cardFill,
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
+        )
     }
 
     // MARK: - Shared Components
@@ -468,15 +534,7 @@ struct FFAccountView: View {
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .fill(cardFill)
             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.02), Color.clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.06), lineWidth: 0.5)
+                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
             HStack(spacing: 0) {
                 AppTheme.accent
                     .frame(width: 3.5)
@@ -489,24 +547,25 @@ struct FFAccountView: View {
     private func cardHeader(icon: String, title: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: icon)
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline.weight(.medium))
                 .foregroundStyle(AppTheme.accent)
             Text(title)
-                .font(.subheadline.weight(.bold))
+                .font(.caption.weight(.medium))
                 .textCase(.uppercase)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(white: 0.45))
+                .tracking(0.5)
         }
         .padding(.bottom, 4)
     }
 
-    private func infoRow(label: String, value: String, valueColor: Color? = nil) -> some View {
+    private func infoRow(label: String, value: String, valueFont: Font = .subheadline, valueColor: Color? = nil) -> some View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color(white: 0.45))
             Spacer()
             Text(value)
-                .font(.subheadline.weight(.medium))
+                .font(valueFont)
                 .foregroundStyle(valueColor ?? .primary)
         }
     }
