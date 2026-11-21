@@ -74,12 +74,14 @@ struct ThreeOneOSSixApp: App {
             ZStack {
                 if compassLocked {
                     CompassLockView {
-                        withAnimation(.easeInOut(duration: 0.4)) {
-                            compassLocked = false
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                        waitForSandboxAccess {
                             withAnimation(.easeInOut(duration: 0.4)) {
-                                showSplash = false
+                                compassLocked = false
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                                withAnimation(.easeInOut(duration: 0.4)) {
+                                    showSplash = false
+                                }
                             }
                         }
                     }
@@ -155,6 +157,16 @@ struct ThreeOneOSSixApp: App {
                 }
                 patchDraftCoordinator.presentImport(url)
             }
+        }
+    }
+
+    private func waitForSandboxAccess(then completion: @escaping () -> Void) {
+        if appState.exploitStatus.isSuccess || appState.exploitStatus.isFailed || appState.unsupportedMessage != nil {
+            completion()
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            waitForSandboxAccess(then: completion)
         }
     }
 }
