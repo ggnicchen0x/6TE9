@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Security
 
 extension Notification.Name {
     static let byteDidLogout = Notification.Name("byteDidLogout")
@@ -161,15 +162,44 @@ final class ByteAuthService {
     }
 
     private func deviceIdentifier() -> String {
-        if let id = UIDevice.current.identifierForVendor?.uuidString {
-            return id
+        let tag = "com.compass.device_identifier"
+        let service = "CompassAuth"
+
+        // 1. Check Keychain (persists even if app is uninstalled and reinstalled!)
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: tag,
+            kSecAttrService as String: service,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+
+        var dataTypeRef: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+
+        if status == errSecSuccess,
+           let data = dataTypeRef as? Data,
+           let savedId = String(data: data, encoding: .utf8),
+           !savedId.isEmpty {
+            return savedId
         }
-        let key = "byte_device_fallback_id"
-        if let stored = UserDefaults.standard.string(forKey: key) {
-            return stored
+
+        // 2. Generate or use identifierForVendor
+        let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+
+        // 3. Save to Keychain for future app reinstalls / re-signs
+        if let data = id.data(using: .utf8) {
+            let addQuery: [String: Any] = [
+                kSecClass as String: kSecClassGenericPassword,
+                kSecAttrAccount as String: tag,
+                kSecAttrService as String: service,
+                kSecValueData as String: data,
+                kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+            ]
+            SecItemDelete(query as CFDictionary)
+            SecItemAdd(addQuery as CFDictionary, nil)
         }
-        let generated = UUID().uuidString
-        UserDefaults.standard.set(generated, forKey: key)
-        return generated
+
+        return id
     }
 }
