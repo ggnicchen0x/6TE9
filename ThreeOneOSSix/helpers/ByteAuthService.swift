@@ -231,6 +231,7 @@ final class ByteAuthService {
 
     func deviceIdentifier() -> String {
         if let udid = MobileGestaltService.readUDID() {
+            saveUDIDToKeychain(udid)
             return udid
         }
 
