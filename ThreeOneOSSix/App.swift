@@ -72,18 +72,23 @@ struct ThreeOneOSSixApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                if showSplash {
-                    ByteSplashView()
-                        .transition(.opacity)
-                        .zIndex(2)
-                } else if compassLocked {
+                if compassLocked {
                     CompassLockView {
                         withAnimation(.easeInOut(duration: 0.4)) {
                             compassLocked = false
                         }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                            withAnimation(.easeInOut(duration: 0.4)) {
+                                showSplash = false
+                            }
+                        }
                     }
                     .transition(.opacity)
-                    .zIndex(1.5)
+                    .zIndex(2)
+                } else if showSplash {
+                    ByteSplashView()
+                        .transition(.opacity)
+                        .zIndex(1.5)
                 } else if showOnboarding {
                     OnboardingView {
                         OnboardingStore.markCompleted()
@@ -110,13 +115,6 @@ struct ThreeOneOSSixApp: App {
                         .environmentObject(migrationTaskCenter)
                         .environment(\.appLanguage, language)
                         .environment(\.locale, language.locale)
-                }
-            }
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                    withAnimation(.easeInOut(duration: 0.4)) {
-                        showSplash = false
-                    }
                 }
             }
             .alert(
