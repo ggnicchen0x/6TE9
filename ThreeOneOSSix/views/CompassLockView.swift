@@ -6,7 +6,8 @@ struct CompassLockView: View {
     @AppStorage("compass.unlock_degree") private var unlockDegree: Int = 0
     @State private var unlocked = false
     @State private var holdTimer: Timer?
-    @State private var holdProgress: Double = 0
+    @State private var isUnlocked = false
+    @State private var ringProgress: Double = 0
     @State private var showUnlockFlash = false
 
     var onUnlock: () -> Void
@@ -43,10 +44,10 @@ struct CompassLockView: View {
                     // Fixed Top Heading Index Line (12 o'clock)
                     topIndexMarker
 
-                    // Green progress bar when holding on target degree
-                    if isOnTarget && holdProgress > 0 {
+                    // Green confirmation ring only shown AFTER 2-second hold completes
+                    if isUnlocked && ringProgress > 0 {
                         Circle()
-                            .trim(from: 0, to: holdProgress)
+                            .trim(from: 0, to: ringProgress)
                             .stroke(
                                 AppTheme.statusGreen,
                                 style: StrokeStyle(lineWidth: 3.5, lineCap: .round)
@@ -117,7 +118,7 @@ struct CompassLockView: View {
     // MARK: - Top Fixed Index Marker (12 o'clock)
     private var topIndexMarker: some View {
         Rectangle()
-            .fill(isOnTarget ? AppTheme.statusGreen : Color.white)
+            .fill(isUnlocked ? AppTheme.statusGreen : Color.white)
             .frame(width: 2.5, height: 30)
             .offset(y: -140)
     }
@@ -194,42 +195,33 @@ struct CompassLockView: View {
         }
     }
 
-    // MARK: - Hold Timer (2 Seconds)
+    // MARK: - Silent Hold Timer (2 Seconds)
     private func startHoldTimer() {
-        holdProgress = 0
-        let interval: Double = 0.02
-        let steps = holdDuration / interval
-        var tick = 0.0
-
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
-
-        holdTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { timer in
-            tick += 1
-            holdProgress = min(1.0, tick / steps)
-
-            if tick >= steps {
-                timer.invalidate()
-                triggerUnlock()
-            }
+        cancelHoldTimer()
+        // Silently wait for 2 full seconds while holding steady on target degree
+        holdTimer = Timer.scheduledTimer(withTimeInterval: holdDuration, repeats: false) { _ in
+            triggerUnlock()
         }
     }
 
     private func cancelHoldTimer() {
         holdTimer?.invalidate()
         holdTimer = nil
-        withAnimation(.easeOut(duration: 0.2)) {
-            holdProgress = 0
-        }
     }
 
     private func triggerUnlock() {
+        isUnlocked = true
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
-        withAnimation(.easeIn(duration: 0.15)) {
-            showUnlockFlash = true
+        withAnimation(.easeOut(duration: 0.35)) {
+            ringProgress = 1.0
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            withAnimation(.easeIn(duration: 0.15)) {
+                showUnlockFlash = true
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             headingManager.stop()
             onUnlock()
         }
