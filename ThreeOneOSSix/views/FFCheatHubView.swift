@@ -158,7 +158,7 @@ struct FFCheatHubView: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(selectedVariant.displayName)
-                    .font(.callout.weight(.semibold))
+                    .font(.callout.weight(.medium))
                 Text(selectedVariant.rawValue)
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -171,7 +171,7 @@ struct FFCheatHubView: View {
                     .font(.caption2)
                     .foregroundColor(.green)
                 Text(language.text("cheats.active"))
-                    .font(.caption2.weight(.semibold))
+                    .font(.caption2.weight(.medium))
                     .foregroundColor(.green)
             }
             .padding(.horizontal, 8)
@@ -194,9 +194,9 @@ struct FFCheatHubView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: tab.icon)
-                            .font(.caption.weight(.semibold))
+                            .font(.caption.weight(.medium))
                         Text(language.text(tab.labelKey))
-                            .font(.subheadline.weight(.bold))
+                            .font(.subheadline.weight(.medium))
                     }
                     .foregroundColor(selectedCategory == tab ? .black : .white)
                     .padding(.horizontal, 18)
@@ -228,7 +228,7 @@ struct FFCheatHubView: View {
                     }
                 } label: {
                     Text(language.text(sub.labelKey))
-                        .font(.caption.weight(.bold))
+                        .font(.caption.weight(.medium))
                         .foregroundColor(selectedAimbotSub == sub ? .black : .secondary)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 8)
@@ -287,13 +287,13 @@ struct FFCheatHubView: View {
                     .fill(loaded ? Color.green.opacity(0.15) : Color(white: 0.16))
                     .frame(width: 48, height: 48)
                 Image(systemName: entry.category.icon)
-                    .font(.body.weight(.semibold))
+                    .font(.body.weight(.medium))
                     .foregroundColor(loaded ? .green : .secondary)
             }
 
             VStack(alignment: .leading, spacing: 5) {
                 Text(entryDisplayName(entry))
-                    .font(.callout.weight(.bold))
+                    .font(.callout.weight(.medium))
 
                 HStack(spacing: 8) {
                     if loading {
@@ -307,7 +307,7 @@ struct FFCheatHubView: View {
                     }
 
                     Text(language.text("cheats.safe"))
-                        .font(.caption2.weight(.bold))
+                        .font(.caption2.weight(.medium))
                         .foregroundColor(.green)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
@@ -331,7 +331,7 @@ struct FFCheatHubView: View {
                     }
                 } label: {
                     Text(loaded ? language.text("cheats.unload") : language.text("cheats.load"))
-                        .font(.subheadline.weight(.bold))
+                        .font(.subheadline.weight(.medium))
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
