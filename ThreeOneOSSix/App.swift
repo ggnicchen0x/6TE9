@@ -141,6 +141,7 @@ struct ThreeOneOSSixApp: App {
                 guard phase == .active else { return }
                 appState.detectSupport()
             }
+            .preferredColorScheme(.dark)
             .onOpenURL { url in
                 if url.scheme == "compass" || url.scheme == "threeoneossix" {
                     if url.host == "activate" || url.path.contains("activate") {
