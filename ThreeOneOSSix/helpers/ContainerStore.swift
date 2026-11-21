@@ -90,10 +90,30 @@ enum ContainerStore {
         "com.apple.compass", "com.apple.Magnifier", "com.apple.DocumentsApp"
     ]
 
+    private static let resolvePathCacheLock = NSLock()
+    private static var resolvePathCache: [String: (path: String?, at: Date)] = [:]
+    private static let resolvePathCacheTTL: TimeInterval = 15
+
     static func resolveAppContainerPath(bundleID: String) -> String? {
         guard (try? PatchPathValidator.canonicalBundleIdentifier(bundleID)) == bundleID else {
             return nil
         }
+        resolvePathCacheLock.lock()
+        if let cached = resolvePathCache[bundleID],
+           Date().timeIntervalSince(cached.at) < resolvePathCacheTTL {
+            resolvePathCacheLock.unlock()
+            return cached.path
+        }
+        resolvePathCacheLock.unlock()
+
+        let result = resolveAppContainerPathUncached(bundleID: bundleID)
+        resolvePathCacheLock.lock()
+        resolvePathCache[bundleID] = (result, Date())
+        resolvePathCacheLock.unlock()
+        return result
+    }
+
+    private static func resolveAppContainerPathUncached(bundleID: String) -> String? {
         // The LaunchServices store pairs a bundle id with its data container
         // even when MCM activation and the metadata plist are unavailable.
         if let mapped = launchServicesSnapshot()?.containerPath(forBundleID: bundleID),
@@ -467,6 +487,10 @@ enum ContainerStore {
         launchServicesSnapshotMissAt = nil
         launchServicesSnapshotLock.unlock()
 
+        resolvePathCacheLock.lock()
+        resolvePathCache.removeAll()
+        resolvePathCacheLock.unlock()
+
         launchServicesCatalogLock.lock()
         ContainerCatalogCache.clear()
         UserDefaults.standard.removeObject(forKey: launchServicesStorePathKey)
@@ -481,6 +505,10 @@ enum ContainerStore {
     static func launchServicesSnapshot() -> LaunchServicesSnapshot? {
         launchServicesSnapshotLock.lock()
         defer { launchServicesSnapshotLock.unlock() }
+
+        if let cached = launchServicesSnapshotCache, cached.snapshot != nil {
+            return cached.snapshot
+        }
 
         let now = Date()
         if launchServicesSnapshotCache == nil,

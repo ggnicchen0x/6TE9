@@ -490,7 +490,6 @@ struct FFCheatHubView: View {
                     }
                     receipt = try DevicePatchService.apply(project: decoded.project)
                 } catch {
-                    ContainerStore.refreshLaunchServicesSnapshot()
                     receipt = try DevicePatchService.apply(project: decoded.project)
                 }
                 await MainActor.run {
