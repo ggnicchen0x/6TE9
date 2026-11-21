@@ -18,7 +18,7 @@ struct CompassSupportView: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.pageBackground)
-            .navigationTitle("Support")
+            .navigationTitle(language.text("support.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color(white: 0.06), for: .navigationBar)
@@ -47,10 +47,10 @@ struct CompassSupportView: View {
                     .foregroundStyle(AppTheme.accent)
             }
 
-            Text("Need Help?")
+            Text(language.text("support.need_help"))
                 .font(.title3.weight(.bold))
 
-            Text("Reach out to us on Telegram for\nsupport, updates, and community.")
+            Text(language.text("support.subtitle"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -82,14 +82,14 @@ struct CompassSupportView: View {
         VStack(spacing: 10) {
             telegramLink(
                 icon: "person.fill.questionmark",
-                title: "Contact Support",
+                title: language.text("support.contact"),
                 subtitle: "@nxvoid12",
                 url: "https://t.me/nxvoid12"
             )
 
             telegramLink(
                 icon: "megaphone.fill",
-                title: "Updates Channel",
+                title: language.text("support.updates"),
                 subtitle: "@byteios",
                 url: "https://t.me/byteios"
             )
@@ -171,18 +171,18 @@ struct CompassSupportView: View {
                         .font(.caption.weight(.bold))
                         .foregroundStyle(AppTheme.accent)
                 }
-                Text("FAQ")
+                Text(language.text("support.faq"))
                     .font(.subheadline.weight(.bold))
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
             }
             .padding(.bottom, 2)
 
-            faqRow(q: "How do I get a license key?", a: "Contact support on Telegram to purchase a key.")
+            faqRow(q: language.text("support.faq_q1"), a: language.text("support.faq_a1"))
             Divider()
-            faqRow(q: "My device isn't supported?", a: "Check Settings for exact supported iOS builds.")
+            faqRow(q: language.text("support.faq_q2"), a: language.text("support.faq_a2"))
             Divider()
-            faqRow(q: "App crashes on launch?", a: "Re-sign the app with an App Group entitlement.")
+            faqRow(q: language.text("support.faq_q3"), a: language.text("support.faq_a3"))
         }
         .padding(16)
         .background(

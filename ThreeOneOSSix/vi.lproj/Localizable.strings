@@ -1615,3 +1615,74 @@
 "unlock.log_empty" = "Chưa có nhật ký. Nhấn nút phía trên, từng bước của chuỗi sẽ hiện ở đây.";
 "unlock.banner_title" = "Cần mở khóa";
 "unlock.banner_detail" = "Nhấn để chạy chuỗi khai thác nhân và có quyền truy cập vùng chứa";
+
+/* Cheats Hub */
+"cheats.title" = "Gian lận";
+"cheats.tab.aimbot" = "Ngắm bắn";
+"cheats.tab.hologram" = "Hologram";
+"cheats.sub.head" = "Đầu";
+"cheats.sub.neck" = "Cổ";
+"cheats.sub.chest" = "Ngực";
+"cheats.sub.drag" = "Kéo";
+"cheats.active" = "Hoạt động";
+"cheats.aim_head" = "Ngắm đầu";
+"cheats.aim_neck" = "Ngắm cổ";
+"cheats.aim_chest" = "Ngắm ngực";
+"cheats.aim_drag" = "Ngắm kéo";
+"cheats.holo_weapons" = "Holo vũ khí";
+"cheats.holo_character" = "Holo nhân vật";
+"cheats.antenna_suffix" = " + Ăng-ten";
+"cheats.removing" = "Đang gỡ...";
+"cheats.loading" = "Đang tải...";
+"cheats.loaded" = "Đã tải";
+"cheats.not_loaded" = "Chưa tải";
+"cheats.safe" = "An toàn";
+"cheats.unload" = "Gỡ";
+"cheats.load" = "Tải";
+"cheats.empty" = "Không có bản vá";
+"cheats.failed" = "Thất bại";
+"cheats.unload_failed" = "Gỡ thất bại";
+
+/* Account / Profile */
+"account.title" = "Hồ sơ";
+"account.login_failed" = "Đăng nhập thất bại";
+"account.unknown_error" = "Đã xảy ra lỗi không xác định.";
+"account.welcome" = "Chào mừng đến Compass";
+"account.name_placeholder" = "Tên của bạn";
+"account.save" = "Lưu";
+"account.skip" = "Bỏ qua";
+"account.name_prompt" = "Nhập tên để cá nhân hóa hồ sơ.";
+"account.no_membership" = "Chưa có thành viên";
+"account.activate_key" = "Kích hoạt mã để sử dụng Compass";
+"account.get_key" = "Lấy mã";
+"account.get_key_subtitle" = "Liên hệ @nxvoid12 trên Telegram";
+"account.default_name" = "Người dùng Compass";
+"account.licensed" = "Đã cấp phép";
+"account.license" = "Giấy phép";
+"account.key" = "Mã";
+"account.expiry" = "Hạn dùng";
+"account.lifetime" = "Vĩnh viễn";
+"account.days" = "%d ngày";
+"account.active" = "Hoạt động";
+"account.game" = "Trò chơi";
+"account.game_subtitle" = "Chọn trò chơi để hiển thị sản phẩm.";
+"account.launch" = "Mở %@";
+"account.license_key_label" = "MÃ GIẤY PHÉP";
+"account.authenticating" = "Đang xác thực...";
+"account.login" = "Đăng nhập";
+"account.license_login" = "Đăng nhập giấy phép";
+"account.logout" = "Đăng xuất";
+
+/* Support */
+"support.title" = "Hỗ trợ";
+"support.need_help" = "Cần giúp đỡ?";
+"support.subtitle" = "Liên hệ chúng tôi trên Telegram để\nđược hỗ trợ, cập nhật và cộng đồng.";
+"support.contact" = "Liên hệ hỗ trợ";
+"support.updates" = "Kênh cập nhật";
+"support.faq" = "Câu hỏi thường gặp";
+"support.faq_q1" = "Làm sao để lấy mã giấy phép?";
+"support.faq_a1" = "Liên hệ hỗ trợ trên Telegram để mua mã.";
+"support.faq_q2" = "Thiết bị không được hỗ trợ?";
+"support.faq_a2" = "Kiểm tra Cài đặt để xem phiên bản iOS được hỗ trợ.";
+"support.faq_q3" = "Ứng dụng bị sập khi mở?";
+"support.faq_a3" = "Ký lại ứng dụng với quyền App Group.";

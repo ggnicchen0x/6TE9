@@ -1615,3 +1615,74 @@
 "unlock.log_empty" = "No log yet. Press the button above and each stage of the chain appears here.";
 "unlock.banner_title" = "Unlock required";
 "unlock.banner_detail" = "Tap to run the kernel chain and gain container access";
+
+/* Cheats Hub */
+"cheats.title" = "Cheats";
+"cheats.tab.aimbot" = "Aimbot";
+"cheats.tab.hologram" = "Hologram";
+"cheats.sub.head" = "Head";
+"cheats.sub.neck" = "Neck";
+"cheats.sub.chest" = "Chest";
+"cheats.sub.drag" = "Drag";
+"cheats.active" = "Active";
+"cheats.aim_head" = "Aim Head";
+"cheats.aim_neck" = "Aim Neck";
+"cheats.aim_chest" = "Aim Chest";
+"cheats.aim_drag" = "Aim Drag";
+"cheats.holo_weapons" = "Holo Weapons";
+"cheats.holo_character" = "Holo Character";
+"cheats.antenna_suffix" = " + Antenna";
+"cheats.removing" = "Removing...";
+"cheats.loading" = "Loading...";
+"cheats.loaded" = "Loaded";
+"cheats.not_loaded" = "Not loaded";
+"cheats.safe" = "Safe";
+"cheats.unload" = "Unload";
+"cheats.load" = "Load";
+"cheats.empty" = "No patches available";
+"cheats.failed" = "Failed";
+"cheats.unload_failed" = "Unload Failed";
+
+/* Account / Profile */
+"account.title" = "Profile";
+"account.login_failed" = "Login Failed";
+"account.unknown_error" = "An unknown error occurred.";
+"account.welcome" = "Welcome to Compass";
+"account.name_placeholder" = "Your name";
+"account.save" = "Save";
+"account.skip" = "Skip";
+"account.name_prompt" = "Enter your name to personalize your profile.";
+"account.no_membership" = "No membership";
+"account.activate_key" = "Activate your key to use Compass";
+"account.get_key" = "Get Key";
+"account.get_key_subtitle" = "Contact @nxvoid12 on Telegram";
+"account.default_name" = "Compass User";
+"account.licensed" = "Licensed";
+"account.license" = "License";
+"account.key" = "Key";
+"account.expiry" = "Expiry";
+"account.lifetime" = "Lifetime";
+"account.days" = "%d days";
+"account.active" = "Active";
+"account.game" = "Game";
+"account.game_subtitle" = "Choose which game's products appear in the list.";
+"account.launch" = "Launch %@";
+"account.license_key_label" = "LICENSE KEY";
+"account.authenticating" = "Authenticating...";
+"account.login" = "Login";
+"account.license_login" = "License Login";
+"account.logout" = "Logout";
+
+/* Support */
+"support.title" = "Support";
+"support.need_help" = "Need Help?";
+"support.subtitle" = "Reach out to us on Telegram for\nsupport, updates, and community.";
+"support.contact" = "Contact Support";
+"support.updates" = "Updates Channel";
+"support.faq" = "FAQ";
+"support.faq_q1" = "How do I get a license key?";
+"support.faq_a1" = "Contact support on Telegram to purchase a key.";
+"support.faq_q2" = "My device isn't supported?";
+"support.faq_a2" = "Check Settings for exact supported iOS builds.";
+"support.faq_q3" = "App crashes on launch?";
+"support.faq_a3" = "Re-sign the app with an App Group entitlement.";

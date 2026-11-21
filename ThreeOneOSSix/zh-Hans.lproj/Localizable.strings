@@ -1615,3 +1615,74 @@
 "unlock.log_empty" = "尚无日志。点上方按钮后，链的每一步都会出现在这里。";
 "unlock.banner_title" = "需要解锁";
 "unlock.banner_detail" = "点此运行内核链以获得容器访问";
+
+/* Cheats Hub */
+"cheats.title" = "作弊";
+"cheats.tab.aimbot" = "自瞄";
+"cheats.tab.hologram" = "全息";
+"cheats.sub.head" = "头部";
+"cheats.sub.neck" = "颈部";
+"cheats.sub.chest" = "胸部";
+"cheats.sub.drag" = "拖拽";
+"cheats.active" = "运行中";
+"cheats.aim_head" = "瞄准头部";
+"cheats.aim_neck" = "瞄准颈部";
+"cheats.aim_chest" = "瞄准胸部";
+"cheats.aim_drag" = "瞄准拖拽";
+"cheats.holo_weapons" = "全息武器";
+"cheats.holo_character" = "全息角色";
+"cheats.antenna_suffix" = " + 天线";
+"cheats.removing" = "移除中...";
+"cheats.loading" = "加载中...";
+"cheats.loaded" = "已加载";
+"cheats.not_loaded" = "未加载";
+"cheats.safe" = "安全";
+"cheats.unload" = "卸载";
+"cheats.load" = "加载";
+"cheats.empty" = "无可用补丁";
+"cheats.failed" = "失败";
+"cheats.unload_failed" = "卸载失败";
+
+/* Account / Profile */
+"account.title" = "个人资料";
+"account.login_failed" = "登录失败";
+"account.unknown_error" = "发生未知错误。";
+"account.welcome" = "欢迎使用 Compass";
+"account.name_placeholder" = "你的名字";
+"account.save" = "保存";
+"account.skip" = "跳过";
+"account.name_prompt" = "输入名字以个性化你的资料。";
+"account.no_membership" = "未开通会员";
+"account.activate_key" = "激活密钥以使用 Compass";
+"account.get_key" = "获取密钥";
+"account.get_key_subtitle" = "在 Telegram 联系 @nxvoid12";
+"account.default_name" = "Compass 用户";
+"account.licensed" = "已授权";
+"account.license" = "许可证";
+"account.key" = "密钥";
+"account.expiry" = "到期";
+"account.lifetime" = "永久";
+"account.days" = "%d 天";
+"account.active" = "活跃";
+"account.game" = "游戏";
+"account.game_subtitle" = "选择要显示哪个游戏的产品。";
+"account.launch" = "启动 %@";
+"account.license_key_label" = "许可密钥";
+"account.authenticating" = "验证中...";
+"account.login" = "登录";
+"account.license_login" = "许可证登录";
+"account.logout" = "退出";
+
+/* Support */
+"support.title" = "支持";
+"support.need_help" = "需要帮助？";
+"support.subtitle" = "通过 Telegram 联系我们获取\n支持、更新和社区信息。";
+"support.contact" = "联系客服";
+"support.updates" = "更新频道";
+"support.faq" = "常见问题";
+"support.faq_q1" = "如何获取许可密钥？";
+"support.faq_a1" = "在 Telegram 联系客服购买密钥。";
+"support.faq_q2" = "设备不支持？";
+"support.faq_a2" = "在设置中查看支持的 iOS 版本。";
+"support.faq_q3" = "应用启动时崩溃？";
+"support.faq_a3" = "使用 App Group 权限重新签名。";

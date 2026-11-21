@@ -41,7 +41,7 @@ struct FFAccountView: View {
                 .padding(.bottom, 24)
             }
             .background(AppTheme.pageBackground)
-            .navigationTitle("Profile")
+            .navigationTitle(language.text("account.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color(white: 0.06), for: .navigationBar)
@@ -64,22 +64,22 @@ struct FFAccountView: View {
                     }
                 }
             }
-            .alert("Login Failed", isPresented: $showError) {
-                Button("OK", role: .cancel) {}
+            .alert(language.text("account.login_failed"), isPresented: $showError) {
+                Button(language.text("common.ok"), role: .cancel) {}
             } message: {
-                Text(errorMessage ?? "An unknown error occurred.")
+                Text(errorMessage ?? language.text("account.unknown_error"))
             }
-            .alert("Welcome to Compass", isPresented: $showNamePrompt) {
-                TextField("Your name", text: $nameInput)
-                Button("Save") {
+            .alert(language.text("account.welcome"), isPresented: $showNamePrompt) {
+                TextField(language.text("account.name_placeholder"), text: $nameInput)
+                Button(language.text("account.save")) {
                     let trimmed = nameInput.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !trimmed.isEmpty {
                         ByteAuthService.shared.setUserName(trimmed)
                     }
                 }
-                Button("Skip", role: .cancel) {}
+                Button(language.text("account.skip"), role: .cancel) {}
             } message: {
-                Text("Enter your name to personalize your profile.")
+                Text(language.text("account.name_prompt"))
             }
         }
     }
@@ -97,10 +97,10 @@ struct FFAccountView: View {
                     .foregroundStyle(.secondary)
             }
 
-            Text("No membership")
+            Text(language.text("account.no_membership"))
                 .font(.title3.weight(.bold))
 
-            Text("Activate your key to use Compass")
+            Text(language.text("account.activate_key"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -132,9 +132,9 @@ struct FFAccountView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Get Key")
+                    Text(language.text("account.get_key"))
                         .font(.subheadline.weight(.semibold))
-                    Text("Contact @nxvoid12 on Telegram")
+                    Text(language.text("account.get_key_subtitle"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -211,14 +211,14 @@ struct FFAccountView: View {
                 }
             }
 
-            Text(ByteAuthService.shared.userName ?? "Compass User")
+            Text(ByteAuthService.shared.userName ?? language.text("account.default_name"))
                 .font(.title3.weight(.bold))
 
             HStack(spacing: 6) {
                 Image(systemName: "checkmark.seal.fill")
                     .foregroundStyle(.green)
                     .font(.caption)
-                Text("Licensed")
+                Text(language.text("account.licensed"))
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.green)
             }
@@ -242,17 +242,17 @@ struct FFAccountView: View {
 
     private var licenseInfoCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            cardHeader(icon: "key.fill", title: "License")
+            cardHeader(icon: "key.fill", title: language.text("account.license"))
             if let key = ByteAuthService.shared.savedLicenseKey {
-                infoRow(label: "Key", value: key)
+                infoRow(label: language.text("account.key"), value: key)
             }
             Divider()
             if ByteAuthService.shared.isLifetime {
-                infoRow(label: "Expiry", value: "Lifetime", valueColor: .green)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.lifetime"), valueColor: .green)
             } else if let days = ByteAuthService.shared.daysRemaining {
-                infoRow(label: "Expiry", value: "\(days) days", valueColor: days > 7 ? .green : .orange)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.days", days), valueColor: days > 7 ? .green : .orange)
             } else {
-                infoRow(label: "Expiry", value: "Active", valueColor: .green)
+                infoRow(label: language.text("account.expiry"), value: language.text("account.active"), valueColor: .green)
             }
         }
         .padding(16)
@@ -274,9 +274,9 @@ struct FFAccountView: View {
                         .foregroundStyle(.secondary)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Game")
+                    Text(language.text("account.game"))
                         .font(.subheadline.weight(.semibold))
-                    Text("Choose which game's products appear in the list.")
+                    Text(language.text("account.game_subtitle"))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -323,7 +323,7 @@ struct FFAccountView: View {
             HStack(spacing: 8) {
                 Image(systemName: "play.fill")
                     .font(.subheadline.weight(.semibold))
-                Text("Launch \(selectedGameVariant?.shortName ?? "Game")")
+                Text(language.text("account.launch", selectedGameVariant?.shortName ?? language.text("account.game")))
                     .font(.subheadline.weight(.bold))
             }
             .foregroundStyle(.white)
@@ -392,10 +392,10 @@ struct FFAccountView: View {
 
     private var loginCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            cardHeader(icon: "key.fill", title: "License Login")
+            cardHeader(icon: "key.fill", title: language.text("account.license_login"))
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("LICENSE KEY")
+                Text(language.text("account.license_key_label"))
                     .font(.caption.weight(.bold))
                     .foregroundStyle(.secondary)
                     .tracking(1.2)
@@ -437,7 +437,7 @@ struct FFAccountView: View {
                         Image(systemName: "arrow.right.circle.fill")
                             .font(.body.weight(.semibold))
                     }
-                    Text(isLoading ? "Authenticating..." : "Login")
+                    Text(isLoading ? language.text("account.authenticating") : language.text("account.login"))
                         .font(.body.weight(.bold))
                 }
                 .foregroundStyle(.white)

@@ -8,10 +8,10 @@ private enum CategoryTab: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var label: String {
+    var labelKey: String {
         switch self {
-        case .aimbot: return "Aimbot"
-        case .hologram: return "Hologram"
+        case .aimbot: return "cheats.tab.aimbot"
+        case .hologram: return "cheats.tab.hologram"
         }
     }
 
@@ -31,12 +31,12 @@ private enum AimbotSubTab: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var label: String {
+    var labelKey: String {
         switch self {
-        case .head: return "Head"
-        case .neck: return "Neck"
-        case .chest: return "Chest"
-        case .drag: return "Drag"
+        case .head: return "cheats.sub.head"
+        case .neck: return "cheats.sub.neck"
+        case .chest: return "cheats.sub.chest"
+        case .drag: return "cheats.sub.drag"
         }
     }
 
@@ -112,7 +112,7 @@ struct FFCheatHubView: View {
                     .ignoresSafeArea()
                 }
             )
-            .navigationTitle("Cheats")
+            .navigationTitle(language.text("cheats.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color(white: 0.06), for: .navigationBar)
@@ -140,7 +140,7 @@ struct FFCheatHubView: View {
                 Alert(
                     title: Text(alert.title),
                     message: Text(alert.message),
-                    dismissButton: .default(Text("OK"))
+                    dismissButton: .default(Text(language.text("common.ok")))
                 )
             }
         }
@@ -170,7 +170,7 @@ struct FFCheatHubView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.caption2)
                     .foregroundColor(.green)
-                Text("Active")
+                Text(language.text("cheats.active"))
                     .font(.caption2.weight(.semibold))
                     .foregroundColor(.green)
             }
@@ -195,7 +195,7 @@ struct FFCheatHubView: View {
                     HStack(spacing: 6) {
                         Image(systemName: tab.icon)
                             .font(.caption.weight(.semibold))
-                        Text(tab.label)
+                        Text(language.text(tab.labelKey))
                             .font(.subheadline.weight(.bold))
                     }
                     .foregroundColor(selectedCategory == tab ? .black : .white)
@@ -227,7 +227,7 @@ struct FFCheatHubView: View {
                         selectedAimbotSub = sub
                     }
                 } label: {
-                    Text(sub.label)
+                    Text(language.text(sub.labelKey))
                         .font(.caption.weight(.bold))
                         .foregroundColor(selectedAimbotSub == sub ? .black : .secondary)
                         .padding(.horizontal, 16)
@@ -297,16 +297,16 @@ struct FFCheatHubView: View {
 
                 HStack(spacing: 8) {
                     if loading {
-                        Text(loaded ? "Removing..." : "Loading...")
+                        Text(loaded ? language.text("cheats.removing") : language.text("cheats.loading"))
                             .font(.caption)
                             .foregroundColor(AppTheme.accent)
                     } else {
-                        Text(loaded ? "Loaded" : "Not loaded")
+                        Text(loaded ? language.text("cheats.loaded") : language.text("cheats.not_loaded"))
                             .font(.caption)
                             .foregroundColor(loaded ? .green : .secondary)
                     }
 
-                    Text("Safe")
+                    Text(language.text("cheats.safe"))
                         .font(.caption2.weight(.bold))
                         .foregroundColor(.green)
                         .padding(.horizontal, 7)
@@ -330,9 +330,9 @@ struct FFCheatHubView: View {
                         applyPatch(entry)
                     }
                 } label: {
-                    Text(loaded ? "Unload" : "Load")
+                    Text(loaded ? language.text("cheats.unload") : language.text("cheats.load"))
                         .font(.subheadline.weight(.bold))
-                        .foregroundColor(loaded ? .white : .white)
+                        .foregroundColor(.white)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
                         .background(
@@ -374,15 +374,15 @@ struct FFCheatHubView: View {
     private func entryDisplayName(_ entry: FFCheatEntry) -> String {
         let base: String
         switch entry.category {
-        case .aimbotHead:    base = "Aim Head"
-        case .aimbotNeck:    base = "Aim Neck"
-        case .aimbotChest:   base = "Aim Chest"
-        case .aimbotDrag:    base = "Aim Drag"
-        case .holoWeapons:   base = "Holo Weapons"
-        case .holoCharacter: base = "Holo Character"
+        case .aimbotHead:    base = language.text("cheats.aim_head")
+        case .aimbotNeck:    base = language.text("cheats.aim_neck")
+        case .aimbotChest:   base = language.text("cheats.aim_chest")
+        case .aimbotDrag:    base = language.text("cheats.aim_drag")
+        case .holoWeapons:   base = language.text("cheats.holo_weapons")
+        case .holoCharacter: base = language.text("cheats.holo_character")
         }
         if entry.hasAntenna {
-            return base + " + Antenna"
+            return base + language.text("cheats.antenna_suffix")
         }
         return base
     }
@@ -394,7 +394,7 @@ struct FFCheatHubView: View {
             Image(systemName: "tray")
                 .font(.title2)
                 .foregroundColor(.secondary)
-            Text("No patches available")
+            Text(language.text("cheats.empty"))
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
@@ -466,7 +466,7 @@ struct FFCheatHubView: View {
                     isBusy = false
                     busyEntryID = nil
                     actionAlert = FFActionAlert(
-                        title: "Failed",
+                        title: language.text("cheats.failed"),
                         message: error.localizedDescription
                     )
                 }
@@ -495,7 +495,7 @@ struct FFCheatHubView: View {
                     isBusy = false
                     busyEntryID = nil
                     actionAlert = FFActionAlert(
-                        title: "Unload Failed",
+                        title: language.text("cheats.unload_failed"),
                         message: error.localizedDescription
                     )
                 }
