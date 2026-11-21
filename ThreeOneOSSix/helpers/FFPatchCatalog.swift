@@ -26,6 +26,13 @@ enum FFGameVariant: String, CaseIterable, Identifiable {
         case .ffth: return "FFTH"
         }
     }
+
+    var catalogKey: String {
+        switch self {
+        case .ffmax: return "ffmax"
+        case .ffth: return "ffth"
+        }
+    }
 }
 
 enum FFCheatCategory: String, CaseIterable, Identifiable {
@@ -96,80 +103,103 @@ struct FFCheatEntry: Identifiable {
     let category: FFCheatCategory
     let variant: FFGameVariant
     let hasAntenna: Bool
-    let filename: String
-    let resourcePath: String
+    let featureID: String
+    let displayLabel: String
+}
+
+private let featureCategoryMap: [String: FFCheatCategory] = [
+    "avatar": .aimbotDrag,
+    "avatar_cs": .aimbotDrag,
+    "avatar_rooms": .aimbotDrag,
+    "avatar_ffth": .aimbotDrag,
+    "avatar_ffth_antena": .aimbotDrag,
+    "aimbody": .aimbotChest,
+    "aim_head": .aimbotHead,
+    "aim_neck": .aimbotNeck,
+    "aim_chest": .aimbotChest,
+    "aim_drag": .aimbotDrag,
+    "magic": .aimbotHead,
+    "hologram_ffmax": .holoWeapons,
+    "hologram_ffth": .holoWeapons,
+    "hologram_char": .holoCharacter,
+    "holo_weapons": .holoWeapons,
+    "holo_character": .holoCharacter,
+]
+
+private let featureAntennaSet: Set<String> = [
+    "avatar_ffth_antena",
+]
+
+private func inferCategory(from featureID: String, name: String) -> FFCheatCategory {
+    if let mapped = featureCategoryMap[featureID] { return mapped }
+
+    let lower = featureID.lowercased() + " " + name.lowercased()
+    if lower.contains("holo") || lower.contains("visual") { return .holoWeapons }
+    if lower.contains("head") || lower.contains("cabeza") { return .aimbotHead }
+    if lower.contains("neck") || lower.contains("cuello") { return .aimbotNeck }
+    if lower.contains("chest") || lower.contains("pecho") || lower.contains("body") { return .aimbotChest }
+    if lower.contains("drag") || lower.contains("avatar") { return .aimbotDrag }
+    return .aimbotDrag
 }
 
 enum FFPatchCatalog {
-    private struct PatchMapping {
-        let pattern: String
-        let category: FFCheatCategory
-        let hasAntenna: Bool
+
+    @MainActor
+    static var cloudFeatures: [CloudPatchFeature] = []
+
+    @MainActor
+    static var lastFetchError: Error?
+
+    @MainActor
+    static func refreshCatalog() async {
+        do {
+            cloudFeatures = try await CloudPatchService.shared.fetchCatalog(forceRefresh: true)
+            lastFetchError = nil
+        } catch {
+            lastFetchError = error
+        }
     }
 
-    private static let ffmaxMappings: [PatchMapping] = [
-        PatchMapping(pattern: "AIMBOT CABEZA - ANTENA FFMAX", category: .aimbotHead, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT CABEZA SIN ANTENA FFMAX", category: .aimbotHead, hasAntenna: false),
-        PatchMapping(pattern: "AIMBOT CUELLO - ANTENA FFMAX", category: .aimbotNeck, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT CUELLO SN ANTENA FFMAX", category: .aimbotNeck, hasAntenna: false),
-        PatchMapping(pattern: "AIMBOT PECHO - ANTENA FFMAX", category: .aimbotChest, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT DRAG - ANTENA FFMAX", category: .aimbotDrag, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT DRAG SIN ANTENA FFMAX", category: .aimbotDrag, hasAntenna: false),
-        PatchMapping(pattern: "HOLO ARMAS BORDES FFMAX", category: .holoWeapons, hasAntenna: false),
-    ]
-
-    private static let ffthMappings: [PatchMapping] = [
-        PatchMapping(pattern: "AIMBOT CABEZA - ANTENA FFTH", category: .aimbotHead, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT CABEZA SIN ANTENA FFTH", category: .aimbotHead, hasAntenna: false),
-        PatchMapping(pattern: "AIMBOT CUELLO - ANTENA FFTH", category: .aimbotNeck, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT CUELLO SN ANTENA FFTH", category: .aimbotNeck, hasAntenna: false),
-        PatchMapping(pattern: "AIMBOT PECHO - ANTENA FFTH", category: .aimbotChest, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT PECHO SN ANTENA  FFTH", category: .aimbotChest, hasAntenna: false),
-        PatchMapping(pattern: "AIMBOT DRAG - ANTENA FFTH", category: .aimbotDrag, hasAntenna: true),
-        PatchMapping(pattern: "AIMBOT DRAG SIN ANTENA FFTH", category: .aimbotDrag, hasAntenna: false),
-        PatchMapping(pattern: "HOLOGRAMA ARMAS BORDES FFTH", category: .holoWeapons, hasAntenna: false),
-        PatchMapping(pattern: "HOLOGRAMA PERSONAJE FFTH", category: .holoCharacter, hasAntenna: false),
-    ]
-
-    static func entries(for variant: FFGameVariant) -> [FFCheatEntry] {
-        let mappings: [PatchMapping]
-        switch variant {
-        case .ffmax: mappings = ffmaxMappings
-        case .ffth: mappings = ffthMappings
+    @MainActor
+    static func loadCatalogIfNeeded() async {
+        if cloudFeatures.isEmpty {
+            await refreshCatalog()
         }
-        return mappings.compactMap { mapping in
-            let filename = mapping.pattern + ".3105"
-            let folder = variant.resourceFolder
-            guard Bundle.main.path(
-                forResource: mapping.pattern,
-                ofType: "3105",
-                inDirectory: "Patches/\(folder)"
-            ) != nil else {
-                return nil
+    }
+
+    @MainActor
+    static func entries(for variant: FFGameVariant) -> [FFCheatEntry] {
+        return cloudFeatures.compactMap { feature in
+            let hasVariantFile: Bool
+            if feature.files != nil {
+                hasVariantFile = feature.filename(for: variant) != nil
+            } else {
+                hasVariantFile = true
             }
+            guard hasVariantFile else { return nil }
+
+            let category = inferCategory(from: feature.id, name: feature.name)
+            let hasAntenna = featureAntennaSet.contains(feature.id)
+                || feature.name.lowercased().contains("antena")
+                || feature.name.lowercased().contains("antenna")
+
             return FFCheatEntry(
-                id: "\(variant.rawValue):\(mapping.pattern)",
-                category: mapping.category,
+                id: "\(variant.rawValue):\(feature.id)",
+                category: category,
                 variant: variant,
-                hasAntenna: mapping.hasAntenna,
-                filename: filename,
-                resourcePath: "Patches/\(folder)/\(filename)"
+                hasAntenna: hasAntenna,
+                featureID: feature.id,
+                displayLabel: feature.name
             )
         }
     }
 
+    @MainActor
     static func allEntries() -> [FFCheatEntry] {
         FFGameVariant.allCases.flatMap { entries(for: $0) }
     }
 
-    static func patchData(for entry: FFCheatEntry) -> Data? {
-        let folder = entry.variant.resourceFolder
-        let name = entry.filename.replacingOccurrences(of: ".3105", with: "")
-        guard let url = Bundle.main.url(
-            forResource: name,
-            withExtension: "3105",
-            subdirectory: "Patches/\(folder)"
-        ) else { return nil }
-        return try? Data(contentsOf: url)
+    static func patchData(for entry: FFCheatEntry) async throws -> Data {
+        try await CloudPatchService.shared.fetchPatch(featureID: entry.featureID)
     }
 }

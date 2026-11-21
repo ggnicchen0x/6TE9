@@ -60,6 +60,8 @@ struct FFCheatHubView: View {
     @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @State private var selectedCategory: CategoryTab = .aimbot
     @State private var selectedAimbotSub: AimbotSubTab = .head
+    @State private var catalogLoaded = false
+    @State private var catalogLoading = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let onOpenSettings: () -> Void
 
@@ -127,6 +129,14 @@ struct FFCheatHubView: View {
                 withAnimation(.easeOut(duration: 0.3)) {
                     entranceShown = true
                 }
+            }
+            .task {
+                guard !catalogLoaded else { return }
+                catalogLoading = true
+                await FFPatchCatalog.loadCatalogIfNeeded()
+                catalogLoading = false
+                catalogLoaded = true
+                refreshActiveState()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -372,6 +382,9 @@ struct FFCheatHubView: View {
     // MARK: - Display Name
 
     private func entryDisplayName(_ entry: FFCheatEntry) -> String {
+        if !entry.displayLabel.isEmpty {
+            return entry.displayLabel
+        }
         let base: String
         switch entry.category {
         case .aimbotHead:    base = language.text("cheats.aim_head")
@@ -391,12 +404,35 @@ struct FFCheatHubView: View {
 
     private var emptyCard: some View {
         VStack(spacing: 10) {
-            Image(systemName: "tray")
-                .font(.title2)
-                .foregroundColor(.secondary)
-            Text(language.text("cheats.empty"))
-                .font(.footnote)
-                .foregroundColor(.secondary)
+            if catalogLoading {
+                ProgressView()
+                    .tint(AppTheme.accent)
+                Text(language.text("cheats.loading_catalog"))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            } else {
+                Image(systemName: "tray")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                Text(language.text("cheats.empty"))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                if FFPatchCatalog.lastFetchError != nil {
+                    Button {
+                        Task {
+                            catalogLoading = true
+                            await FFPatchCatalog.refreshCatalog()
+                            catalogLoading = false
+                            refreshActiveState()
+                        }
+                    } label: {
+                        Text(language.text("cheats.retry"))
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(AppTheme.accent)
+                    }
+                    .padding(.top, 4)
+                }
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 36)
@@ -417,8 +453,8 @@ struct FFCheatHubView: View {
     }
 
     private func recoverReceipt(for entry: FFCheatEntry) -> PatchTransactionReceipt? {
-        guard let data = FFPatchCatalog.patchData(for: entry),
-              let decoded = try? PatchPackageCodec.decode(data, password: nil) else { return nil }
+        guard let data = CloudPatchService.shared.cachedPatchData(featureID: entry.featureID) else { return nil }
+        guard let decoded = try? PatchPackageCodec.decode(data, password: nil) else { return nil }
         return DevicePatchService.latestReceipt(projectID: decoded.project.id)
     }
 
@@ -438,9 +474,7 @@ struct FFCheatHubView: View {
         busyEntryID = entry.id
         Task.detached(priority: .userInitiated) {
             do {
-                guard let data = FFPatchCatalog.patchData(for: entry) else {
-                    throw PatchPackageError.unsupportedFormat
-                }
+                let data = try await FFPatchCatalog.patchData(for: entry)
                 let decoded = try PatchPackageCodec.decode(data, password: nil)
                 let receipt: PatchTransactionReceipt
                 do {

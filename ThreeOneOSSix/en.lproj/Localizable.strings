@@ -1642,6 +1642,9 @@
 "cheats.empty" = "No patches available";
 "cheats.failed" = "Failed";
 "cheats.unload_failed" = "Unload Failed";
+"cheats.loading_catalog" = "Loading patches...";
+"cheats.retry" = "Retry";
+"cheats.downloading" = "Downloading...";
 
 /* Account / Profile */
 "account.title" = "Profile";

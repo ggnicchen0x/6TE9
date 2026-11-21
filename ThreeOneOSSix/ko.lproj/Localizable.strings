@@ -1607,6 +1607,9 @@
 "cheats.empty" = "사용 가능한 패치 없음";
 "cheats.failed" = "실패";
 "cheats.unload_failed" = "언로드 실패";
+"cheats.loading_catalog" = "패치 로딩 중...";
+"cheats.retry" = "다시 시도";
+"cheats.downloading" = "다운로드 중...";
 
 /* Account / Profile */
 "account.title" = "프로필";

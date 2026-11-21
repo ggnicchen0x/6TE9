@@ -1642,6 +1642,9 @@
 "cheats.empty" = "Không có bản vá";
 "cheats.failed" = "Thất bại";
 "cheats.unload_failed" = "Gỡ thất bại";
+"cheats.loading_catalog" = "Đang tải bản vá...";
+"cheats.retry" = "Thử lại";
+"cheats.downloading" = "Đang tải xuống...";
 
 /* Account / Profile */
 "account.title" = "Hồ sơ";

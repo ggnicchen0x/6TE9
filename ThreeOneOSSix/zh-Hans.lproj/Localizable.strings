@@ -1642,6 +1642,9 @@
 "cheats.empty" = "无可用补丁";
 "cheats.failed" = "失败";
 "cheats.unload_failed" = "卸载失败";
+"cheats.loading_catalog" = "正在加载补丁...";
+"cheats.retry" = "重试";
+"cheats.downloading" = "正在下载...";
 
 /* Account / Profile */
 "account.title" = "个人资料";
