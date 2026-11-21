@@ -15,6 +15,7 @@ struct ThreeOneOSSixApp: App {
     @State private var configImportError: String?
     @State private var showSplash = true
     @State private var compassLocked = true
+    @State private var isLoggedIn = ByteAuthService.shared.isLoggedIn
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -107,6 +108,13 @@ struct ThreeOneOSSixApp: App {
                             : .opacity.combined(with: .scale(scale: 0.98))
                     )
                     .zIndex(1)
+                } else if !isLoggedIn {
+                    ByteLoginView {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            isLoggedIn = true
+                        }
+                    }
+                    .transition(.opacity)
                 } else {
                     ContentView()
                         .environmentObject(appState)
@@ -117,6 +125,11 @@ struct ThreeOneOSSixApp: App {
                         .environmentObject(migrationTaskCenter)
                         .environment(\.appLanguage, language)
                         .environment(\.locale, language.locale)
+                        .onReceive(NotificationCenter.default.publisher(for: .byteDidLogout)) { _ in
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isLoggedIn = false
+                            }
+                        }
                 }
             }
             .alert(
@@ -136,6 +149,11 @@ struct ThreeOneOSSixApp: App {
                 appState.detectSupport()
                 migrationTaskCenter.refreshPendingResumes()
                 importSharedConfigPackages()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .byteDidLogin)) { _ in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isLoggedIn = true
+                }
             }
             .onChange(of: scenePhase) { phase in
                 guard phase == .active else { return }
@@ -175,6 +193,7 @@ struct ThreeOneOSSixApp: App {
 class AppState: ObservableObject {
     @Published var exploitStatus: ExploitStatus = .notStarted
     @Published var unsupportedMessage: String?
+    @Published var updateOffer: AppUpdateChecker.Offer?
 
     /// Same storage key as the `@AppStorage` in `ThreeOneOSSixApp`. AppState
     /// is a plain class, so it cannot read the struct's property directly —
@@ -272,6 +291,17 @@ class AppState: ObservableObject {
             } else if exploitStatus.isSuccess {
                 exploitStatus = .notStarted
                 log("app: sandbox access is no longer active")
+            }
+        }
+    }
+
+    func checkForUpdates() {
+        Task {
+            let offer = await AppUpdateChecker.throttledForegroundCheck()
+            await MainActor.run {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    updateOffer = offer
+                }
             }
         }
     }

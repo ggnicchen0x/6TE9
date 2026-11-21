@@ -40,6 +40,9 @@ struct CompassHomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 14) {
+                    if let offer = appState.updateOffer {
+                        updateBanner(offer)
+                    }
                     appCard
                     deviceStatusSection
                 }
@@ -65,6 +68,7 @@ struct CompassHomeView: View {
             )
             .navigationTitle("Home")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear { appState.checkForUpdates() }
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarBackground(Color(white: 0.06), for: .navigationBar)
             .toolbar {
@@ -210,6 +214,48 @@ struct CompassHomeView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 13)
+    }
+
+    private func updateBanner(_ offer: AppUpdateChecker.Offer) -> some View {
+        Button {
+            UIApplication.shared.open(offer.url)
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "arrow.down.app.fill")
+                    .font(.title3)
+                    .foregroundStyle(.white)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("New version detected: v\(offer.version)")
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(.white)
+                    Text("Check Out Notice")
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.6))
+            }
+            .padding(14)
+            .background(
+                ZStack {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [AppTheme.accent, AppTheme.accent.opacity(0.7)],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.15), lineWidth: 0.5)
+                }
+            )
+        }
     }
 
     private var appVersion: String {

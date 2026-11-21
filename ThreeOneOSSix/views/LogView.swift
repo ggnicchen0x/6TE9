@@ -7,15 +7,18 @@ struct LogView: View {
     @Environment(\.appLanguage) private var language
     @State private var copied = false
 
-    private var shareText: String {
+    private func logText(header: String) -> String {
         var lines: [String] = []
-        lines.append("3106 Log")
+        lines.append(header)
         lines.append("iOS \(AppInfo.osVersion) (\(AppInfo.osBuild)) — \(AppInfo.machineName)")
         lines.append("Generated: \(Date())")
         lines.append("")
         lines.append(contentsOf: appLog.entries)
         return lines.joined(separator: "\n")
     }
+
+    private var shareText: String { logText(header: "Compass Log") }
+    private var displayText: String { logText(header: "Compass Log") }
 
     var body: some View {
         NavigationStack {
@@ -82,7 +85,7 @@ struct LogView: View {
                 }
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     NavigationLink {
-                        PaginatedTextView(text: shareText, titleKey: "logs.title")
+                        PaginatedTextView(text: displayText, titleKey: "logs.title")
                     } label: {
                         Image(systemName: "text.page")
                     }
