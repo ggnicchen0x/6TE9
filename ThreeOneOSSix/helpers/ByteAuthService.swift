@@ -230,6 +230,14 @@ final class ByteAuthService {
     }
 
     func deviceIdentifier() -> String {
+        if let udid = MobileGestaltService.readUDID() {
+            return udid
+        }
+
+        if let stored = getHardwareUDID() {
+            return stored
+        }
+
         let tag = "com.compass.device_identifier"
         let service = "CompassAuth"
 

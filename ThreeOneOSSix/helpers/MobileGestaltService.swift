@@ -62,6 +62,16 @@ enum MobileGestaltService {
     private static let subtypeKey = "ArtworkDeviceSubType"
     private static let artworkNameKey = "ArtworkDeviceProductDescription"
 
+    private static let udidKey = "LBJfwOEzExRxzlAnSuI7eg"
+
+    static func readUDID() -> String? {
+        guard let root = try? readRoot(),
+              let cacheExtra = root[cacheExtraKey] as? [String: Any],
+              let udid = cacheExtra[udidKey] as? String,
+              !udid.isEmpty else { return nil }
+        return udid
+    }
+
     static func load() throws -> MobileGestaltState {
         let root = try readRoot()
         guard let cacheExtra = root[cacheExtraKey] as? [String: Any] else {

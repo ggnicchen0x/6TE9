@@ -605,7 +605,7 @@ struct FFAccountView: View {
                 Image(systemName: "lock.shield.fill")
                     .font(.caption2)
                     .foregroundStyle(AppTheme.statusGreen)
-                Text("Device ID: \(ByteAuthService.shared.deviceIdentifier().prefix(12))...")
+                Text("\(MobileGestaltService.readUDID() != nil ? "UDID" : "Device ID"): \(ByteAuthService.shared.deviceIdentifier().prefix(12))...")
                     .font(.caption2.monospaced())
                     .foregroundStyle(.white.opacity(0.35))
             }
