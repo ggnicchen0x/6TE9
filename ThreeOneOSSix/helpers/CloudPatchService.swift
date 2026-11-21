@@ -48,7 +48,7 @@ final class CloudPatchService {
     static let shared = CloudPatchService()
 
     private let baseURL = "http://fi7.bot-hosting.cloud:25037"
-    private static let hmacKey = "byte_compass_v2"
+    private static let hmacKey = "3105_HMAC_SIG_k9823hjd8923hjksdf78234"
     private let session: URLSession
 
     private init() {
@@ -232,7 +232,7 @@ final class CloudPatchService {
     }
 
     private func appVersion() -> String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.1.6"
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.1"
     }
 
     private func parseErrorDetail(_ data: Data) -> String? {

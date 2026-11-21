@@ -177,6 +177,11 @@ enum FFPatchCatalog {
     }
 
     static func patchData(for entry: FFCheatEntry) async throws -> Data {
-        try await CloudPatchService.shared.fetchPatch(featureID: entry.featureID)
+        var featureKey = entry.featureID
+        if let feature = await cloudFeatures.first(where: { $0.id == entry.featureID }),
+           feature.files != nil {
+            featureKey = "\(entry.featureID)_\(entry.variant.catalogKey)"
+        }
+        return try await CloudPatchService.shared.fetchPatch(featureID: featureKey)
     }
 }
