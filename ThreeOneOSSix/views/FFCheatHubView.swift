@@ -24,6 +24,8 @@ private enum CategoryTab: String, CaseIterable, Identifiable {
 }
 
 private enum AimbotSubTab: String, CaseIterable, Identifiable {
+    case power
+    case body
     case head
     case neck
     case chest
@@ -33,6 +35,8 @@ private enum AimbotSubTab: String, CaseIterable, Identifiable {
 
     var labelKey: String {
         switch self {
+        case .power: return "cheats.sub.power"
+        case .body: return "cheats.sub.body"
         case .head: return "cheats.sub.head"
         case .neck: return "cheats.sub.neck"
         case .chest: return "cheats.sub.chest"
@@ -42,6 +46,8 @@ private enum AimbotSubTab: String, CaseIterable, Identifiable {
 
     var categories: [FFCheatCategory] {
         switch self {
+        case .power: return [.aimlockFF, .aimHeadFF, .aimMagic]
+        case .body: return [.aimBody]
         case .head: return [.aimbotHead]
         case .neck: return [.aimbotNeck]
         case .chest: return [.aimbotChest]
@@ -59,7 +65,7 @@ struct FFCheatHubView: View {
     @State private var entranceShown = false
     @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @State private var selectedCategory: CategoryTab = .aimbot
-    @State private var selectedAimbotSub: AimbotSubTab = .head
+    @State private var selectedAimbotSub: AimbotSubTab = .power
     @State private var catalogLoaded = false
     @State private var catalogLoading = false
     @State private var isSafe = true
@@ -234,33 +240,34 @@ struct FFCheatHubView: View {
     }
 
     private var aimbotSubTabBar: some View {
-        HStack(spacing: 8) {
-            ForEach(AimbotSubTab.allCases) { sub in
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        selectedAimbotSub = sub
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(AimbotSubTab.allCases) { sub in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedAimbotSub = sub
+                        }
+                    } label: {
+                        Text(language.text(sub.labelKey))
+                            .font(.caption.weight(.medium))
+                            .foregroundColor(selectedAimbotSub == sub ? .black : .secondary)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(
+                                Capsule(style: .continuous)
+                                    .fill(selectedAimbotSub == sub ? AppTheme.accent : Color(white: 0.09))
+                            )
+                            .overlay(
+                                Capsule(style: .continuous)
+                                    .strokeBorder(
+                                        selectedAimbotSub == sub ? Color.clear : Color.white.opacity(0.06),
+                                        lineWidth: 0.5
+                                    )
+                            )
                     }
-                } label: {
-                    Text(language.text(sub.labelKey))
-                        .font(.caption.weight(.medium))
-                        .foregroundColor(selectedAimbotSub == sub ? .black : .secondary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(
-                            Capsule(style: .continuous)
-                                .fill(selectedAimbotSub == sub ? AppTheme.accent : Color(white: 0.09))
-                        )
-                        .overlay(
-                            Capsule(style: .continuous)
-                                .strokeBorder(
-                                    selectedAimbotSub == sub ? Color.clear : Color.white.opacity(0.06),
-                                    lineWidth: 0.5
-                                )
-                        )
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
-            Spacer()
         }
     }
 
@@ -395,6 +402,10 @@ struct FFCheatHubView: View {
         case .aimbotNeck:    base = language.text("cheats.aim_neck")
         case .aimbotChest:   base = language.text("cheats.aim_chest")
         case .aimbotDrag:    base = language.text("cheats.aim_drag")
+        case .aimlockFF:     base = language.text("cheats.aimlock_ff")
+        case .aimHeadFF:     base = language.text("cheats.aimhead_ff")
+        case .aimMagic:      base = language.text("cheats.aim_magic")
+        case .aimBody:       base = language.text("cheats.aim_body")
         case .holoWeapons:   base = language.text("cheats.holo_weapons")
         case .holoCharacter: base = language.text("cheats.holo_character")
         }

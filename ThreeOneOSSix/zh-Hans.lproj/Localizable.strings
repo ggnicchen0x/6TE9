@@ -1624,11 +1624,17 @@
 "cheats.sub.neck" = "颈部";
 "cheats.sub.chest" = "胸部";
 "cheats.sub.drag" = "拖拽";
+"cheats.sub.power" = "Power";
+"cheats.sub.body" = "Body";
 "cheats.active" = "运行中";
 "cheats.aim_head" = "瞄准头部";
 "cheats.aim_neck" = "瞄准颈部";
 "cheats.aim_chest" = "瞄准胸部";
 "cheats.aim_drag" = "瞄准拖拽";
+"cheats.aimlock_ff" = "AimlockFF";
+"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_magic" = "Aim Magic";
+"cheats.aim_body" = "AimBody";
 "cheats.holo_weapons" = "全息武器";
 "cheats.holo_character" = "全息角色";
 "cheats.antenna_suffix" = " + 天线";

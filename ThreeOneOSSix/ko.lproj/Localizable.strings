@@ -1589,11 +1589,17 @@
 "cheats.sub.neck" = "목";
 "cheats.sub.chest" = "가슴";
 "cheats.sub.drag" = "드래그";
+"cheats.sub.power" = "Power";
+"cheats.sub.body" = "Body";
 "cheats.active" = "활성";
 "cheats.aim_head" = "에임 헤드";
 "cheats.aim_neck" = "에임 넥";
 "cheats.aim_chest" = "에임 체스트";
 "cheats.aim_drag" = "에임 드래그";
+"cheats.aimlock_ff" = "AimlockFF";
+"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_magic" = "Aim Magic";
+"cheats.aim_body" = "AimBody";
 "cheats.holo_weapons" = "홀로 무기";
 "cheats.holo_character" = "홀로 캐릭터";
 "cheats.antenna_suffix" = " + 안테나";

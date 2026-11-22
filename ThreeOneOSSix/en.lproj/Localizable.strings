@@ -1624,11 +1624,17 @@
 "cheats.sub.neck" = "Neck";
 "cheats.sub.chest" = "Chest";
 "cheats.sub.drag" = "Drag";
+"cheats.sub.power" = "Power";
+"cheats.sub.body" = "Body";
 "cheats.active" = "Active";
 "cheats.aim_head" = "Aim Head";
 "cheats.aim_neck" = "Aim Neck";
 "cheats.aim_chest" = "Aim Chest";
 "cheats.aim_drag" = "Aim Drag";
+"cheats.aimlock_ff" = "AimlockFF";
+"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_magic" = "Aim Magic";
+"cheats.aim_body" = "AimBody";
 "cheats.holo_weapons" = "Holo Weapons";
 "cheats.holo_character" = "Holo Character";
 "cheats.antenna_suffix" = " + Antenna";

@@ -40,6 +40,10 @@ enum FFCheatCategory: String, CaseIterable, Identifiable {
     case aimbotNeck
     case aimbotChest
     case aimbotDrag
+    case aimlockFF
+    case aimHeadFF
+    case aimMagic
+    case aimBody
     case holoWeapons
     case holoCharacter
 
@@ -51,6 +55,10 @@ enum FFCheatCategory: String, CaseIterable, Identifiable {
         case .aimbotNeck: return "Aimbot Neck"
         case .aimbotChest: return "Aimbot Chest"
         case .aimbotDrag: return "Aimbot Drag"
+        case .aimlockFF: return "AimlockFF"
+        case .aimHeadFF: return "AimHeadFF"
+        case .aimMagic: return "Aim Magic"
+        case .aimBody: return "AimBody"
         case .holoWeapons: return "Holo Weapons"
         case .holoCharacter: return "Holo Character"
         }
@@ -62,6 +70,10 @@ enum FFCheatCategory: String, CaseIterable, Identifiable {
         case .aimbotNeck: return "target"
         case .aimbotChest: return "shield.fill"
         case .aimbotDrag: return "hand.draw.fill"
+        case .aimlockFF: return "lock.fill"
+        case .aimHeadFF: return "scope"
+        case .aimMagic: return "wand.and.stars"
+        case .aimBody: return "figure.stand"
         case .holoWeapons: return "sparkle"
         case .holoCharacter: return "person.fill"
         }
@@ -69,7 +81,8 @@ enum FFCheatCategory: String, CaseIterable, Identifiable {
 
     var section: FFCheatSection {
         switch self {
-        case .aimbotHead, .aimbotNeck, .aimbotChest, .aimbotDrag:
+        case .aimbotHead, .aimbotNeck, .aimbotChest, .aimbotDrag,
+             .aimlockFF, .aimHeadFF, .aimMagic, .aimBody:
             return .aimbot
         case .holoWeapons, .holoCharacter:
             return .visuals
@@ -113,9 +126,13 @@ private func inferCategory(from featureID: String, name: String) -> FFCheatCateg
         if lower.contains("character") || lower.contains("personaje") { return .holoCharacter }
         return .holoWeapons
     }
+    if lower.contains("aimlock") { return .aimlockFF }
+    if lower.contains("aimheadff") || lower.contains("aim_head_ff") { return .aimHeadFF }
+    if lower.contains("magic") { return .aimMagic }
+    if lower.contains("aimbody") || lower.contains("aim_body") { return .aimBody }
     if lower.contains("head") { return .aimbotHead }
     if lower.contains("neck") { return .aimbotNeck }
-    if lower.contains("chest") || lower.contains("body") { return .aimbotChest }
+    if lower.contains("chest") { return .aimbotChest }
     if lower.contains("drag") { return .aimbotDrag }
     return .aimbotDrag
 }

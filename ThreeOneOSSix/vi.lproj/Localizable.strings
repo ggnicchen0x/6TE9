@@ -1624,11 +1624,17 @@
 "cheats.sub.neck" = "Cổ";
 "cheats.sub.chest" = "Ngực";
 "cheats.sub.drag" = "Kéo";
+"cheats.sub.power" = "Power";
+"cheats.sub.body" = "Body";
 "cheats.active" = "Hoạt động";
 "cheats.aim_head" = "Ngắm đầu";
 "cheats.aim_neck" = "Ngắm cổ";
 "cheats.aim_chest" = "Ngắm ngực";
 "cheats.aim_drag" = "Ngắm kéo";
+"cheats.aimlock_ff" = "AimlockFF";
+"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_magic" = "Aim Magic";
+"cheats.aim_body" = "AimBody";
 "cheats.holo_weapons" = "Holo vũ khí";
 "cheats.holo_character" = "Holo nhân vật";
 "cheats.antenna_suffix" = " + Ăng-ten";
