@@ -8,7 +8,7 @@ enum PatchPackageCodec {
     // the on-disk package format. Renaming them would make every existing
     // .3105/.3106 package undecryptable, so only the app identity changes.
     private static let magic = Data("3105PATCH\0".utf8)
-    static let latestSchemaVersion = 3
+    static let latestSchemaVersion = 9
     private static let minimumSchemaVersion = 1
 
     private struct Envelope: Codable {

@@ -1631,10 +1631,10 @@
 "cheats.aim_neck" = "瞄准颈部";
 "cheats.aim_chest" = "瞄准胸部";
 "cheats.aim_drag" = "瞄准拖拽";
-"cheats.aimlock_ff" = "AimlockFF";
-"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_lock" = "Aim Lock";
+"cheats.aim_power" = "Aim Power";
 "cheats.aim_magic" = "Aim Magic";
-"cheats.aim_body" = "AimBody";
+"cheats.aim_body" = "Aim Body";
 "cheats.holo_weapons" = "全息武器";
 "cheats.holo_character" = "全息角色";
 "cheats.antenna_suffix" = " + 天线";

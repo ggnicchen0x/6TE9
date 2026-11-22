@@ -55,10 +55,10 @@ enum FFCheatCategory: String, CaseIterable, Identifiable {
         case .aimbotNeck: return "Aimbot Neck"
         case .aimbotChest: return "Aimbot Chest"
         case .aimbotDrag: return "Aimbot Drag"
-        case .aimlockFF: return "AimlockFF"
-        case .aimHeadFF: return "AimHeadFF"
+        case .aimlockFF: return "Aim Lock"
+        case .aimHeadFF: return "Aim Power"
         case .aimMagic: return "Aim Magic"
-        case .aimBody: return "AimBody"
+        case .aimBody: return "Aim Body"
         case .holoWeapons: return "Holo Weapons"
         case .holoCharacter: return "Holo Character"
         }

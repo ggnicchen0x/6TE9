@@ -24,12 +24,12 @@ private enum CategoryTab: String, CaseIterable, Identifiable {
 }
 
 private enum AimbotSubTab: String, CaseIterable, Identifiable {
-    case power
-    case body
     case head
     case neck
-    case chest
     case drag
+    case chest
+    case body
+    case power
 
     var id: String { rawValue }
 
@@ -65,7 +65,7 @@ struct FFCheatHubView: View {
     @State private var entranceShown = false
     @State private var activePatches: [String: PatchTransactionReceipt] = [:]
     @State private var selectedCategory: CategoryTab = .aimbot
-    @State private var selectedAimbotSub: AimbotSubTab = .power
+    @State private var selectedAimbotSub: AimbotSubTab = .head
     @State private var catalogLoaded = false
     @State private var catalogLoading = false
     @State private var isSafe = true
@@ -327,12 +327,15 @@ struct FFCheatHubView: View {
                             .foregroundColor(loaded ? AppTheme.statusGreen : .secondary)
                     }
 
-                    Text(isSafe ? language.text("cheats.safe") : language.text("cheats.unsafe"))
+                    let isHologram = entry.category == .holoWeapons || entry.category == .holoCharacter
+                    let safeLabel = isHologram ? language.text("cheats.unsafe") : (isSafe ? language.text("cheats.safe") : language.text("cheats.unsafe"))
+                    let safeColor: Color = isHologram ? .red : (isSafe ? AppTheme.statusGreen : .red)
+                    Text(safeLabel)
                         .font(.caption2.weight(.medium))
-                        .foregroundColor(isSafe ? AppTheme.statusGreen : .red)
+                        .foregroundColor(safeColor)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
-                        .background((isSafe ? AppTheme.statusGreen : Color.red).opacity(0.12), in: Capsule())
+                        .background(safeColor.opacity(0.12), in: Capsule())
                 }
             }
 
@@ -402,8 +405,8 @@ struct FFCheatHubView: View {
         case .aimbotNeck:    base = language.text("cheats.aim_neck")
         case .aimbotChest:   base = language.text("cheats.aim_chest")
         case .aimbotDrag:    base = language.text("cheats.aim_drag")
-        case .aimlockFF:     base = language.text("cheats.aimlock_ff")
-        case .aimHeadFF:     base = language.text("cheats.aimhead_ff")
+        case .aimlockFF:     base = language.text("cheats.aim_lock")
+        case .aimHeadFF:     base = language.text("cheats.aim_power")
         case .aimMagic:      base = language.text("cheats.aim_magic")
         case .aimBody:       base = language.text("cheats.aim_body")
         case .holoWeapons:   base = language.text("cheats.holo_weapons")

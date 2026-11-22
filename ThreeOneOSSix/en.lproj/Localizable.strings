@@ -1631,10 +1631,10 @@
 "cheats.aim_neck" = "Aim Neck";
 "cheats.aim_chest" = "Aim Chest";
 "cheats.aim_drag" = "Aim Drag";
-"cheats.aimlock_ff" = "AimlockFF";
-"cheats.aimhead_ff" = "AimHeadFF";
+"cheats.aim_lock" = "Aim Lock";
+"cheats.aim_power" = "Aim Power";
 "cheats.aim_magic" = "Aim Magic";
-"cheats.aim_body" = "AimBody";
+"cheats.aim_body" = "Aim Body";
 "cheats.holo_weapons" = "Holo Weapons";
 "cheats.holo_character" = "Holo Character";
 "cheats.antenna_suffix" = " + Antenna";
