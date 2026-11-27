@@ -48,8 +48,18 @@ struct CloudCatalogResponse: Codable {
 final class CloudPatchService {
     static let shared = CloudPatchService()
 
-    private let baseURL = "http://fi7.bot-hosting.cloud:25037"
-    private static let hmacKey = "3105_HMAC_SIG_k9823hjd8923hjksdf78234"
+    private let baseURL = "https://fi7.bot-hosting.cloud:25037"
+    private static let hmacKey: String = {
+        let encoded: [UInt8] = [
+            0x5a, 0x58, 0x59, 0x5c, 0x36, 0x21, 0x24, 0x28,
+            0x2a, 0x36, 0x3a, 0x20, 0x2e, 0x36, 0x02, 0x50,
+            0x51, 0x5b, 0x5a, 0x01, 0x03, 0x0d, 0x51, 0x50,
+            0x5b, 0x5a, 0x01, 0x03, 0x02, 0x1a, 0x0d, 0x0f,
+            0x5e, 0x51, 0x5b, 0x5a, 0x5d
+        ]
+        let mask: UInt8 = 0x69
+        return String(bytes: encoded.map { $0 ^ mask }, encoding: .utf8) ?? ""
+    }()
     private let session: URLSession
 
     private init() {
@@ -102,7 +112,7 @@ final class CloudPatchService {
             return cached
         }
 
-        guard let token = UserDefaults.standard.string(forKey: "byte_auth_token") else {
+        guard let token = ByteAuthService.shared.authToken else {
             throw CloudPatchError.notAuthenticated
         }
 

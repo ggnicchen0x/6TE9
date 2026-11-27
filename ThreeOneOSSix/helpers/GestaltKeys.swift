@@ -121,8 +121,8 @@ enum GestaltValueKind: String, CaseIterable, Identifiable {
         case .date:
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            return formatter.string(from: value as! Date)
-        case .data: return (value as! Data).base64EncodedString()
+            return (value as? Date).map { formatter.string(from: $0) } ?? ""
+        case .data: return (value as? Data)?.base64EncodedString() ?? ""
         case .array, .dictionary:
             guard
                 let data = try? PropertyListSerialization.data(

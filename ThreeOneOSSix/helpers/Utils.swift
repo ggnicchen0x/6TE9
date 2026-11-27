@@ -3,6 +3,14 @@ import UIKit
 import Darwin
 import Combine
 
+// MARK: - Shared Formatters
+
+enum FormatUtil {
+    static func sizeText(_ bytes: Int64) -> String {
+        ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
+    }
+}
+
 // MARK: - Global logger
 class AppLog: ObservableObject {
     static let shared = AppLog()

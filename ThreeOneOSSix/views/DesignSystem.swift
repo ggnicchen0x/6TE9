@@ -22,6 +22,66 @@ enum AppTheme {
     static let contentCardPadding: CGFloat = 16
 }
 
+struct AppCardBackground: ViewModifier {
+    var cornerRadius: CGFloat = 14
+
+    func body(content: Content) -> some View {
+        content.background(
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(AppTheme.cardFill)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(AppTheme.cardGradientOpacity),
+                                Color.clear
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
+            }
+        )
+    }
+}
+
+extension View {
+    func appCardBackground(cornerRadius: CGFloat = 14) -> some View {
+        modifier(AppCardBackground(cornerRadius: cornerRadius))
+    }
+}
+
+struct AccentBarCard: View {
+    var cornerRadius: CGFloat = 14
+    var barColor: Color = AppTheme.accent
+
+    var body: some View {
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(AppTheme.cardFill)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
+            HStack(spacing: 0) {
+                barColor
+                    .frame(width: 3.5)
+                Spacer()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        }
+    }
+}
+
 struct AppCardBorder: View {
     var body: some View {
         RoundedRectangle(
@@ -94,6 +154,15 @@ struct AppSearchField: View {
         .padding(.horizontal, AppTheme.pageInset)
         .padding(.vertical, 8)
         .background(.bar)
+    }
+}
+
+enum CompassDirection {
+    static func cardinalName(for deg: Double) -> String {
+        let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+        let normalized = (deg.truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
+        let idx = Int((normalized + 22.5) / 45) % 8
+        return dirs[idx]
     }
 }
 

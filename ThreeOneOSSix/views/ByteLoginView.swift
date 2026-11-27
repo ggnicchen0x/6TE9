@@ -14,26 +14,28 @@ struct ByteLoginView: View {
     var onLoginSuccess: () -> Void
 
     var body: some View {
-        ZStack {
-            backgroundGradient
+        GeometryReader { geo in
+            ZStack {
+                backgroundGradient
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    Spacer(minLength: 60)
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        Spacer(minLength: 60)
 
-                    logoSection
-                        .padding(.bottom, 40)
+                        logoSection
+                            .padding(.bottom, 40)
 
-                    loginCard
-                        .padding(.horizontal, 28)
-                        .padding(.bottom, 24)
+                        loginCard
+                            .padding(.horizontal, 28)
+                            .padding(.bottom, 24)
 
-                    footerText
-                        .padding(.bottom, 40)
+                        footerText
+                            .padding(.bottom, 40)
 
-                    Spacer(minLength: 20)
+                        Spacer(minLength: 20)
+                    }
+                    .frame(minHeight: geo.size.height)
                 }
-                .frame(minHeight: UIScreen.main.bounds.height)
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -231,9 +233,7 @@ struct ByteLoginView: View {
         .opacity(formOpacity)
     }
 
-    private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
-    }
+    private var appVersion: String { AppInfo.appVersion }
 
     private func performLogin() {
         let key = licenseKey.trimmingCharacters(in: .whitespacesAndNewlines)

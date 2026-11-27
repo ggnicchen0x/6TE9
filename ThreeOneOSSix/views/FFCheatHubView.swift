@@ -199,7 +199,7 @@ struct FFCheatHubView: View {
             .background(AppTheme.statusGreen.opacity(0.12), in: Capsule())
         }
         .padding(14)
-        .background(accentBarCard(cornerRadius: 14, barColor: AppTheme.accent))
+        .background(AccentBarCard(cornerRadius: 14, barColor: AppTheme.accent))
     }
 
     // MARK: - Category Tabs
@@ -268,31 +268,6 @@ struct FFCheatHubView: View {
                     .buttonStyle(.plain)
                 }
             }
-        }
-    }
-
-    // MARK: - Accent Bar Card
-
-    private func accentBarCard(cornerRadius: CGFloat, barColor: Color = AppTheme.accent) -> some View {
-        ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(cardFill)
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
-            HStack(spacing: 0) {
-                barColor
-                    .frame(width: 3.5)
-                Spacer()
-            }
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         }
     }
 
@@ -369,26 +344,26 @@ struct FFCheatHubView: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 18)
-        .background(
-            loaded
-                ? AnyView(accentBarCard(cornerRadius: 16, barColor: AppTheme.statusGreen))
-                : AnyView(
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(cardFill)
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
+        .background {
+            if loaded {
+                AccentBarCard(cornerRadius: 16, barColor: AppTheme.statusGreen)
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(cardFill)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.white.opacity(AppTheme.cardGradientOpacity), Color.clear],
+                                startPoint: .top,
+                                endPoint: .bottom
                             )
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
-                    }
-                )
-        )
+                        )
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
+                }
+            }
+        }
         .animation(.easeInOut(duration: 0.25), value: loaded)
         .animation(.easeInOut(duration: 0.2), value: loading)
     }

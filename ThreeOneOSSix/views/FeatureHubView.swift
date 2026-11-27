@@ -83,9 +83,7 @@ struct FeatureHubView: View {
         .padding(.vertical, 2)
     }
 
-    private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
-    }
+    private var appVersion: String { AppInfo.appVersion }
 
     private var appGroupText: String {
         SandboxAccess.appGroup ?? language.text("home.app_group_missing")

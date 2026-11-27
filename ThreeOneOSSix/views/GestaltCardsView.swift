@@ -311,37 +311,27 @@ struct GestaltCardsView: View {
         case .unmodified, .none:
             icon = "minus.circle"; color = .secondary
         }
+        let resolvedIcon: String
+        let resolvedColor: Color
         if checkup?.isUnsupportedBackend == true {
-            let redIcon = "xmark.circle.fill"; let redColor = Color.red
-            return AnyView(
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: redIcon)
-                        .font(.footnote)
-                        .foregroundStyle(redColor)
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(language.text("gestalt.cards.checkup_item", index) + " " + title)
-                            .font(.footnote.weight(.medium))
-                        Text(detail)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            )
+            resolvedIcon = "xmark.circle.fill"
+            resolvedColor = .red
+        } else {
+            resolvedIcon = icon
+            resolvedColor = color
         }
-        return AnyView(
-            HStack(alignment: .top, spacing: 8) {
-                Image(systemName: icon)
-                    .font(.footnote)
-                    .foregroundStyle(color)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(language.text("gestalt.cards.checkup_item", index) + " " + title)
-                        .font(.footnote.weight(.medium))
-                    Text(detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+        return HStack(alignment: .top, spacing: 8) {
+            Image(systemName: resolvedIcon)
+                .font(.footnote)
+                .foregroundStyle(resolvedColor)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(language.text("gestalt.cards.checkup_item", index) + " " + title)
+                    .font(.footnote.weight(.medium))
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
-        )
+        }
     }
 
     private func pill(_ title: String, filled: Bool) -> some View {

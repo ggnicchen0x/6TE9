@@ -153,20 +153,31 @@ struct CompassLockView: View {
     // MARK: - Compass Dial (Rotates)
     private func compassDial(scale s: CGFloat) -> some View {
         ZStack {
-            ForEach(0..<180, id: \.self) { i in
-                let deg = i * 2
-                let isMajor = deg % 30 == 0
-                let isMedium = deg % 10 == 0
-                let len: CGFloat = (isMajor ? 13 : (isMedium ? 9.5 : 5.5)) * s
-                let wid: CGFloat = (isMajor ? 1.8 : (isMedium ? 1.2 : 0.8)) * s
-                let opacity: Double = isMajor ? 1.0 : (isMedium ? 0.8 : 0.45)
+            Canvas { context, size in
+                let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                let radius = 128 * s
 
-                Rectangle()
-                    .fill(Color.white.opacity(opacity))
-                    .frame(width: wid, height: len)
-                    .offset(y: -128 * s + len / 2)
-                    .rotationEffect(.degrees(Double(deg)))
+                for i in 0..<180 {
+                    let deg = i * 2
+                    let isMajor = deg % 30 == 0
+                    let isMedium = deg % 10 == 0
+                    let len: CGFloat = (isMajor ? 13 : (isMedium ? 9.5 : 5.5)) * s
+                    let wid: CGFloat = (isMajor ? 1.8 : (isMedium ? 1.2 : 0.8)) * s
+                    let opacity: Double = isMajor ? 1.0 : (isMedium ? 0.8 : 0.45)
+
+                    let angle = Angle.degrees(Double(deg) - 90)
+                    let outerR = radius
+                    let innerR = radius - len
+                    let cos = Foundation.cos(angle.radians)
+                    let sin = Foundation.sin(angle.radians)
+
+                    var path = Path()
+                    path.move(to: CGPoint(x: center.x + outerR * cos, y: center.y + outerR * sin))
+                    path.addLine(to: CGPoint(x: center.x + innerR * cos, y: center.y + innerR * sin))
+                    context.stroke(path, with: .color(.white.opacity(opacity)), lineWidth: wid)
+                }
             }
+            .frame(width: 300 * s, height: 300 * s)
 
             Triangle()
                 .fill(Color(red: 0.95, green: 0.25, blue: 0.2))
@@ -213,43 +224,28 @@ struct CompassLockView: View {
         let startHaptic = UIImpactFeedbackGenerator(style: .medium)
         startHaptic.impactOccurred()
 
-        let duration: Double = 0.55
-        let interval: Double = 0.016
-        let totalSteps = duration / interval
-        var currentStep = 0.0
+        withAnimation(.easeOut(duration: 0.55)) {
+            ringProgress = 1.0
+        }
 
-        Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { animTimer in
-            currentStep += 1
-            ringProgress = min(1.0, currentStep / totalSteps)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
+            let heavyHaptic = UIImpactFeedbackGenerator(style: .heavy)
+            heavyHaptic.impactOccurred()
 
-            if currentStep >= totalSteps {
-                animTimer.invalidate()
+            withAnimation(.easeIn(duration: 0.15)) {
+                showUnlockFlash = true
+            }
 
-                let heavyHaptic = UIImpactFeedbackGenerator(style: .heavy)
-                heavyHaptic.impactOccurred()
-
-                withAnimation(.easeIn(duration: 0.15)) {
-                    showUnlockFlash = true
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    headingManager.stop()
-                    onUnlock()
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                headingManager.stop()
+                onUnlock()
             }
         }
     }
 
     // MARK: - Helpers
     private var cardinalDirection: String {
-        cardinalName(for: heading)
-    }
-
-    private func cardinalName(for deg: Double) -> String {
-        let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-        let normalized = (deg.truncatingRemainder(dividingBy: 360) + 360).truncatingRemainder(dividingBy: 360)
-        let idx = Int((normalized + 22.5) / 45) % 8
-        return dirs[idx]
+        CompassDirection.cardinalName(for: heading)
     }
 
     private func formatCoordinate(_ coord: CLLocationCoordinate2D) -> String {

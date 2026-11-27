@@ -49,7 +49,8 @@ enum CleanerHistory {
     private static var fileURL: URL {
         let base = injectedRoot
             ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return base!.appendingPathComponent(fileName)
+            ?? URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        return base.appendingPathComponent(fileName)
     }
 
     // MARK: - Persistence

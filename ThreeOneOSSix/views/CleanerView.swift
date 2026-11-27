@@ -901,7 +901,7 @@ struct CleanerView: View {
     }
 
     private func sizeText(_ byteCount: Int64) -> String {
-        ByteCountFormatter.string(fromByteCount: byteCount, countStyle: .file)
+        FormatUtil.sizeText(byteCount)
     }
 }
 

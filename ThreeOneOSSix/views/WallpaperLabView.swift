@@ -433,7 +433,7 @@ struct WallpaperLabView: View {
     }
 
     private func sizeText(_ bytes: Int64) -> String {
-        ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
+        FormatUtil.sizeText(bytes)
     }
 }
 
@@ -510,7 +510,7 @@ private struct WallpaperPackageDetailView: View {
     }
 
     private func sizeText(_ bytes: Int64) -> String {
-        ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
+        FormatUtil.sizeText(bytes)
     }
 }
 

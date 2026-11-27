@@ -124,25 +124,7 @@ struct CompassHomeView: View {
             }
         }
         .padding(14)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(cardFill)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(AppTheme.cardGradientOpacity),
-                                Color.clear
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
-            }
-        )
+        .appCardBackground()
     }
 
     private var deviceStatusSection: some View {
@@ -177,25 +159,7 @@ struct CompassHomeView: View {
                 .padding(.horizontal, 14)
                 .padding(.vertical, 13)
             }
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(cardFill)
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(AppTheme.cardGradientOpacity),
-                                    Color.clear
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(Color.white.opacity(AppTheme.cardBorderOpacity), lineWidth: 0.5)
-                }
-            )
+            .appCardBackground()
         }
     }
 
@@ -258,7 +222,5 @@ struct CompassHomeView: View {
         }
     }
 
-    private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
-    }
+    private var appVersion: String { AppInfo.appVersion }
 }

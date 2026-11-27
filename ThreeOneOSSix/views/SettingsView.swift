@@ -129,15 +129,10 @@ struct SettingsView: View {
         }
     }
 
-    private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-            ?? "1.0"
-    }
+    private var appVersion: String { AppInfo.appVersion }
 
     private func cardinalName(for deg: Double) -> String {
-        let dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-        let idx = Int((deg + 22.5).truncatingRemainder(dividingBy: 360) / 45)
-        return dirs[idx % 8]
+        CompassDirection.cardinalName(for: deg)
     }
 
     private var appGroupStatus: String {

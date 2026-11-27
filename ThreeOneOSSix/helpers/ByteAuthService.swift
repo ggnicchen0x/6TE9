@@ -11,7 +11,7 @@ extension Notification.Name {
 final class ByteAuthService {
     static let shared = ByteAuthService()
 
-    private let baseURL = "http://fi7.bot-hosting.cloud:25037"
+    private let baseURL = "https://fi7.bot-hosting.cloud:25037"
     private let session = URLSession(configuration: {
         let c = URLSessionConfiguration.default
         c.timeoutIntervalForRequest = 15
@@ -19,24 +19,86 @@ final class ByteAuthService {
         return c
     }())
 
-    private init() {}
+    private init() {
+        migrateUserDefaultsToKeychain()
+    }
 
+    private static let keychainService = "CompassAuth"
     private static let tokenKey = "byte_auth_token"
     private static let licenseKey = "byte_license_key"
     private static let expiresKey = "byte_license_expires"
     private static let loginTimeKey = "byte_login_time"
     private static let userNameKey = "byte_user_name"
 
+    // MARK: - Keychain Helpers
+
+    private func keychainRead(_ account: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.keychainService,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var ref: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &ref) == errSecSuccess,
+              let data = ref as? Data,
+              let value = String(data: data, encoding: .utf8),
+              !value.isEmpty else { return nil }
+        return value
+    }
+
+    private func keychainWrite(_ account: String, value: String) {
+        guard let data = value.data(using: .utf8) else { return }
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.keychainService
+        ]
+        SecItemDelete(query as CFDictionary)
+        let addQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.keychainService,
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        SecItemAdd(addQuery as CFDictionary, nil)
+    }
+
+    private func keychainDelete(_ account: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.keychainService
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+
+    private func migrateUserDefaultsToKeychain() {
+        let defaults = UserDefaults.standard
+        for key in [Self.tokenKey, Self.licenseKey, Self.expiresKey] {
+            if let value = defaults.string(forKey: key), keychainRead(key) == nil {
+                keychainWrite(key, value: value)
+                defaults.removeObject(forKey: key)
+            }
+        }
+    }
+
     var isLoggedIn: Bool {
-        UserDefaults.standard.string(forKey: Self.tokenKey) != nil
+        keychainRead(Self.tokenKey) != nil
+    }
+
+    var authToken: String? {
+        keychainRead(Self.tokenKey)
     }
 
     var savedLicenseKey: String? {
-        UserDefaults.standard.string(forKey: Self.licenseKey)
+        keychainRead(Self.licenseKey)
     }
 
     var expiresAt: String? {
-        UserDefaults.standard.string(forKey: Self.expiresKey)
+        keychainRead(Self.expiresKey)
     }
 
     var userName: String? {
@@ -115,7 +177,7 @@ final class ByteAuthService {
         let body: [String: Any] = [
             "key": licenseKey.trimmingCharacters(in: .whitespacesAndNewlines).uppercased(),
             "device_hash": deviceHash,
-            "device_name": UIDevice.current.name,
+            "device_name": AppInfo.displayMachineName,
             "device_model": AppInfo.displayMachineName,
             "os_version": "iOS \(AppInfo.osVersion)"
         ]
@@ -139,9 +201,9 @@ final class ByteAuthService {
                 let token = json["token"] as? String ?? ""
                 let expires = json["expires_at"] as? String ?? "LIFETIME"
 
-                UserDefaults.standard.set(token, forKey: Self.tokenKey)
-                UserDefaults.standard.set(licenseKey.uppercased(), forKey: Self.licenseKey)
-                UserDefaults.standard.set(expires, forKey: Self.expiresKey)
+                keychainWrite(Self.tokenKey, value: token)
+                keychainWrite(Self.licenseKey, value: licenseKey.uppercased())
+                keychainWrite(Self.expiresKey, value: expires)
                 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.loginTimeKey)
 
                 return LoginResult(success: true, token: token, expiresAt: expires, error: nil)
@@ -155,9 +217,9 @@ final class ByteAuthService {
     }
 
     func logout() {
-        UserDefaults.standard.removeObject(forKey: Self.tokenKey)
-        UserDefaults.standard.removeObject(forKey: Self.licenseKey)
-        UserDefaults.standard.removeObject(forKey: Self.expiresKey)
+        keychainDelete(Self.tokenKey)
+        keychainDelete(Self.licenseKey)
+        keychainDelete(Self.expiresKey)
         UserDefaults.standard.removeObject(forKey: Self.loginTimeKey)
         UserDefaults.standard.removeObject(forKey: Self.userNameKey)
         setProfileImage(nil)
@@ -176,9 +238,9 @@ final class ByteAuthService {
         }
 
         if let key = key, !key.isEmpty, let token = token, !token.isEmpty {
-            UserDefaults.standard.set(token, forKey: Self.tokenKey)
-            UserDefaults.standard.set(key, forKey: Self.licenseKey)
-            UserDefaults.standard.set("LIFETIME", forKey: Self.expiresKey)
+            keychainWrite(Self.tokenKey, value: token)
+            keychainWrite(Self.licenseKey, value: key)
+            keychainWrite(Self.expiresKey, value: "LIFETIME")
             UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.loginTimeKey)
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .byteDidLogin, object: nil)

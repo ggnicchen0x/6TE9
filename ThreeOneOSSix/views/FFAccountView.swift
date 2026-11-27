@@ -199,7 +199,7 @@ struct FFAccountView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(accentBarCard(cornerRadius: 16))
+        .background(AccentBarCard(cornerRadius: 16))
     }
 
     private var getKeyCard: some View {
@@ -239,7 +239,7 @@ struct FFAccountView: View {
                     .foregroundStyle(Color(white: 0.3))
             }
             .padding(14)
-            .background(accentBarCard(cornerRadius: 14))
+            .background(AccentBarCard(cornerRadius: 14))
         }
         .buttonStyle(.plain)
     }
@@ -330,7 +330,7 @@ struct FFAccountView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(accentBarCard(cornerRadius: 16))
+        .background(AccentBarCard(cornerRadius: 16))
         .onAppear {
             guard !reduceMotion else { return }
             withAnimation(.linear(duration: 4).repeatForever(autoreverses: false)) {
@@ -631,20 +631,6 @@ struct FFAccountView: View {
 
     // MARK: - Shared Components
 
-    private func accentBarCard(cornerRadius: CGFloat) -> some View {
-        ZStack(alignment: .leading) {
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .fill(cardFill)
-            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.04), lineWidth: 0.5)
-            HStack(spacing: 0) {
-                AppTheme.accent
-                    .frame(width: 3.5)
-                Spacer()
-            }
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        }
-    }
 
     private func cardHeader(icon: String, title: String) -> some View {
         HStack(spacing: 8) {

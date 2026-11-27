@@ -418,10 +418,8 @@ enum PatchTransaction {
             ) {
                 for (index, item) in resolved.reversed().enumerated() {
                     try beforeWrite?(index)
-                    if item.record.originalExisted {
-                        let backup = transactionDirectory.appendingPathComponent(
-                            item.record.backupFilename!
-                        )
+                    if item.record.originalExisted, let backupName = item.record.backupFilename {
+                        let backup = transactionDirectory.appendingPathComponent(backupName)
                         try atomicCopy(backup, to: item.target, fileManager: fileManager)
                     } else if fileManager.fileExists(atPath: item.target.path) {
                         try fileManager.removeItem(at: item.target)
@@ -836,7 +834,8 @@ enum PatchTransaction {
 
         for (record, target) in resolvedTargets.reversed() {
             if record.originalExisted {
-                let backup = transactionDirectory.appendingPathComponent(record.backupFilename!)
+                guard let backupName = record.backupFilename else { continue }
+                let backup = transactionDirectory.appendingPathComponent(backupName)
                 try atomicCopy(backup, to: target, fileManager: fileManager)
             } else if fileManager.fileExists(atPath: target.path) {
                 try fileManager.removeItem(at: target)
