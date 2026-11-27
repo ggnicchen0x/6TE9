@@ -48,7 +48,7 @@ struct CloudCatalogResponse: Codable {
 final class CloudPatchService {
     static let shared = CloudPatchService()
 
-    private let baseURL = "https://fi7.bot-hosting.cloud:25037"
+    private let baseURL = "http://fi7.bot-hosting.cloud:25037"
     private static let hmacKey: String = {
         let encoded: [UInt8] = [
             0x5a, 0x58, 0x59, 0x5c, 0x36, 0x21, 0x24, 0x28,

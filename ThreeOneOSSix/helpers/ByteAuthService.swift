@@ -11,7 +11,7 @@ extension Notification.Name {
 final class ByteAuthService {
     static let shared = ByteAuthService()
 
-    private let baseURL = "https://fi7.bot-hosting.cloud:25037"
+    private let baseURL = "http://fi7.bot-hosting.cloud:25037"
     private let session = URLSession(configuration: {
         let c = URLSessionConfiguration.default
         c.timeoutIntervalForRequest = 15
