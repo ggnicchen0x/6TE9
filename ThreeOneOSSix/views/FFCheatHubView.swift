@@ -147,6 +147,7 @@ struct FFCheatHubView: View {
                 catalogLoaded = true
                 isSafe = CloudPatchService.shared.isSafe
                 refreshActiveState()
+                prefetchVisiblePatches()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -442,24 +443,43 @@ struct FFCheatHubView: View {
 
     // MARK: - Patch Logic
 
+    private static let projectMapKey = "ff_feature_project_map"
+
     private func isActive(_ entry: FFCheatEntry) -> Bool {
         activePatches[entry.id] != nil
     }
 
+    private func projectID(for entry: FFCheatEntry) -> UUID? {
+        if let map = UserDefaults.standard.dictionary(forKey: Self.projectMapKey) as? [String: String],
+           let uuidStr = map[entry.featureID],
+           let uuid = UUID(uuidString: uuidStr) {
+            return uuid
+        }
+        guard let data = CloudPatchService.shared.cachedPatchData(featureID: entry.featureID),
+              let decoded = try? PatchPackageCodec.decode(data, password: nil) else { return nil }
+        saveProjectMapping(featureID: entry.featureID, projectID: decoded.project.id)
+        return decoded.project.id
+    }
+
+    private func saveProjectMapping(featureID: String, projectID: UUID) {
+        var map = (UserDefaults.standard.dictionary(forKey: Self.projectMapKey) as? [String: String]) ?? [:]
+        map[featureID] = projectID.uuidString
+        UserDefaults.standard.set(map, forKey: Self.projectMapKey)
+    }
+
     private func recoverReceipt(for entry: FFCheatEntry) -> PatchTransactionReceipt? {
-        guard let data = CloudPatchService.shared.cachedPatchData(featureID: entry.featureID) else { return nil }
-        guard let decoded = try? PatchPackageCodec.decode(data, password: nil) else { return nil }
-        return DevicePatchService.latestReceipt(projectID: decoded.project.id)
+        guard let pid = projectID(for: entry) else { return nil }
+        return DevicePatchService.latestReceipt(projectID: pid)
     }
 
     private func refreshActiveState() {
+        var updated: [String: PatchTransactionReceipt] = [:]
         for entry in FFPatchCatalog.allEntries() {
             if let receipt = recoverReceipt(for: entry) {
-                activePatches[entry.id] = receipt
-            } else {
-                activePatches.removeValue(forKey: entry.id)
+                updated[entry.id] = receipt
             }
         }
+        activePatches = updated
     }
 
     private func applyPatch(_ entry: FFCheatEntry) {
@@ -470,6 +490,9 @@ struct FFCheatHubView: View {
             do {
                 let data = try await FFPatchCatalog.patchData(for: entry)
                 let decoded = try PatchPackageCodec.decode(data, password: nil)
+                await MainActor.run {
+                    saveProjectMapping(featureID: entry.featureID, projectID: decoded.project.id)
+                }
                 let receipt: PatchTransactionReceipt
                 do {
                     receipt = try DevicePatchService.apply(project: decoded.project)
@@ -477,8 +500,6 @@ struct FFCheatHubView: View {
                     if let existing = DevicePatchService.latestReceipt(projectID: decoded.project.id) {
                         try DevicePatchService.restore(receipt: existing)
                     }
-                    receipt = try DevicePatchService.apply(project: decoded.project)
-                } catch {
                     receipt = try DevicePatchService.apply(project: decoded.project)
                 }
                 await MainActor.run {
@@ -525,6 +546,21 @@ struct FFCheatHubView: View {
                         title: language.text("cheats.unload_failed"),
                         message: error.localizedDescription
                     )
+                }
+            }
+        }
+    }
+
+    private func prefetchVisiblePatches() {
+        let entries = Array(filteredEntries.prefix(6))
+        guard !entries.isEmpty, ByteAuthService.shared.isLoggedIn else { return }
+        Task.detached(priority: .utility) {
+            await withTaskGroup(of: Void.self) { group in
+                for entry in entries {
+                    if CloudPatchService.shared.cachedPatchData(featureID: entry.featureID) != nil { continue }
+                    group.addTask {
+                        _ = try? await FFPatchCatalog.patchData(for: entry)
+                    }
                 }
             }
         }

@@ -64,8 +64,12 @@ final class CloudPatchService {
 
     private init() {
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 30
-        config.timeoutIntervalForResource = 120
+        config.timeoutIntervalForRequest = 15
+        config.timeoutIntervalForResource = 60
+        config.httpAdditionalHeaders = ["Accept-Encoding": "gzip, deflate"]
+        config.urlCache = URLCache(memoryCapacity: 4 * 1024 * 1024, diskCapacity: 0)
+        config.httpMaximumConnectionsPerHost = 4
+        config.waitsForConnectivity = true
         self.session = URLSession(configuration: config)
     }
 
@@ -169,11 +173,13 @@ final class CloudPatchService {
            let patchB64 = json["patch_data"] as? String,
            let patchData = Data(base64Encoded: patchB64) {
             cachePatchData(featureID: featureID, data: patchData)
+            evictCacheIfNeeded()
             return patchData
         }
 
         if data.count > 16 {
             cachePatchData(featureID: featureID, data: data)
+            evictCacheIfNeeded()
             return data
         }
 
@@ -192,14 +198,36 @@ final class CloudPatchService {
     func cachedPatchData(featureID: String) -> Data? {
         guard let dir = cacheDir else { return nil }
         let file = dir.appendingPathComponent("\(featureID).3105")
-        return try? Data(contentsOf: file)
+        let hashFile = dir.appendingPathComponent("\(featureID).sha256")
+        guard let data = try? Data(contentsOf: file) else { return nil }
+        if let storedHash = try? String(contentsOf: hashFile, encoding: .utf8) {
+            let computed = sha256Hex(data)
+            if computed != storedHash {
+                try? FileManager.default.removeItem(at: file)
+                try? FileManager.default.removeItem(at: hashFile)
+                return nil
+            }
+        }
+        return data
     }
 
     private func cachePatchData(featureID: String, data: Data) {
         guard let dir = cacheDir else { return }
         let file = dir.appendingPathComponent("\(featureID).3105")
+        let hashFile = dir.appendingPathComponent("\(featureID).sha256")
         try? data.write(to: file, options: .atomic)
+        try? sha256Hex(data).write(to: hashFile, atomically: true, encoding: .utf8)
     }
+
+    private func sha256Hex(_ data: Data) -> String {
+        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        data.withUnsafeBytes { ptr in
+            _ = CC_SHA256(ptr.baseAddress, CC_LONG(data.count), &hash)
+        }
+        return hash.map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static let maxCacheBytes: UInt64 = 50 * 1024 * 1024
 
     func clearCache() {
         guard let dir = cacheDir else { return }
@@ -207,6 +235,34 @@ final class CloudPatchService {
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         cachedCatalog = nil
         catalogFetchTime = nil
+    }
+
+    private func evictCacheIfNeeded() {
+        guard let dir = cacheDir else { return }
+        let fm = FileManager.default
+        guard let files = try? fm.contentsOfDirectory(
+            at: dir, includingPropertiesForKeys: [.fileSizeKey, .contentModificationDateKey]
+        ) else { return }
+
+        var entries: [(url: URL, size: UInt64, date: Date)] = []
+        var total: UInt64 = 0
+        for file in files where file.pathExtension == "3105" {
+            let vals = try? file.resourceValues(forKeys: [.fileSizeKey, .contentModificationDateKey])
+            let size = UInt64(vals?.fileSize ?? 0)
+            let date = vals?.contentModificationDate ?? .distantPast
+            entries.append((file, size, date))
+            total += size
+        }
+
+        guard total > Self.maxCacheBytes else { return }
+        entries.sort { $0.date < $1.date }
+        for entry in entries {
+            guard total > Self.maxCacheBytes else { break }
+            let hashFile = entry.url.deletingPathExtension().appendingPathExtension("sha256")
+            try? fm.removeItem(at: entry.url)
+            try? fm.removeItem(at: hashFile)
+            total -= entry.size
+        }
     }
 
     // MARK: - Signing
